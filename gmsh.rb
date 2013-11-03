@@ -8,18 +8,16 @@ class Gmsh < Formula
 
   depends_on 'cmake' => :build
   depends_on 'fltk' => :build
-#  depends_on 'slepc' => :build
+  depends_on 'petsc' => :build
   depends_on 'texinfo' => :build
 
-def patches
-    # DATA is the embedded diff that comes after __END__ in this file!
-    # In this example we only need the patch for older clang than 425:
+  def patches
     DATA
   end
 
   def install
-    # ENV.j1  # if your formula's build system can't parallelize
-
+    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3"
+    ENV['PETSC_ARCH']="darwin-cxx-opt"
     args=std_cmake_args+["-DCMAKE_BUILD_TYPE=Release",
                          "-DENABLE_OS_SPECIFIC_INSTALL=OFF",
                          "-DENABLE_BUILD_LIB=OFF",
