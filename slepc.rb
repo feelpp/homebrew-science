@@ -1,23 +1,31 @@
 require 'formula'
 
-class slepc < Formula
+class Slepc < Formula
   homepage 'http://www.grycap.upv.es/slepc/'
   url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.4.3.tar.gz'
   sha1 '60ed95114f9b16e1214f583921ee0afb2943e1c3'
 
   depends_on 'petsc' => :build
+  env :std
 
   def install
-    args=["--disable-debug",
-          "--disable-dependency-tracking",
-          "--disable-silent-rules",
-          "--prefix=#{prefix}",
-          "--with-clanguage=C++",
-          "--with-shared-libraries=1"
-         ]
+    ENV.deparallelize
 
-    system "./configure","--with-debugging=1",*args
-    system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-debug","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-darwin-cxx-debug", "install"
+    args=["--download-blopex"]
+
+    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-debug"
+    system "./configure","--prefix=#{prefix}/lib/slepcdir/3.4.3/darwin-cxx-debug",*args
+    system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-debug","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc"
+    system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-debug","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc", "test"
+    system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-debug","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc", "install"
+
+    rm_rf Dir['arch-installed-petsc']
+
+    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt"
+    system "./configure","--prefix=#{prefix}/lib/slepcdir/3.4.3/darwin-cxx-opt",*args
+    system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc"
+    system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc", "install"
+    system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc", "install"
   end
 
   test do
