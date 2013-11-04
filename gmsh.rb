@@ -9,15 +9,18 @@ class Gmsh < Formula
   depends_on 'cmake' => :build
   depends_on 'fltk' => :build
   depends_on 'petsc' => :build
+  depends_on 'slepc' => :build
   depends_on 'texinfo' => :build
+
+  env :std
 
   def patches
     DATA
   end
 
   def install
-    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3"
-    ENV['PETSC_ARCH']="darwin-cxx-opt"
+    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt"
+    ENV['SLEPC_DIR']="/usr/local/lib/slepcdir/3.4.3/darwin-cxx-opt"
     args=std_cmake_args+["-DCMAKE_BUILD_TYPE=Release",
                          "-DENABLE_OS_SPECIFIC_INSTALL=OFF",
                          "-DENABLE_BUILD_LIB=OFF",
@@ -26,6 +29,7 @@ class Gmsh < Formula
                          "-DENABLE_OCC:BOOL=OFF",
                          "-DENABLE_FLTK:BOOL=ON",
                          "-DENABLE_MPI:BOOL=ON",
+                         "-DENABLE_SLEPC:BOOL=ON",
                          "-DENABLE_GRAPHICS:BOOL=ON",
                          "-DENABLE_METIS=ON",
                          "-DENABLE_TAUCS=OFF"]
