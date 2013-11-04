@@ -8,8 +8,8 @@ class Gmsh < Formula
 
   depends_on 'cmake' => :build
   depends_on 'fltk' => :build
-  depends_on 'petsc' => :build
-  depends_on 'slepc' => :build
+#  depends_on 'petsc' => :build
+#  depends_on 'slepc' => :build
   depends_on 'texinfo' => :build
 
   #  env :std
@@ -19,8 +19,8 @@ class Gmsh < Formula
   end
 
   def install
-    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt"
-    ENV['SLEPC_DIR']="/usr/local/lib/slepcdir/3.4.3/darwin-cxx-opt"
+#    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt"
+#    ENV['SLEPC_DIR']="/usr/local/lib/slepcdir/3.4.3/darwin-cxx-opt"
     args=std_cmake_args+["-DCMAKE_BUILD_TYPE=Release",
                          "-DENABLE_OS_SPECIFIC_INSTALL=OFF",
                          "-DENABLE_BUILD_LIB=OFF",
@@ -28,8 +28,8 @@ class Gmsh < Formula
                          "-DENABLE_NATIVE_FILE_CHOOSER:BOOL=OFF",
                          "-DENABLE_OCC:BOOL=OFF",
                          "-DENABLE_FLTK:BOOL=ON",
-                         "-DENABLE_MPI:BOOL=ON",
-                         "-DENABLE_SLEPC:BOOL=ON",
+#                         "-DENABLE_MPI:BOOL=ON",
+#                         "-DENABLE_SLEPC:BOOL=ON",
                          "-DENABLE_GRAPHICS:BOOL=ON",
                          "-DENABLE_METIS=ON",
                          "-DENABLE_TAUCS=OFF"]
@@ -66,3 +66,22 @@ index 3134222..5e1d2c0 100644
  #include <string>
  #include "Gmsh.h"
  #include "GmshMessage.h"
+diff --git a/contrib/Netgen/libsrc/general/profiler.cpp b/contrib/Netgen/libsrc/general/profiler.cpp
+index 91db4ef..b7d3c5c 100644
+--- a/contrib/Netgen/libsrc/general/profiler.cpp
++++ b/contrib/Netgen/libsrc/general/profiler.cpp
+@@ -42,7 +42,7 @@ namespace netgen
+     // ofstream-constructor may be called after STL-stuff is destructed,
+     // which leads to an "order of destruction"-problem,
+     // thus we use the C-variant:
+-
++#if 0
+     if (getenv ("NGPROFILE"))
+       {
+        char filename[100];
+@@ -57,6 +57,7 @@ namespace netgen
+        Print (prof);
+        fclose(prof);
+       }
++#endif
+   }
