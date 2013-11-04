@@ -12,7 +12,7 @@ class Gmsh < Formula
   depends_on 'slepc' => :build
   depends_on 'texinfo' => :build
 
-  env :std
+  #  env :std
 
   def patches
     DATA
