@@ -2,8 +2,8 @@ require 'formula'
 
 class Feelpp < Formula
   homepage 'http://www.feelpp.org'
-  url 'https://github.com/feelpp/feelpp/archive/v0.96.0-beta.1.tar.gz'
-  version '0.96.0-beta.1'
+  url 'https://github.com/feelpp/feelpp/archive/v0.96.0-beta.2.tar.gz'
+  version '0.96.0-beta.2'
   sha1 '231f625f0ede11001d586d186fbe172878f13cf3'
 
   depends_on 'cmake' => :build
