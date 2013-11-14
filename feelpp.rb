@@ -15,16 +15,20 @@ class Feelpp < Formula
 
   def patches
     # bugs in cmakelists
-    # - support CMAKE_BUILD_TYPE=None
     # - fix Feel++ version
     DATA
   end
 
 
   def install
+    # Remove the default CMAKE_BUILD_TYPE set through std_cmake_args
+    # So we can avoid setting None as a build type
+    args=std_cmake_args
+    args.delete_if {|x| x =~ /CMAKE_BUILD_TYPE/}
+
     Dir.mkdir 'opt'
     cd 'opt' do
-      system "cmake", "..", *std_cmake_args
+      system "cmake", "..", *args
       system "make", "install"
     end
   end
@@ -35,21 +39,6 @@ class Feelpp < Formula
 end
 
 __END__
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index fce2fc2..fb7873c 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -47,8 +47,9 @@ endif()
- string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_tolower)
- if(    NOT cmake_build_type_tolower STREQUAL "debug"
-     AND NOT cmake_build_type_tolower STREQUAL "release"
-+    AND NOT cmake_build_type_tolower STREQUAL "none"
-     AND NOT cmake_build_type_tolower STREQUAL "relwithdebinfo")
--  message(FATAL_ERROR "Unknown build type \"${CMAKE_BUILD_TYPE}\". Allowed values are Debug, Release, RelWithDebInfo (case-insensitive).")
-+  message(FATAL_ERROR "Unknown build type \"${CMAKE_BUILD_TYPE}\". Allowed values are None, Debug, Release, RelWithDebInfo (case-insensitive).")
- endif()
-
-
 diff --git a/cmake/modules/feelpp.version.cmake b/cmake/modules/feelpp.version.cmake
 index f00588f..f47b30f 100644
 --- a/cmake/modules/feelpp.version.cmake
