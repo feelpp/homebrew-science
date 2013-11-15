@@ -2,9 +2,9 @@ require 'formula'
 
 class Feelpp < Formula
   homepage 'http://www.feelpp.org'
-  url 'https://github.com/feelpp/feelpp/archive/v0.96.0-beta.2.tar.gz'
-  version '0.96.0-beta.2'
-  sha1 '7a768de379d0b2aa2593510889c75dfd7be0e843'
+  url 'https://github.com/feelpp/feelpp/archive/v0.96.0-beta.3.tar.gz'
+  version '0.96.0-beta.3'
+  sha1 'de19f1c252525150c0fdb998c60f691be6cef7ec'
 
   depends_on 'cmake' => :build
   depends_on 'gmsh'
