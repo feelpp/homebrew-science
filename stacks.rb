@@ -2,11 +2,16 @@ require 'formula'
 
 class Stacks < Formula
   homepage 'http://creskolab.uoregon.edu/stacks/'
-  url 'http://creskolab.uoregon.edu/stacks/source/stacks-1.06.tar.gz'
-  sha1 '5294404195d223b3dcb48f72cdd64b598eaae029'
+  url 'http://creskolab.uoregon.edu/stacks/source/stacks-1.09.tar.gz'
+  sha1 'a74d0877a1d24f481ba0bb1481d0259d5ebffe30'
 
   depends_on "google-sparsehash" => :recommended
   depends_on "samtools"          => :recommended
+
+  fails_with :clang do
+    build 500
+    cause %q[error: 'tr1/unordered_map' file not found]
+  end
 
   def patches
     # Fixes samtools dependency. Submitted to upstream:
@@ -44,10 +49,8 @@ class Stacks < Formula
   end
 end
 __END__
-diff --git a/src/Bam.h b/src/Bam.h
-index dce20d8..9d077eb 100644
---- a/src/Bam.h
-+++ b/src/Bam.h
+--- a/src/BamI.h
++++ b/src/BamI.h
 @@ -29,7 +29,7 @@
  #ifdef HAVE_BAM
  

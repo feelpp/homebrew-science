@@ -9,6 +9,12 @@ class Blast < Formula
   depends_on 'gnutls' => :optional
 
   option 'with-dll', "Create dynamic binaries instead of static"
+  option 'without-check', 'Skip the self tests'
+
+  fails_with :clang do
+    build 500
+    cause "error: 'bits/c++config.h' file not found"
+  end
 
   def patches
     # Support recent versions of gnutls
@@ -18,11 +24,22 @@ class Blast < Formula
   def install
     args = ["--prefix=#{prefix}"]
     args << "--with-dll" if build.include? 'with-dll'
+    # Boost is used only for unit tests.
+    args << '--without-boost' if build.without? 'check'
 
     cd 'c++' do
       system './configure', '--without-debug', '--with-mt', *args
       system "make"
       system "make install"
+
+      # libproj.a conflicts with the formula proj
+      # mv gives the error message:
+      # fileutils.rb:1552:in `stat'
+      # Errno::ENOENT: No such file or directory -
+      # $HOMEBREW_PREFIX/Cellar/blast/2.2.28/lib/libaccess-static.a
+      libexec.mkdir
+      # Does not work: mv Dir[lib / 'lib*.a'], libexec
+      system "mv #{lib}/lib*.a #{libexec}/"
     end
   end
 
@@ -34,6 +51,12 @@ class Blast < Formula
     Static binaries should be used for speed if the executable requires
     fast startup time, such as if another program is frequently restarting
     the blast executables.
+
+    Static libraries are installed in #{libexec}
     EOS
+  end
+
+  test do
+    system 'blastn -version'
   end
 end

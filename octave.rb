@@ -6,6 +6,8 @@ class Octave < Formula
   mirror 'http://ftp.gnu.org/gnu/octave/octave-3.6.4.tar.bz2'
   sha1 '3cc9366b6dbbd336eaf90fe70ad16e63705d82c4'
 
+  skip_clean 'share/info' # Keep the docs
+
   option 'without-fltk', 'Compile without fltk (disables native graphics)'
   option 'test', 'Run tests before installing'
 
@@ -112,7 +114,13 @@ class Octave < Formula
       if you are using Aquaterm, use "GNUTERM=aqua".
     EOS
 
-    s = gnuplot_caveats
+    glpk_caveats = <<-EOS.undent
+
+      GLPK functionality has been disabled due to API incompatibility.
+    EOS
+
+    s = glpk_caveats
+    s = gnuplot_caveats + s
     s = native_caveats + s unless build.include? 'without-fltk'
   end
 end
