@@ -7,6 +7,7 @@ class Feelpp < Formula
   sha1 'de19f1c252525150c0fdb998c60f691be6cef7ec'
 
   depends_on 'cmake' => :build
+  depends_on 'eigen'
   depends_on 'gmsh'
   depends_on 'petsc'
   depends_on 'boost' => ['without-python', 'without-single', 'without-static', 'with-mpi', 'c++11']
