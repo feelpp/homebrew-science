@@ -51,12 +51,12 @@ class Mumps < Formula
       s.change_make_var! 'ORDERINGSF', orderingsf
 
       # Build a shared library.
-      s.change_make_var! 'LIBEXT', '.dylib'
+#      s.change_make_var! 'LIBEXT', '.dylib'
       s.change_make_var! 'CC', "#{ENV.cc} -fPIC"
       s.change_make_var! 'FC', "#{ENV.fc} -fPIC"
       s.change_make_var! 'FL', "#{ENV.fc} -fPIC"
-      s.change_make_var! 'AR', "$(FL) -shared -Wl,-install_name -Wl,#{lib}/$(notdir $@) -undefined dynamic_lookup -o "  # Must have a trailing whitespace!
-      s.change_make_var! 'RANLIB', 'echo'
+#      s.change_make_var! 'AR', "$(FL) -shared -Wl,-install_name -Wl,#{lib}/$(notdir $@) -undefined dynamic_lookup -o "  # Must have a trailing whitespace!
+#      s.change_make_var! 'RANLIB', 'echo'
 
       if build.with? :mpi
         s.change_make_var! 'SCALAP', "-L#{Formula.factory('scalapack').lib} -lscalapack"
