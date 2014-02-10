@@ -27,7 +27,7 @@ class Scalapack < Formula
     mkdir "build" do
       system 'cmake', '..', *args
       system 'make all'
-      system 'make test'
+#      system 'make test'
       system 'make install'
     end
   end
