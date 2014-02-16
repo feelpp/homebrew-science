@@ -2,8 +2,9 @@ require 'formula'
 
 class Petsc < Formula
   homepage 'http://www.mcs.anl.gov/petsc/index.html'
-  url 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.4.3.tar.gz'
-  sha1 '7458f01c003dc7381d694445b5a2ecdbca91aa57'
+  url 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.4.3.tar.gz'
+  sha1 '8c5d97ba4a28ea8fa830e513a9dcbfd61b51beaf'
+  head 'https://bitbucket.org/petsc/petsc', :using => :git
 
   # do not use superenv
   env :std
@@ -24,6 +25,7 @@ class Petsc < Formula
   depends_on 'mumps' => [:recommended, 'with-scotch5']
   depends_on 'suite-sparse' => :recommended
   depends_on 'scalapack' => :recommended
+  depends_on :x11 => MacOS::X11.installed? ? :recommended : :optional
 
   option 'without-debug', 'Disable building debug flavor'
 
@@ -67,7 +69,7 @@ class Petsc < Formula
     if build.with? 'mumps'
       args += ["--with-mumps=1",
                "--with-mumps-include=#{HOMEBREW_PREFIX}/include",
-               "--with-mumps-lib=[#{HOMEBREW_PREFIX}/lib/libdmumps.dylib,#{HOMEBREW_PREFIX}/lib/libzmumps.dylib,#{HOMEBREW_PREFIX}/lib/libsmumps.dylib,#{HOMEBREW_PREFIX}/lib/libcmumps.dylib,#{HOMEBREW_PREFIX}/lib/libmumps_common.dylib,#{HOMEBREW_PREFIX}/lib/libpord.dylib]"
+               "--with-mumps-lib=[#{HOMEBREW_PREFIX}/lib/libdmumps.a,#{HOMEBREW_PREFIX}/lib/libzmumps.a,#{HOMEBREW_PREFIX}/lib/libsmumps.a,#{HOMEBREW_PREFIX}/lib/libcmumps.a,#{HOMEBREW_PREFIX}/lib/libmumps_common.a,#{HOMEBREW_PREFIX}/lib/libpord.a]"
               ]
     end
     if build.include? 'enable-mumps'
@@ -77,6 +79,8 @@ class Petsc < Formula
       args+=["--download-ml"]
     end
 
+    args << "--with-x=0" if build.without? 'x11'
+
     if not build.without? 'debug'
       system "./configure", "PETSC_ARCH=arch-darwin-cxx-debug","--prefix=#{prefix}/lib/petscdir/3.4.3/darwin-cxx-debug","--with-debugging=1",*args
       system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-debug all"
@@ -85,10 +89,24 @@ class Petsc < Formula
     end
 
     if build.include? 'enable-opt'
+
       system "./configure", "PETSC_ARCH=arch-darwin-cxx-opt","--prefix=#{prefix}/lib/petscdir/3.4.3/darwin-cxx-opt","--with-debugging=0",*args
       system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-opt all"
       system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-opt test"
       system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-opt install"
     end
+
+    # Link only what we want.
+    #include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
+    #prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
+    #lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
+    #share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
+  end
+
+  def caveats; <<-EOS
+    Set PETSC_DIR to #{prefix}
+    and PETSC_ARCH to arch-darwin-c-opt.
+    Fortran module files are in #{prefix}/arch-darwin-c-opt/include.
+    EOS
   end
 end

@@ -19,11 +19,7 @@ class Openni < Formula
   depends_on 'doxygen' => :build
 
   def patches
-    # Fix build files
-    inreplace 'Source/OpenNI/XnOpenNI.cpp', '/var/lib/ni/', "#{var}/lib/ni/"
-    inreplace 'Platform/Linux/Build/Common/CommonJavaMakefile', '/usr/share/java', "#{share}/java"
-
-    # Fix for Mavericks (it's the same patch with different whitespaces) 
+    # Fix for Mavericks (it's the same patch with different whitespaces)
     if build.devel?
       "https://github.com/OpenNI/OpenNI/pull/95.patch"
     else
@@ -33,6 +29,10 @@ class Openni < Formula
 
   def install
     ENV.universal_binary if build.universal?
+
+    # Fix build files
+    inreplace 'Source/OpenNI/XnOpenNI.cpp', '/var/lib/ni/', "#{var}/lib/ni/"
+    inreplace 'Platform/Linux/Build/Common/CommonJavaMakefile', '/usr/share/java', "#{share}/java"
 
     # Build OpenNI
     cd 'Platform/Linux/CreateRedist'
@@ -45,7 +45,7 @@ class Openni < Formula
     lib.install Dir['Lib/*']
     (include+'ni').install Dir['Include/*']
     (share+'java').install Dir['Jar/*']
-    (share+'samples').install Dir['Samples/*']
+    (share+'openni/samples').install Dir['Samples/*']
     doc.install 'Documentation'
   end
 

@@ -2,11 +2,12 @@ require 'formula'
 
 class Lammps < Formula
   homepage 'http://lammps.sandia.gov'
-  url 'http://lammps.sandia.gov/tars/lammps-14May13.tar.gz'
-  sha1 '5e522e9e3d4a4cbbe80c01c36002489777fb65d8'
+  url 'http://lammps.sandia.gov/tars/lammps-12Feb14.tar.gz'
+  sha1 '2572cce8343862c32c6e4079b91a26637ae3c6b7'
   # lammps releases are named after their release date. We transform it to
   # YYYY.MM.DD (year.month.day) so that we get a comparable version numbering (for brew outdated)
-  version '2013.05.14'
+  version '2014.02.12'
+
   head 'http://git.icms.temple.edu/lammps-ro.git'
 
   # user-submitted packages not considered "standard"
@@ -43,7 +44,7 @@ class Lammps < Formula
   depends_on 'fftw'
   depends_on 'jpeg'
   depends_on 'voro++'
-  depends_on :mpi => [:cxx, :f90, :optional]
+  depends_on :mpi => [:cxx, :f90, :recommended] # dummy MPI library provided in src/STUBS
   depends_on :fortran
 
   def build_lib(comp, lmp_lib, opts={})

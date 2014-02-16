@@ -2,8 +2,8 @@ require 'formula'
 
 class UcscGenomeBrowser < Formula
   homepage 'http://genome.ucsc.edu'
-  url 'http://hgdownload.cse.ucsc.edu/admin/jksrc.v292.zip'
-  sha1 'f6817eeb371cc42b360038f8467dbfb607f04bf0'
+  url 'http://hgdownload.cse.ucsc.edu/admin/jksrc.v295.zip'
+  sha1 'f3853d4aab5c67dfd6a64bfd869261812fab1b19'
   head 'git://genome-source.cse.ucsc.edu/kent.git'
 
   keg_only <<-EOF.undent
@@ -15,6 +15,9 @@ class UcscGenomeBrowser < Formula
   depends_on :mysql
 
   def install
+    # Patch for OSX cp, fixed in HEAD
+    inreplace "src/hg/js/makefile", "cp -p --update", "rsync -a" unless build.head?
+
     ENV.j1
     machtype = `uname -m`.chomp
     user = `whoami`.chomp
