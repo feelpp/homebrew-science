@@ -63,9 +63,16 @@ class Mumps < Formula
       end
 
       if build.with? :mpi
+        s.change_make_var! 'CC', "#{ENV['MPICC']} -fPIC"
+        s.change_make_var! 'FC', "#{ENV['MPIFC']} -fPIC"
+        s.change_make_var! 'FL', "#{ENV['MPIFC']} -fPIC"
         s.change_make_var! 'SCALAP', "-L#{Formula.factory('scalapack').lib} -lscalapack"
         s.change_make_var! 'INCPAR', "-I#{Formula.factory('open-mpi').include}"
         s.change_make_var! 'LIBPAR', "$(SCALAP) -L#{Formula.factory('open-mpi').lib} -lmpi -lmpi_mpifh"
+      else
+        s.change_make_var! 'CC', "#{ENV['CC']} -fPIC"
+        s.change_make_var! 'FC', "#{ENV['FC']} -fPIC"
+        s.change_make_var! 'FL', "#{ENV['FC']} -fPIC"
       end
 
       if build.with? 'openblas'

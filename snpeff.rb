@@ -2,9 +2,9 @@ require 'formula'
 
 class Snpeff < Formula
   homepage 'http://snpeff.sourceforge.net/'
-  url 'http://downloads.sourceforge.net/project/snpeff/snpEff_v3_4_core.zip'
-  version '3.4i'
-  sha1 'd28c11878d718a1ca62b95f27a1d01045a21b196'
+  url 'http://downloads.sourceforge.net/project/snpeff/snpEff_v3_5_core.zip'
+  version '3.5c'
+  sha1 '45a0f83b537cfd3c89e4c3b878b298f2614b0e4e'
 
   def install
     java = share / 'java'
@@ -23,7 +23,7 @@ class Snpeff < Formula
     puts <<-EOS.undent
       Download the human database using the command
           snpeff download -v GRCh37.74
-      The databases will be installed in ~/snpEff/data
+      The databases will be installed in #{share}/java/data
     EOS
   end
 

@@ -2,20 +2,22 @@ require 'formula'
 
 class Root < Formula
   homepage 'http://root.cern.ch'
-  url 'ftp://root.cern.ch/root/root_v5.34.14.source.tar.gz'
-  version '5.34.14'
-  sha1 '36620ce3fe731702113b9a531a902b7511a7ee88'
+  url 'ftp://root.cern.ch/root/root_v5.34.17.source.tar.gz'
+  version '5.34.17'
+  sha1 '57c8f70fe4f72d1a9b8aea2044fece8756b8c977'
   head 'https://github.com/root-mirror/root.git', :branch => 'v5-34-00-patches'
 
-  option 'with-cocoa', "Use Cocoa for graphics backend instead of X11 (useful on Retina displays)"
+  option 'with-x11', "Use X11 for graphics backend instead of Cocoa"
+  option 'with-qt', "Build with Qt graphics backend and GSI's Qt integration"
   depends_on 'xrootd' => :recommended
   depends_on 'fftw' => :optional
+  depends_on 'qt' => [:optional, 'with-qt3support']
   depends_on :x11
   depends_on :python
 
   def patches
     # http://trac.macports.org/ticket/36777
-    { :p0 => "http://trac.macports.org/raw-attachment/ticket/36777/patch-builtin-afterimage-disabletiff.diff" } if build.with? 'cocoa'
+    { :p0 => "http://trac.macports.org/raw-attachment/ticket/36777/patch-builtin-afterimage-disabletiff.diff" } if build.without? 'x11'
   end
 
   def install
@@ -29,7 +31,10 @@ class Root < Formula
 
     # Determine architecture
     arch = MacOS.prefer_64_bit? ? 'macosx64' : 'macosx'
-    cocoa_flag = (build.with? 'cocoa') ? "--enable-cocoa" : "--disable-cocoa"
+    cocoa_flag = (build.with? 'x11') ? "--disable-cocoa" : "--enable-cocoa"
+
+    qt_flag = (build.with? 'qt') ? "--enable-qt" : "--disable-qt"
+    qtgsi_flag = (build.with? 'qt') ? "--enable-qtgsi" : "--disable-qtgsi"
 
     # N.B. that it is absolutely essential to specify
     # the --etcdir flag to the configure script.  This is
@@ -42,9 +47,19 @@ class Root < Formula
            "--all",
            "--enable-builtin-glew",
            "#{cocoa_flag}",
+	   "#{qt_flag}", "#{qtgsi_flag}",
            "--prefix=#{prefix}",
            "--etcdir=#{prefix}/etc/root",
            "--mandir=#{man}"
+
+    # ROOT configure script does not search for Qt framework
+    if build.with? 'qt'
+      inreplace "config/Makefile.config" do |s|
+	s.gsub! /^QTLIBDIR .*/, "QTLIBDIR := -F #{HOMEBREW_PREFIX}/lib"
+	s.gsub! /^QTLIB .*/, "QTLIB := -framework QtCore -framework QtGui -framework Qt3Support"
+      end
+    end
+
     system "make"
     system "make install"
 

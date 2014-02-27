@@ -7,16 +7,21 @@ class Velvet < Formula
 
   head 'https://github.com/dzerbino/velvet.git'
 
+  option 'with-maxkmerlength=<value>', 'Specify maximum k-mer length, any positive odd integer (default: 31)'
+  option 'with-categories=<value>', 'Specify number of categories, any positive integer (default: 1)'
+
   def install
     inreplace 'Makefile' do |s|
       # recommended in Makefile for compiling on Mac OS X
       s.change_make_var! "CFLAGS", "-Wall -m64"
     end
 
-    args = ["OPENMP=1", "LONGSEQUENCES=1"]
-    if ENV['MAXKMERLENGTH']
-      args << ("MAXKMERLENGTH=" + ENV['MAXKMERLENGTH'])
-    end
+    args = ["LONGSEQUENCES=1"]
+    args << "OPENMP=1" unless ENV.compiler == :clang
+    maxkmerlength = ARGV.value('with-maxkmerlength') || '-1'
+    categories = ARGV.value('with-categories') || '-1'
+    args << "MAXKMERLENGTH=#{maxkmerlength}" if maxkmerlength.to_i > 0
+    args << "CATEGORIES=#{categories}" if categories.to_i > 0
 
     system "make", "velveth", "velvetg", *args
     bin.install 'velveth', 'velvetg'
@@ -27,9 +32,6 @@ class Velvet < Formula
 
   def caveats
     <<-EOS.undent
-      If you want to build with a different kmer length, you can set
-      MAXKMERLENGTH=X to a value (X) *before* you brew this formula.
-
       Some additional user contributed scripts are installed here:
       #{share}/velvet/contrib
     EOS

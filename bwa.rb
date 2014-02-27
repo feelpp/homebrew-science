@@ -2,14 +2,21 @@ require 'formula'
 
 class Bwa < Formula
   homepage 'http://bio-bwa.sourceforge.net/'
-  url 'http://downloads.sourceforge.net/project/bio-bwa/bwa-0.7.5a.tar.bz2'
-  sha1 '3ba4a2df24dc2a2578fb399dc77b3c240a5a18be'
+  url 'https://github.com/lh3/bwa/archive/0.7.7.tar.gz'
+  sha1 '3b22dc42aad136a4373fcd36e7e162a0482df329'
 
   head 'https://github.com/lh3/bwa.git'
 
   def install
     system "make", "CC=#{ENV.cc}", "CFLAGS=#{ENV.cflags}"
     bin.install "bwa"
+    doc.install %w[README.md NEWS]
     man1.install "bwa.1"
+  end
+
+  test do
+    (testpath/"test.fasta").write "MEEPQSDPSV"
+    system "#{bin}/bwa index test.fasta"
+    assert File.exist?("test.fasta.bwt")
   end
 end
