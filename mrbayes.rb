@@ -2,7 +2,7 @@ require 'formula'
 
 class Mrbayes < Formula
   homepage 'http://mrbayes.sourceforge.net/'
-  url 'http://downloads.sourceforge.net/project/mrbayes/mrbayes/3.2.2/mrbayes-3.2.2.tar.gz'
+  url 'https://downloads.sourceforge.net/project/mrbayes/mrbayes/3.2.2/mrbayes-3.2.2.tar.gz'
   sha1 '6f469f595a3dbd2f8394cb29bc70ca1773338ac8'
 
   head 'https://mrbayes.svn.sourceforge.net/svnroot/mrbayes/trunk/'
@@ -24,7 +24,7 @@ class Mrbayes < Formula
     args = ["--disable-debug", "--prefix=#{prefix}"]
 
     if build.with? 'beagle'
-      args << "--with-beagle=#{Formula.factory('beagle').opt_prefix}"
+      args << "--with-beagle=#{Formula["beagle"].opt_prefix}"
     else
       args << "--with-beagle=no"
     end

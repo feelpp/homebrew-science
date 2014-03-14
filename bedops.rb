@@ -2,38 +2,24 @@ require 'formula'
 
 class Bedops < Formula
   homepage 'https://github.com/bedops/bedops'
+  url 'https://github.com/bedops/bedops/archive/v2.4.1.tar.gz'
+  sha1 '0107aac81493b22f81e139a053d32bb926d0af7b'
+
   head 'https://github.com/bedops/bedops.git'
 
-  url 'https://github.com/bedops/bedops/archive/v2.4.0.tar.gz'
-  sha1 'fc369ba3f521b0664786e9b4018f39f9a67b6701'
-
-  devel do
-    version '2.4.1-rc1'
-    url 'https://github.com/bedops/bedops/archive/v2.4.1-rc1.tar.gz'
-    sha1 '436c769af8ffac70f4d7f02922915d3c71c5af88'
-  end
-
-  # Fixed in 2.4.1-rc1
-  fails_with :clang do
-    build 500
-    cause "error: no matching constructor for initialization of 'Ext::Assert<UE>'"
-  end unless build.devel? || build.head?
+  env :std
 
   fails_with :gcc do
     build 5666
-    cause 'error: unrecognized command line option "-std=c++11"'
+    cause 'BEDOPS toolkit requires a C++11 compliant compiler'
   end
 
   def install
+    ENV.O3
     ENV.deparallelize
-
-    # Fix for
-    # error: assigning to 'struct object_key *' from incompatible type 'void *'
-    # See https://github.com/Homebrew/homebrew-science/issues/666
-    ENV.delete 'CC'
-    ENV.delete 'CXX'
-
-    system 'make'
+    ENV.delete('CFLAGS')
+    ENV.delete('CXXFLAGS')
+    system 'make', 'build_all_darwin_intel_fat'
     system 'make', 'install'
     bin.install Dir['bin/*']
     doc.install %w[LICENSE README.md]

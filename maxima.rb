@@ -2,7 +2,7 @@ require 'formula'
 
 class Maxima < Formula
   homepage 'http://maxima.sourceforge.net/'
-  url 'http://downloads.sourceforge.net/project/maxima/Maxima-source/5.32.1-source/maxima-5.32.1.tar.gz'
+  url 'https://downloads.sourceforge.net/project/maxima/Maxima-source/5.32.1-source/maxima-5.32.1.tar.gz'
   sha1 '8667c9e26fdb2889ceb0641b0abc7372aadd591a'
 
   depends_on 'gettext'
@@ -33,7 +33,7 @@ class Maxima < Formula
   end
 
   def test
-    system "#{bin}/maxima", "--batch-string='run_testsuite(); quit();'"
+    system "#{bin}/maxima", "--batch-string=run_testsuite(); quit();"
   end
 end
 

@@ -13,6 +13,7 @@ class Feelpp < Formula
   depends_on 'boost' => ['without-python', 'without-single', 'without-static', 'with-mpi', 'c++11']
   depends_on 'ann' => :recommended
   depends_on 'glpk' => :recommended
+  depends_on 'doxygen' => :optional
 
   def install
     args=std_cmake_args
