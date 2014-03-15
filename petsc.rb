@@ -2,8 +2,8 @@ require 'formula'
 
 class Petsc < Formula
   homepage 'http://www.mcs.anl.gov/petsc/index.html'
-  url 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.4.3.tar.gz'
-  sha1 '8c5d97ba4a28ea8fa830e513a9dcbfd61b51beaf'
+  url 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.4.4.tar.gz'
+  sha1 '2f507195a3142eb0599e78a909446175a597480a'
   head 'https://bitbucket.org/petsc/petsc', :using => :git
 
   # do not use superenv
@@ -18,6 +18,10 @@ class Petsc < Formula
   depends_on :mpi => [:cc, :fortran, :cxx]
   depends_on 'hdf5' => :recommended
   depends_on 'cmake' => :build
+
+  option 'without-check', 'Skip build-time tests (not recommended)'
+
+  depends_on :mpi => :cc
   depends_on :fortran
   #depends_on 'metis' => :recommended
   #depends_on 'parmetis' => :recommended
@@ -32,7 +36,7 @@ class Petsc < Formula
   def install
     ENV.deparallelize
     args=["--with-pic=1",
-          #"--with-shared-libraries",
+          "--with-shared-libraries",
           "--with-clanguage=C++"];
 
     if build.with? 'metis'
@@ -80,33 +84,42 @@ class Petsc < Formula
     end
 
     args << "--with-x=0" if build.without? 'x11'
-
+    ENV['PETSC_DIR'] = Dir.getwd  # configure fails if those vars are set differently.
     if not build.without? 'debug'
-      system "./configure", "PETSC_ARCH=arch-darwin-cxx-debug","--prefix=#{prefix}/lib/petscdir/3.4.3/darwin-cxx-debug","--with-debugging=1",*args
-      system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-debug all"
-      system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-debug test"
-      system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-debug install"
+      petsc_arch = 'arch-darwin-cxx-debug'
+      ENV['PETSC_ARCH'] = petsc_arch
+      system "./configure", "--prefix=#{prefix}/#{petsc_arch}","--with-debugging=1",*args
+      system "make all"
+      system "make test" if build.with? "check"
+      system "make install"
+
+      # Link only what we want.
+      include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
+      prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
+      lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
+      share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
     end
 
     if build.include? 'enable-opt'
-
-      system "./configure", "PETSC_ARCH=arch-darwin-cxx-opt","--prefix=#{prefix}/lib/petscdir/3.4.3/darwin-cxx-opt","--with-debugging=0",*args
-      system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-opt all"
-      system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-opt test"
-      system "make PETSC_DIR=#{Dir.pwd} PETSC_ARCH=arch-darwin-cxx-opt install"
+      petsc_arch = 'arch-darwin-cxx-opt'
+      ENV['PETSC_ARCH'] = petsc_arch
+      system "./configure", "--prefix=#{prefix}/#{petsc_arch}","--with-debugging=0",*args
+      system "make all"
+      system "make test" if build.with? "check"
+      system "make install"
+      # Link only what we want.
+      include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
+      prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
+      lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
+      share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
     end
 
-    # Link only what we want.
-    #include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
-    #prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
-    #lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
-    #share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
   end
 
   def caveats; <<-EOS
     Set PETSC_DIR to #{prefix}
-    and PETSC_ARCH to arch-darwin-c-opt.
-    Fortran module files are in #{prefix}/arch-darwin-c-opt/include.
+    and PETSC_ARCH to arch-darwin-cxx-opt.
+    Fortran module files are in #{prefix}/arch-darwin-cxx-opt/include.
     EOS
   end
 end

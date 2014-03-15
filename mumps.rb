@@ -17,8 +17,6 @@ class Mumps < Formula
 
   depends_on :fortran
 
-  option 'enable-shared', 'Compile with shared library support'
-
   def install
     make_args = ["LIBEXT=.dylib",
                  "AR=$(FL) -shared -Wl,-install_name -Wl,#{lib}/$(notdir $@) -undefined dynamic_lookup -o ",  # Must have a trailing whitespace!
@@ -27,17 +25,6 @@ class Mumps < Formula
 
     makefile = (build.with? :mpi) ? "Makefile.gfortran.PAR" : "Makefile.gfortran.SEQ"
     cp "Make.inc/" + makefile, "Makefile.inc"
-
-
-    # Build a shared library.
-    if build.include? 'enable-shared'
-      s.change_make_var! 'CC', "#{ENV.cc} -fPIC"
-      s.change_make_var! 'FC', "#{ENV.fc} -fPIC"
-      s.change_make_var! 'FL', "#{ENV.fc} -fPIC"
-      s.change_make_var! 'LIBEXT', '.dylib'
-      s.change_make_var! 'AR', "$(FL) -shared -Wl,-install_name -Wl,#{lib}/$(notdir $@) -undefined dynamic_lookup -o "  # Must have a trailing whitespace!
-      s.change_make_var! 'RANLIB', 'echo'
-    end
 
     if build.with? 'scotch5'
       make_args += ["SCOTCHDIR=#{Formula['scotch5'].prefix}",
