@@ -2,9 +2,9 @@ require 'formula'
 
 class Feelpp < Formula
   homepage 'http://www.feelpp.org'
-  url 'https://github.com/feelpp/feelpp/archive/v0.96.0-beta.3.tar.gz'
-  version '0.96.0-beta.3'
-  sha1 'de19f1c252525150c0fdb998c60f691be6cef7ec'
+  url 'https://github.com/feelpp/feelpp/releases/download/v0.97.2/feelpp-0.97.2-final.tar.gz'
+  version '0.97.2-final'
+  sha1 'dc65eb0bf79ebafec9ec157779545bff4907d6b7'
 
   depends_on 'cmake' => :build
   depends_on 'eigen'
@@ -17,18 +17,16 @@ class Feelpp < Formula
 
   def install
     args=std_cmake_args
-    # Remove the default CMAKE_BUILD_TYPE set through std_cmake_args
-    # So we can avoid setting None as a build type
-    #args.delete_if {|x| x =~ /CMAKE_BUILD_TYPE/}
 
     Dir.mkdir 'opt'
     cd 'opt' do
       system "cmake", "..", *args
+      system "make", "quickstart"
       system "make", "install"
     end
   end
 
   test do
-    system "#{bin}/feelpp_qs_laplacian", "--version"
+    system "make", "check"
   end
 end
