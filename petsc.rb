@@ -94,10 +94,10 @@ class Petsc < Formula
       system "make install"
 
       # Link only what we want.
-      include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
-      prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
-      lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
-      share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
+      # include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
+      # prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
+      # lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
+      # share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
     end
 
     if build.include? 'enable-opt'
@@ -108,10 +108,10 @@ class Petsc < Formula
       system "make test" if build.with? "check"
       system "make install"
       # Link only what we want.
-      include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
-      prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
-      lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
-      share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
+      # include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
+      # prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
+      # lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
+      # share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
     end
 
   end
