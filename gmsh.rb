@@ -3,8 +3,8 @@ require 'formula'
 
 class Gmsh < Formula
   homepage 'http://geuz.org/gmsh'
-  url 'http://geuz.org/gmsh/src/gmsh-2.8.3-source.tgz'
-  sha1 'd6308e415539f7f69bdf3dfe151dc0f1f64a3264'
+  url 'http://geuz.org/gmsh/src/gmsh-2.8.4-source.tgz'
+  sha1 'e96209c46874cb278e2028933871c7e7d60e662d'
 
   depends_on 'cmake' => :build
   depends_on 'fltk' => :build
@@ -15,9 +15,9 @@ class Gmsh < Formula
 
   #  env :std
 
-  def patches
-    DATA
-  end
+#  def patches
+#    DATA
+#  end
 
   def install
 #    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt"
@@ -52,37 +52,3 @@ class Gmsh < Formula
     system "false"
   end
 end
-
-__END__
-diff --git a/Fltk/Main.cpp b/Fltk/Main.cpp
-index 3134222..5e1d2c0 100644
---- a/Fltk/Main.cpp
-+++ b/Fltk/Main.cpp
-@@ -2,7 +2,7 @@
- //
- // See the LICENSE.txt file for license information. Please report all
- // bugs and problems to the public mailing list <gmsh@geuz.org>.
--
-+#include <cstdlib>
- #include <string>
- #include "Gmsh.h"
- #include "GmshMessage.h"
-diff --git a/contrib/Netgen/libsrc/general/profiler.cpp b/contrib/Netgen/libsrc/general/profiler.cpp
-index 91db4ef..b7d3c5c 100644
---- a/contrib/Netgen/libsrc/general/profiler.cpp
-+++ b/contrib/Netgen/libsrc/general/profiler.cpp
-@@ -42,7 +42,7 @@ namespace netgen
-     // ofstream-constructor may be called after STL-stuff is destructed,
-     // which leads to an "order of destruction"-problem,
-     // thus we use the C-variant:
--
-+#if 0
-     if (getenv ("NGPROFILE"))
-       {
-        char filename[100];
-@@ -57,6 +57,7 @@ namespace netgen
-        Print (prof);
-        fclose(prof);
-       }
-+#endif
-   }
