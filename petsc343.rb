@@ -8,6 +8,7 @@ class Petsc343 < Formula
 
   # do not use superenv
   env :std
+  keg_only "Conflicts with petsc (3.4.4)"
 
   option 'enable-ptscotch', 'Compile with scotch support'
   option 'enable-metis', 'Compile with metis support'

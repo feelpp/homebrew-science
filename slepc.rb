@@ -5,7 +5,7 @@ class Slepc < Formula
   url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.4.3.tar.gz'
   sha1 '60ed95114f9b16e1214f583921ee0afb2943e1c3'
 
-  depends_on 'petsc343' => :build
+  depends_on 'petsc' => :build
   depends_on :mpi => [:cc, :f90]
   depends_on :fortran
   depends_on :x11  => MacOS::X11.installed? ? :recommended : :optional
@@ -22,7 +22,7 @@ class Slepc < Formula
 
     petsc_arch = 'arch-darwin-cxx-debug'
     ENV['SLEPC_DIR'] = Dir.getwd
-    ENV['PETSC_DIR'] = Formula["petsc"].prefix
+    ENV['PETSC_DIR'] = Formula["petsc343"].prefix
     ENV['PETSC_ARCH'] = petsc_arch
     system "./configure", "--prefix=#{prefix}/#{petsc_arch}",*args
     system "make PETSC_ARCH=#{petsc_arch}"
