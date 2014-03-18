@@ -2,9 +2,9 @@ require 'formula'
 
 class Feelpp < Formula
   homepage 'http://www.feelpp.org'
-  url 'https://github.com/feelpp/feelpp/releases/download/v0.97.2/feelpp-0.97.2-final.tar.gz'
-  version '0.97.2-final'
-  sha1 'dc65eb0bf79ebafec9ec157779545bff4907d6b7'
+  url 'https://github.com/feelpp/feelpp/releases/download/v0.97.3/feelpp-0.97.3-final.tar.gz'
+  version '0.97.3-final'
+  sha1 '046f1b80fb1981619de434ae08d080fb44cbbe8e'
 
   depends_on 'cmake' => :build
   depends_on 'eigen'
