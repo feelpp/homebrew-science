@@ -1,8 +1,15 @@
 require 'formula'
 
+# We remove the use of submodules as it makes the checkout step
+# fails if we don't have access to them
+class GitNoSubmoduleDownloadStrategy < GitDownloadStrategy
+      def submodules?; false; end
+end
+
 class Feelpp < Formula
   homepage 'http://www.feelpp.org'
   url 'https://github.com/feelpp/feelpp/releases/download/v0.98.0-beta.1/feelpp-0.98.0-beta.1.tar.gz'
+  head 'https://github.com/feelpp/feelpp.git', :using => GitNoSubmoduleDownloadStrategy
   version '0.98.0-beta.1'
   sha1 '697a19eaa1728c69edee618e625fcb5094ad8b1d'
 
