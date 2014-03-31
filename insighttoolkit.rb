@@ -14,7 +14,7 @@ class Insighttoolkit < Formula
   depends_on 'opencv' => [:optional] + cxx11dep
   depends_on :python => :optional
   depends_on 'fftw' => :recommended
-  depends_on 'hdf5' => [:recommended, '--enable-cxx'] + cxx11dep
+  depends_on 'hdf5' => [:recommended, "--c++11"]
   depends_on 'jpeg' => :recommended
   depends_on :libpng => :recommended
   depends_on 'libtiff' => :recommended
@@ -46,7 +46,7 @@ class Insighttoolkit < Formula
     args << ".."
     args << '-DBUILD_EXAMPLES=' + ((build.include? 'examples') ? 'ON' : 'OFF')
     args << '-DModule_ITKVideoBridgeOpenCV=' + ((build.with? 'opencv') ? 'ON' : 'OFF')
-    args << '-DITKV3_COMPATIBILITY:BOOL=' + ((build.include? 'with-itkv3-compatibility') ? 'ON' : 'OFF')
+    args << '-DITKV3_COMPATIBILITY:BOOL=' + ((build.with? 'itkv3-compatibility') ? 'ON' : 'OFF')
 
     args << '-DITK_USE_SYSTEM_FFTW=ON' << '-DITK_USE_FFTWF=ON' << '-DITK_USE_FFTWD=ON' if build.with? 'fftw'
     args << '-DITK_USE_SYSTEM_HDF5=ON' if build.with? 'hdf5'
