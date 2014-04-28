@@ -3,7 +3,6 @@ require 'formula'
 class Slepc < Formula
   homepage 'http://www.grycap.upv.es/slepc/'
   url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.4.4.tar.gz'
-  #sha1 '60ed95114f9b16e1214f583921ee0afb2943e1c3'
   sha1 'd7c09f3e2bb8910758e488e84c16a6eb266cf379'
 
   depends_on 'petsc' => :build
@@ -22,10 +21,10 @@ class Slepc < Formula
     args=["--download-blopex"]
 
     petsc_arch = 'arch-darwin-cxx-debug'
-    petsc_dir = Formula["petsc"].prefix 
+    petsc_dir = Formula["petsc"].prefix
     ENV['SLEPC_DIR'] = Dir.getwd
     ENV['PETSC_ARCH'] = ""
-    ENV['PETSC_DIR'] = "#{petsc_dir}/#{petsc_arch}" 
+    ENV['PETSC_DIR'] = "#{petsc_dir}/#{petsc_arch}"
     system "./configure", "--prefix=#{prefix}/#{petsc_arch}",*args
     system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} PETSC_ARCH=arch-installed-petsc"
     system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} PETSC_ARCH=arch-installed-petsc install"
