@@ -3,16 +3,18 @@ require 'formula'
 class Maker < Formula
   homepage 'http://www.yandell-lab.org/software/maker.html'
   #doi '10.1101/gr.6743907' => 'MAKER', '10.1104/pp.113.230144' => 'MAKER-P'
-  url 'http://yandell.topaz.genetics.utah.edu/maker_downloads/static/maker-2.31.tgz'
-  sha1 'b90176010de9fcaf643c988e6c78b311a445ceab'
+  url 'http://yandell.topaz.genetics.utah.edu/maker_downloads/static/maker-2.31.3.tgz'
+  sha1 'f9e8645e859f648badacdb243cf097305c3e95c7'
 
   depends_on 'augustus' => :recommended
   depends_on 'blast'
   depends_on 'exonerate'
   depends_on 'infernal' => :optional
+  depends_on 'mir-prefer' => :optional
   depends_on :mpi => :optional
   depends_on 'repeatmasker'
   depends_on 'snap'
+  depends_on 'snoscan' => :optional
   depends_on 'trnascan' => :optional
   # No formula: depends_on 'genemark-es' => :optional
   # No formula: depends_on 'genemarks' => :optional
