@@ -2,9 +2,9 @@ require 'formula'
 
 class Petsc < Formula
   homepage 'http://www.mcs.anl.gov/petsc/index.html'
-  url 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.4.3.tar.gz'
-# 3.4.4  sha1 '2f507195a3142eb0599e78a909446175a597480a'
-  sha1 '7458f01c003dc7381d694445b5a2ecdbca91aa57'
+  url 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.4.4.tar.gz'
+  sha1 '2f507195a3142eb0599e78a909446175a597480a'
+  #sha1 '8c5d97ba4a28ea8fa830e513a9dcbfd61b51beaf'
   head 'https://bitbucket.org/petsc/petsc', :using => :git
 
   # do not use superenv
@@ -14,13 +14,12 @@ class Petsc < Formula
   option 'enable-metis', 'Compile with metis support'
   option 'enable-mumps', 'Compile with mumps support'
   option 'enable-ml', 'Compile with ml support'
-  option 'enable-opt', 'Compile optimized petsc version'
+  option 'without-check', 'Skip build-time tests (not recommended)'
+  option 'without-debug', 'Disable building debug flavor'
 
   depends_on :mpi => [:cc, :fortran, :cxx]
   depends_on 'hdf5' => :recommended
   depends_on 'cmake' => :build
-
-  option 'without-check', 'Skip build-time tests (not recommended)'
 
   depends_on :mpi => :cc
   depends_on :fortran
@@ -31,8 +30,6 @@ class Petsc < Formula
   depends_on 'suite-sparse' => :recommended
   depends_on 'scalapack' => :recommended
   depends_on :x11 => MacOS::X11.installed? ? :recommended : :optional
-
-  option 'without-debug', 'Disable building debug flavor'
 
   def install
     ENV.deparallelize
@@ -99,9 +96,7 @@ class Petsc < Formula
       # prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
       # lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
       # share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
-    end
-
-    if build.include? 'enable-opt'
+    else
       petsc_arch = 'arch-darwin-cxx-opt'
       ENV['PETSC_ARCH'] = petsc_arch
       system "./configure", "--prefix=#{prefix}/#{petsc_arch}","--with-debugging=0",*args
