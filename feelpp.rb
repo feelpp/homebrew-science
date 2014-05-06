@@ -19,6 +19,7 @@ class Feelpp < Formula
   depends_on 'gmsh'
   depends_on 'scalapack' => ['without-check']
   depends_on 'petsc'
+  depends_on 'slepc'
   depends_on 'boost' => ['without-python', 'without-single', 'without-static', 'with-mpi', 'c++11']
   depends_on 'ann' => :recommended
   depends_on 'glpk' => :recommended
