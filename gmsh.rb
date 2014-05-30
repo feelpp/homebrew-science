@@ -7,9 +7,9 @@ class Gmsh < Formula
   sha1 'e96209c46874cb278e2028933871c7e7d60e662d'
 
   depends_on 'cmake' => :build
-  depends_on 'libpng' => :build
-  depends_on 'jpeg' => :build
-  depends_on 'fltk' => :build
+  depends_on 'libpng' => :recommended
+  depends_on 'jpeg' => :recommended
+  depends_on 'fltk' => :recommended
 #  depends_on 'petsc' => :build
 #  depends_on 'slepc' => :build
   depends_on 'texinfo' => :build
