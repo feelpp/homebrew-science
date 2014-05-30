@@ -6,14 +6,17 @@ class Gmsh < Formula
   url 'http://geuz.org/gmsh/src/gmsh-2.8.4-source.tgz'
   sha1 'e96209c46874cb278e2028933871c7e7d60e662d'
 
+  open 'with-X', 'build gmsh with X support'
+  
   depends_on 'cmake' => :build
-  depends_on 'libpng' => :recommended
-  depends_on 'jpeg' => :recommended
-  depends_on 'fltk' => :recommended
-#  depends_on 'petsc' => :build
-#  depends_on 'slepc' => :build
-  depends_on 'texinfo' => :build
-  depends_on 'cairo' => :recommended
+  
+  if build.with? 'X'
+    depends_on 'libpng' => :build
+    depends_on 'jpeg' => :build
+    depends_on 'fltk' => :build
+    depends_on 'texinfo' => :build
+    depends_on 'cairo' => :build
+  else
 
   #  env :std
 
@@ -24,6 +27,7 @@ class Gmsh < Formula
   def install
 #    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt"
 #    ENV['SLEPC_DIR']="/usr/local/lib/slepcdir/3.4.3/darwin-cxx-opt"
+    if build.with? 'X'
     args=std_cmake_args+["-DCMAKE_BUILD_TYPE=Release",
                          "-DENABLE_OS_SPECIFIC_INSTALL=OFF",
                          "-DENABLE_BUILD_LIB=OFF",
@@ -36,7 +40,16 @@ class Gmsh < Formula
                          "-DENABLE_GRAPHICS:BOOL=ON",
                          "-DENABLE_METIS=ON",
                          "-DENABLE_TAUCS=OFF"]
-
+  else
+    args=std_cmake_args+["-DCMAKE_BUILD_TYPE=Release",
+                         "-DENABLE_OS_SPECIFIC_INSTALL=OFF",
+                         "-DENABLE_BUILD_LIB=OFF",
+                         "-DENABLE_BUILD_SHARED=ON",
+                         "-DENABLE_NATIVE_FILE_CHOOSER:BOOL=OFF",
+                         "-DENABLE_OCC:BOOL=OFF",
+                         "-DENABLE_METIS=ON",
+                         "-DENABLE_TAUCS=OFF"]
+    end
     system "cmake", ".", *args
     system "make"
     system "make", "install"
