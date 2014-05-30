@@ -13,7 +13,7 @@ class Gmsh < Formula
 #  depends_on 'petsc' => :build
 #  depends_on 'slepc' => :build
   depends_on 'texinfo' => :build
-  depends_on 'cairo' => :build
+  depends_on 'cairo' => :recommended
 
   #  env :std
 
