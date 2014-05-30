@@ -16,7 +16,7 @@ class Gmsh < Formula
     depends_on 'fltk' => :build
     depends_on 'texinfo' => :build
     depends_on 'cairo' => :build
-  else
+  end
 
   #  env :std
 
