@@ -14,6 +14,8 @@ class Petsc < Formula
   option 'enable-metis', 'Compile with metis support'
   option 'enable-mumps', 'Compile with mumps support'
   option 'enable-ml', 'Compile with ml support'
+  option 'enable-blas', 'Compile with blas support'
+  option 'enable-scalapack', 'Compile with scalapack support'
   option 'without-check', 'Skip build-time tests (not recommended)'
   option 'without-debug', 'Disable building debug flavor'
 
@@ -79,6 +81,12 @@ class Petsc < Formula
     end
     if build.include? 'enable-ml'
       args+=["--download-ml"]
+    end
+    if build.include? 'enable-blas'
+      args+=["--download-f-blas-lapack=1"]
+    end
+    if build.include? 'enable-scalapack'
+      args+=["--download-scalapack"]
     end
 
     args << "--with-x=0" if build.without? 'x11'
