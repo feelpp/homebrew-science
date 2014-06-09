@@ -16,10 +16,10 @@ class Feelpp < Formula
   depends_on 'cmake' => :build
   depends_on 'cln'
   depends_on 'eigen'
-  depends_on 'gmsh'
+  depends_on 'gmsh' => :recommended #feel++ can download and install it
   depends_on 'scalapack' => ['without-check']
   depends_on 'petsc'
-  depends_on 'slepc'
+  depends_on 'slepc' => :recommended
   depends_on 'boost' => ['without-python', 'without-single', 'without-static', 'with-mpi', 'c++11']
   depends_on 'ann' => :recommended
   depends_on 'glpk' => :recommended
