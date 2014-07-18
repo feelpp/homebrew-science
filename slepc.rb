@@ -14,6 +14,8 @@ class Slepc < Formula
 
   option 'enable-opt', 'Compile optimized petsc version'
   option 'without-debug', 'Disable building debug flavor'
+  # Trick SLEPc into thinking we don't have a prefix install of PETSc.
+  #patch :DATA
 
   def install
     ENV.deparallelize

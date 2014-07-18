@@ -1,69 +1,58 @@
 # -*- mode: ruby -*-
 require 'formula'
 
+class GmshSvnStrategy < SubversionDownloadStrategy
+  def quiet_safe_system *args
+    super *args + ['--username', 'gmsh', '--password', 'gmsh']
+  end
+end
+
 class Gmsh < Formula
   homepage 'http://geuz.org/gmsh'
-  url 'http://geuz.org/gmsh/src/gmsh-2.8.4-source.tgz'
-  sha1 'e96209c46874cb278e2028933871c7e7d60e662d'
+  url 'http://geuz.org/gmsh/src/gmsh-2.8.5-source.tgz'
+  sha1 '352671f95816440ddb2099478f3e9f189e40e27a'
 
-  option 'with-X', 'build gmsh with X support'
-  
+  head 'https://geuz.org/svn/gmsh/trunk', :using => GmshSvnStrategy
+
   depends_on 'cmake' => :build
-  
-  if build.with? 'X'
-    depends_on 'libpng' => :build
-    depends_on 'jpeg' => :build
-    depends_on 'fltk' => :build
-    depends_on 'texinfo' => :build
-    depends_on 'cairo' => :build
-  end
-
-  #  env :std
-
-#  def patches
-#    DATA
-#  end
+  depends_on 'fltk' => :optional
 
   def install
-#    ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt"
-#    ENV['SLEPC_DIR']="/usr/local/lib/slepcdir/3.4.3/darwin-cxx-opt"
-    if build.with? 'X'
-    args=std_cmake_args+["-DCMAKE_BUILD_TYPE=Release",
-                         "-DENABLE_OS_SPECIFIC_INSTALL=OFF",
-                         "-DENABLE_BUILD_LIB=OFF",
-                         "-DENABLE_BUILD_SHARED=ON",
-                         "-DENABLE_NATIVE_FILE_CHOOSER:BOOL=OFF",
-                         "-DENABLE_OCC:BOOL=OFF",
-                         "-DENABLE_FLTK:BOOL=ON",
-#                         "-DENABLE_MPI:BOOL=ON",
-#                         "-DENABLE_SLEPC:BOOL=ON",
-                         "-DENABLE_GRAPHICS:BOOL=ON",
-                         "-DENABLE_METIS=ON",
-                         "-DENABLE_TAUCS=OFF"]
-  else
-    args=std_cmake_args+["-DCMAKE_BUILD_TYPE=Release",
-                         "-DENABLE_OS_SPECIFIC_INSTALL=OFF",
-                         "-DENABLE_BUILD_LIB=OFF",
-                         "-DENABLE_BUILD_SHARED=ON",
-                         "-DENABLE_NATIVE_FILE_CHOOSER:BOOL=OFF",
-                         "-DENABLE_OCC:BOOL=OFF",
-                         "-DENABLE_METIS=ON",
-                         "-DENABLE_TAUCS=OFF"]
+    # In OS X, gmsh sets default directory locations as if building a
+    # binary. These locations must be reset so that they make sense
+    # for a Homebrew-based build.
+    args = std_cmake_args + ["-DENABLE_OS_SPECIFIC_INSTALL=0",
+                             "-DGMSH_BIN=#{bin}",
+                             "-DGMSH_LIB=#{lib}",
+                             "-DGMSH_DOC=#{share}/gmsh",
+                             "-DGMSH_MAN=#{man}"]
+
+    # Make sure native file dialogs are used
+    args << "-DENABLE_NATIVE_FILE_CHOOSER=ON"
+
+    # Build a shared library such that others can link
+    args << "-DENABLE_BUILD_LIB=ON"
+    args << "-DENABLE_BUILD_SHARED=ON"
+
+    # disable occ and taucs
+    args << "-DENABLE_OCC:BOOL=OFF"
+    args << "-DENABLE_TAUCS=OFF"
+    
+    # enable metis
+    args << "-DENABLE_METIS=ON"
+
+    # Todo: enable PETSc and SLEPc.
+    args << "-DENABLE_PETSC=OFF"
+    args << "-DENABLE_SLEPC=OFF"
+    args << "-DENABLE_FLTK=OFF" if build.without? "fltk"
+    mkdir "build" do
+      system "cmake", "..", *args
+      system "make"
+      system "make", "install"
     end
-    system "cmake", ".", *args
-    system "make"
-    system "make", "install"
   end
 
-  test do
-    # `test do` will create, run in and delete a temporary directory.
-    #
-    # This test will fail and we won't accept that! It's enough to just replace
-    # "false" with the main program this formula installs, but it'd be nice if you
-    # were more thorough. Run the test with `brew test gmsh`.
-    #
-    # The installed folder is not in the path, so use the entire path to any
-    # executables being tested: `system "#{bin}/program", "--version"`.
-    system "false"
+  def test
+    system "#{bin}/gmsh", "#{share}/doc/gmsh/tutorial/t1.geo", "-parse_and_exit"
   end
 end

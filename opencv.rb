@@ -2,8 +2,8 @@ require 'formula'
 
 class Opencv < Formula
   homepage 'http://opencv.org/'
-  url 'https://github.com/Itseez/opencv/archive/2.4.8.2.tar.gz'
-  sha1 '15c91f8fc806d39735ac4ce6a1c381541d4b5c80'
+  url 'https://github.com/Itseez/opencv/archive/2.4.9.tar.gz'
+  sha1 'd16ced627db17f9864c681545f18f030c7a4cc0b'
   head 'https://github.com/Itseez/opencv.git'
 
   option "32-bit"
@@ -18,13 +18,13 @@ class Opencv < Formula
 
   depends_on :ant if build.with? "java"
   depends_on "cmake"      => :build
-  depends_on "eigen"      => :recommended
-  depends_on "jasper"
+  depends_on "eigen"      => :optional
+  depends_on "jasper"     => :optional
   depends_on "jpeg"
   depends_on :libpng
   depends_on "libtiff"
   depends_on "numpy"      => :python
-  depends_on "openexr"    => :recommended
+  depends_on "openexr"    => :optional
   depends_on "openni"     => :optional
   depends_on "pkg-config" => :build
   depends_on :python

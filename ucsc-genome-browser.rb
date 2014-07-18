@@ -1,10 +1,11 @@
-require 'formula'
+require "formula"
 
 class UcscGenomeBrowser < Formula
-  homepage 'http://genome.ucsc.edu'
-  url 'http://hgdownload.cse.ucsc.edu/admin/jksrc.v298.zip'
-  sha1 'ba46b7411949524fa586d051ff6a472e6cc20ce9'
-  head 'git://genome-source.cse.ucsc.edu/kent.git'
+  homepage "http://genome.ucsc.edu"
+  url "http://hgdownload.cse.ucsc.edu/admin/jksrc.v302.zip"
+  mirror "https://science-annex.org/pub/ucsc-genome-browser/jksrc.v302.zip"
+  sha1 "38edc854076e7cf3a3e1ebd287c2e1f2ce1a805c"
+  head "git://genome-source.cse.ucsc.edu/kent.git"
 
   keg_only <<-EOF.undent
     The UCSC Genome Browser installs many commands, and some conflict

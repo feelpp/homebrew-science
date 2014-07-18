@@ -1,12 +1,22 @@
 require 'formula'
 
+class RDownloadStrategy < SubversionDownloadStrategy
+  def stage
+    quiet_safe_system 'cp', '-r', @clone, Dir.pwd
+    Dir.chdir cache_filename
+  end
+end
+
 class R < Formula
   homepage 'http://www.r-project.org/'
-  url 'http://cran.rstudio.com/src/base/R-3/R-3.1.0.tar.gz'
-  mirror 'http://cran.r-project.org/src/base/R-3/R-3.1.0.tar.gz'
-  sha1 'a9d13932c739cc12667c6a17fabd9361624a1708'
+  url 'http://cran.rstudio.com/src/base/R-3/R-3.1.1.tar.gz'
+  mirror 'http://cran.r-project.org/src/base/R-3/R-3.1.1.tar.gz'
+  sha1 'e974ecc92e49266529e8e791e02a80c75e50b696'
 
-  head 'https://svn.r-project.org/R/trunk'
+  head do
+    url 'https://svn.r-project.org/R/trunk', :using => RDownloadStrategy
+    depends_on :tex
+  end
 
   option "without-accelerate", "Build without the Accelerate framework (use Rblas)"
   option 'without-check', 'Skip build-time tests (not recommended)'
@@ -77,6 +87,13 @@ class R < Formula
     bash_completion.install resource('completion')
 
     prefix.install 'make-check.log' if build.with? 'check'
+
+  end
+
+  test do
+    (testpath / 'test.R').write('print(1+1);')
+    system "r < test.R --no-save"
+    system "rscript test.R"
   end
 
   def caveats; <<-EOS.undent
