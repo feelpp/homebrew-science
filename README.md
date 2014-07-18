@@ -18,11 +18,9 @@ You can also install via URL:
 
     brew install https://raw.github.com/Homebrew/homebrew-science/master/<formula>.rb
 
-
 Docs
 ----
 `brew help`, `man brew`, or the Homebrew [wiki][].
-
 
 Contributing
 ------------
