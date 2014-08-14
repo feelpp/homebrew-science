@@ -2,8 +2,8 @@ require 'formula'
 
 class Petsc < Formula
   homepage 'http://www.mcs.anl.gov/petsc/index.html'
-  url 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.4.4.tar.gz'
-  sha1 '2f507195a3142eb0599e78a909446175a597480a'
+  url 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.5.1.tar.gz'
+  sha1 '487d012ca83de458ce104f6d812e8cca2de4b55e'
   #sha1 '8c5d97ba4a28ea8fa830e513a9dcbfd61b51beaf'
   head 'https://bitbucket.org/petsc/petsc', :using => :git
 
@@ -55,11 +55,9 @@ class Petsc < Formula
 
     # cholmod
     if build.with? 'suite-sparse'
-      args += ["--with-cholmod=1",
-               "--with-cholmod-include=#{HOMEBREW_PREFIX}/include/",
-               "--with-cholmod-lib=\[#{HOMEBREW_PREFIX}/lib/libcholmod.a,#{HOMEBREW_PREFIX}/lib/libcolamd.a\]"]
-      args += ["--with-umfpack=1", "--with-umfpack-include=#{HOMEBREW_PREFIX}/include/",
-               "--with-umfpack-lib=\[#{HOMEBREW_PREFIX}/lib/libumfpack.a,#{HOMEBREW_PREFIX}/lib/libcholmod.a,#{HOMEBREW_PREFIX}/lib/libcolamd.a,#{HOMEBREW_PREFIX}/lib/libamd.a,#{HOMEBREW_PREFIX}/lib/libsuitesparseconfig.a\]"]
+      args += ["--with-suitesparse=1",
+               "--with-suitesparse-include=#{HOMEBREW_PREFIX}/include/",
+               "--with-suitesparse-lib=\[#{HOMEBREW_PREFIX}/lib/libumfpack.a,#{HOMEBREW_PREFIX}/lib/libklu.a,#{HOMEBREW_PREFIX}/lib/libcholmod.a,#{HOMEBREW_PREFIX}/lib/libcolamd.a,#{HOMEBREW_PREFIX}/lib/libamd.a,#{HOMEBREW_PREFIX}/lib/libsuitesparseconfig.a\]"]
     end
     # ptscotch
     if build.include? 'enable-ptscotch'
