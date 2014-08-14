@@ -25,42 +25,29 @@ class Slepc < Formula
     petsc_arch = 'arch-darwin-cxx-debug'
     petsc_dir = Formula["petsc"].prefix
     ENV['SLEPC_DIR'] = Dir.getwd
+
     ENV['PETSC_ARCH'] = ""
     ENV['PETSC_DIR'] = "#{petsc_dir}/#{petsc_arch}"
     system "./configure", "--prefix=#{prefix}/#{petsc_arch}",*args
     system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} PETSC_ARCH=arch-installed-petsc"
     system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} PETSC_ARCH=arch-installed-petsc install"
-    #system "make PETSC_ARCH=#{petsc_arch}"
-    #system "make PETSC_ARCH=#{petsc_arch} install"
-    #ENV['PETSC_ARCH'] = ''
-    #system "make SLEPC_DIR=#{prefix}/#{petsc_arch} test"
-    #ohai 'Test results are in ~/Library/Logs/Homebrew/slepc. Please check.'
 
-    ## Link what we need.
-    #include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*.h"], "#{prefix}/#{petsc_arch}/finclude", "#{prefix}/#{petsc_arch}/slepc-private"
-    #lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
-    #prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
-    #doc.install 'docs/slepc.pdf', Dir["docs/*.htm"], 'docs/manualpages'  # They're not really man pages.
-    #share.install 'share/slepc/datafiles'
+    #ENV['PETSC_DIR'] = Formula["petsc"].opt_prefix
+    #ENV['PETSC_ARCH'] = petsc_arch
+    #system "./configure", "--prefix=#{prefix}/#{petsc_arch}"
+    #system "make PETSC_ARCH=#{petsc_arch}"
+    # system "make PETSC_ARCH=#{petsc_arch} install"
+    # ENV['PETSC_ARCH'] = ''
+    # system "make SLEPC_DIR=#{prefix}/#{petsc_arch} test"
+    # ohai 'Test results are in ~/Library/Logs/Homebrew/slepc. Please check.'
+
+    # # Link what we need.
+    # include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*.h"], "#{prefix}/#{petsc_arch}/finclude", "#{prefix}/#{petsc_arch}/slepc-private"
+    # lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
+    # prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
+    # doc.install 'docs/slepc.pdf', Dir["docs/*.htm"], 'docs/manualpages'  # They're not really man pages.
+    # share.install 'share/slepc/datafiles'
   end
 
-
-  #   if not build.without? 'debug'
-  #     ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-debug"
-  #     system "./configure","--prefix=#{prefix}/lib/slepcdir/3.4.3/darwin-cxx-debug",*args
-  #     system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-debug","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc"
-  #     system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-debug","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc", "test"
-  #     system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-debug","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc", "install"
-  #     rm_rf Dir['arch-installed-petsc']
-  #   end
-
-  #   if build.include? 'enable-opt'
-  #     ENV['PETSC_DIR']="/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt"
-  #     system "./configure","--prefix=#{prefix}/lib/slepcdir/3.4.3/darwin-cxx-opt",*args
-  #     system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc"
-  #     system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc", "test"
-  #     system "make", "PETSC_DIR=/usr/local/lib/petscdir/3.4.3/darwin-cxx-opt","SLEPC_DIR=#{Dir.pwd}", "PETSC_ARCH=arch-installed-petsc", "install"
-  #   end
-  # end
 
 end

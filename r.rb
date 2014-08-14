@@ -21,13 +21,14 @@ class R < Formula
   option "without-accelerate", "Build without the Accelerate framework (use Rblas)"
   option 'without-check', 'Skip build-time tests (not recommended)'
   option 'without-tcltk', 'Build without Tcl/Tk'
+  option "with-librmath-only", "Only build standalone libRmath library"
 
   depends_on :fortran
   depends_on 'readline'
   depends_on 'gettext'
   depends_on 'libtiff'
   depends_on 'jpeg'
-  depends_on 'cairo'
+  depends_on 'cairo' if OS.mac?
   depends_on :x11 => :recommended
   depends_on 'valgrind' => :optional
   depends_on 'openblas' => :optional
@@ -42,10 +43,9 @@ class R < Formula
   def install
     args = [
       "--prefix=#{prefix}",
-      "--with-aqua",
-      "--with-libintl-prefix=#{Formula['gettext'].prefix}",
-      "--enable-R-framework",
+      "--with-libintl-prefix=#{Formula['gettext'].opt_prefix}",
     ]
+    args += ["--with-aqua", "--enable-R-framework"] if OS.mac?
 
     if build.with? 'valgrind'
       args << '--with-valgrind-instrumentation=2'
@@ -63,30 +63,52 @@ class R < Formula
     args << '--without-x' if build.without? 'x11'
 
     # Also add gettext include so that libintl.h can be found when installing packages.
-    ENV.append "CPPFLAGS", "-I#{Formula['gettext'].include}"
+    ENV.append "CPPFLAGS", "-I#{Formula['gettext'].opt_include}"
+
+    # Sometimes the wrong readline is picked up.
+    ENV.append "CPPFLAGS", "-I#{Formula['readline'].opt_include}"
+    ENV.append "LDFLAGS",  "-L#{Formula['readline'].opt_lib}"
 
     # Pull down recommended packages if building from HEAD.
     system './tools/rsync-recommended' if build.head?
 
     system "./configure", *args
-    system "make"
-    ENV.deparallelize # Serialized installs, please
-    system "make check 2>&1 | tee make-check.log" if build.with? 'check'
-    system "make install"
 
-    # Link binaries and manpages from the Framework
-    # into the normal locations
-    bin.mkpath
-    man1.mkpath
+    if build.without? "librmath-only"
+      system "make"
+      ENV.deparallelize # Serialized installs, please
+      system "make check 2>&1 | tee make-check.log" if build.with? 'check'
+      system "make install"
 
-    ln_s prefix+"R.framework/Resources/bin/R", bin
-    ln_s prefix+"R.framework/Resources/bin/Rscript", bin
-    ln_s prefix+"R.framework/Resources/man1/R.1", man1
-    ln_s prefix+"R.framework/Resources/man1/Rscript.1", man1
+      # Link binaries and manpages from the Framework
+      # into the normal locations
+      bin.mkpath
+      man1.mkpath
 
-    bash_completion.install resource('completion')
+      if OS.mac?
+        ln_s prefix+"R.framework/Resources/bin/R", bin
+        ln_s prefix+"R.framework/Resources/bin/Rscript", bin
+        ln_s prefix+"R.framework/Resources/man1/R.1", man1
+        ln_s prefix+"R.framework/Resources/man1/Rscript.1", man1
+      end
 
-    prefix.install 'make-check.log' if build.with? 'check'
+      bash_completion.install resource('completion')
+
+      prefix.install 'make-check.log' if build.with? 'check'
+    end
+
+    cd "src/nmath/standalone" do
+      system "make"
+      include.mkpath
+      ENV.deparallelize # Serialized installs, please
+      system "make", "install"
+
+      if OS.mac?
+        lib.mkpath
+        ln_s prefix+"R.framework/Versions/3.1/Resources/lib/libRmath.dylib", lib
+        ln_s prefix+"R.framework/Versions/3.1/Resources/include/Rmath.h", include
+      end
+    end
 
   end
 
@@ -94,11 +116,11 @@ class R < Formula
     (testpath / 'test.R').write('print(1+1);')
     system "r < test.R --no-save"
     system "rscript test.R"
-  end
+  end if build.without? "librmath-only"
 
   def caveats; <<-EOS.undent
     To enable rJava support, run the following command:
       R CMD javareconf JAVA_CPPFLAGS=-I/System/Library/Frameworks/JavaVM.framework/Headers
     EOS
-  end
+  end if build.without? "librmath-only"
 end

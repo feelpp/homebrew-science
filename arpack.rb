@@ -17,9 +17,9 @@ class Arpack < Formula
     args = ["--disable-dependency-tracking", "--prefix=#{libexec}"]
     args << "--enable-mpi" if build.with? :mpi
     if build.with? "openblas"
-      args << "--with-blas=-L#{Formula["openblas"].lib} -lopenblas"
+      args << "--with-blas=-L#{Formula["openblas"].opt_lib} -lopenblas"
     else
-      args << "--with-blas=-L#{Formula["veclibfort"].lib} -lvecLibFort"
+      args << "--with-blas=-L#{Formula["veclibfort"].opt_lib} -lvecLibFort"
     end
 
     ENV["MPILIBS"] = "-lmpi_usempi -lmpi_mpifh -lmpi" if build.with? :mpi
@@ -31,7 +31,7 @@ class Arpack < Formula
     (libexec/"share").install "TESTS/testA.mtx"
   end
 
-  def test
+  test do
     cd libexec/"share" do
       ["dnsimp", "bug_1323"].each do |slv|
         system "#{libexec}/bin/#{slv}"              # Reads testA.mtx
