@@ -4,7 +4,6 @@ class Petsc < Formula
   homepage 'http://www.mcs.anl.gov/petsc/index.html'
   url 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.5.1.tar.gz'
   sha1 '487d012ca83de458ce104f6d812e8cca2de4b55e'
-  #sha1 '8c5d97ba4a28ea8fa830e513a9dcbfd61b51beaf'
   head 'https://bitbucket.org/petsc/petsc', :using => :git
 
   # do not use superenv
@@ -15,6 +14,7 @@ class Petsc < Formula
   option 'enable-mumps', 'Compile with mumps support'
   option 'enable-ml', 'Compile with ml support'
   option 'enable-blas', 'Compile with blas support'
+  option 'enable-mkl', 'Compile with MKL support'
   option 'enable-scalapack', 'Compile with scalapack support'
   option 'without-check', 'Skip build-time tests (not recommended)'
   option 'without-debug', 'Disable building debug flavor'
@@ -85,6 +85,9 @@ class Petsc < Formula
     end
     if build.include? 'enable-scalapack'
       args+=["--download-scalapack"]
+    end
+    if build.include? 'enable-mkl'
+      args+=["--with-blas-lapack-dir=/opt/intel/mkl"]
     end
 
     args << "--with-x=0" if build.without? 'x11'
