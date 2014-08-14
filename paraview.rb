@@ -2,13 +2,13 @@ require 'formula'
 
 class Paraview < Formula
   homepage 'http://www.paraview.org'
-  url 'https://github.com/Kitware/ParaView/archive/v4.1.0.tar.gz'
+  url 'http://github.com/Kitware/ParaView/archive/v4.1.0.tar.gz'
   sha1 '3eed7d6e2a60a09f5f9464dea7bec8c05a8c2bb3'
 
   depends_on 'cmake' => :build
-  depends_on :x11 # if your formula requires any X11/XQuartz components
-  depends_on qt
-  depends_on python
+  depends_on 'qt'
+  depends_on 'python'
+  depends_on 'vtk'
 
   def install
     # ENV.deparallelize  # if your formula fails when building in parallel
@@ -26,15 +26,17 @@ class Paraview < Formula
                              '-DVTK_USE_FFMPEG_ENCODER=ON',
                              '-DPARAVIEW_ENABLE_FFMPEG=ON',
                              '-DPARAVIEW_ENABLE_WEB=OFF',
+                             '-DPARAVIEW_ENABLE_CATALYST=ON',
                              '-DVTK_USE_OGGTHEORA_ENCODER=ON',
                              '-DVTK_USE_SYSTEM_OGGTHEORA=ON',
+                             '-DUSE_EXTERNAL_VTK:BOOL=ON',
                              '-DVTK_INSTALL_LIBRARY_DIR=#{lib}/paraview', 
                              '-DVTK_INSTALL_ARCHIVE_DIR=#{lib}/paraview',
                              '-DVTK_INSTALL_INCLUDE_DIR=#{include}/paraview',
                              '-DVTK_INSTALL_DATA_DIR=#{share}/paraview',
                              '-DVTK_INSTALL_DOC_DIR=#{doc}/paraview',
                              '-DVTK_INSTALL_PACKAGE_DIR=#{lib}/cmake/paraview',
-                             '-DVTK_CUSTOM_LIBRARY_SUFFIX=\'\'',
+                             '-DVTK_CUSTOM_LIBRARY_SUFFIX=""',
                              '-DVTK_USE_SYSTEM_TIFF=ON',
                              '-DVTK_USE_SYSTEM_ZLIB=ON',
                              '-DBUILD_EXAMPLES=OFF',
