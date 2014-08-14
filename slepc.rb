@@ -2,8 +2,8 @@ require 'formula'
 
 class Slepc < Formula
   homepage 'http://www.grycap.upv.es/slepc/'
-  url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.4.4.tar.gz'
-  sha1 'd7c09f3e2bb8910758e488e84c16a6eb266cf379'
+  url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.5.0.tar.gz'
+  sha1 'c316e668e404396e8944c9bcea804f50e6f82c80'
 
   depends_on 'petsc' => :build
   depends_on :mpi => [:cc, :f90]
@@ -29,8 +29,8 @@ class Slepc < Formula
     ENV['PETSC_ARCH'] = ""
     ENV['PETSC_DIR'] = "#{petsc_dir}/#{petsc_arch}"
     system "./configure", "--prefix=#{prefix}/#{petsc_arch}",*args
-    system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} PETSC_ARCH=arch-installed-petsc"
-    system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} PETSC_ARCH=arch-installed-petsc install"
+    system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} "
+    system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} install"
 
     #ENV['PETSC_DIR'] = Formula["petsc"].opt_prefix
     #ENV['PETSC_ARCH'] = petsc_arch
