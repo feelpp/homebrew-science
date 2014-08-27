@@ -89,7 +89,6 @@ class Petsc < Formula
     if build.include? 'enable-mkl'
       args+=["--with-blas-lapack-dir=/opt/intel/mkl"]
     end
-    args+=["--with-blas-lapack-dir=/opt/intel/mkl"]
 
     args << "--with-x=0" if build.without? 'x11'
     ENV['PETSC_DIR'] = Dir.getwd  # configure fails if those vars are set differently.
