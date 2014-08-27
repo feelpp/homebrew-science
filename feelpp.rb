@@ -13,6 +13,9 @@ class Feelpp < Formula
   version '0.98.0-final'
   sha1 'b711b585b4fbd3ee9271cc6a5711b4126dd19cd4'
 
+  depends_on 'autoconf'
+  depends_on 'automake'
+  depends_on 'libtool'
   depends_on 'cmake' => :build
   depends_on 'cln'
   depends_on 'eigen'
