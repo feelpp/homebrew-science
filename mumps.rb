@@ -17,6 +17,11 @@ class Mumps < Formula
 
   depends_on :fortran
 
+  bottle do
+    root_url 'http://feelpp-bottles.u-strasbg.fr/'
+    sha1 "235c99c85aa9f1d8a2c722f35fb22a065792f1c2" => :mavericks
+  end
+
   def install
     make_args = ["LIBEXT=.dylib",
                  "AR=$(FL) -shared -Wl,-install_name -Wl,#{lib}/$(notdir $@) -undefined dynamic_lookup -o ",  # Must have a trailing whitespace!
