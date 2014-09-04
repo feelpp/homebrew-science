@@ -10,6 +10,12 @@ class Scotch5 < Formula
 
   keg_only "Conflicts with scotch (6.x)"
 
+  bottle do
+    root_url 'http://feelpp-bottles.u-strasbg.fr/'
+    cellar :any
+    sha1 "81819a2a38a7ac12600a04159d0e2316089d7c4e" => :mavericks
+  end
+
   # bugs in makefile:
   # - libptesmumps must be built before main_esmumps
   # - install should also install the lib*esmumps.a libraries
@@ -48,18 +54,18 @@ diff -rupN scotch_5.1.12_esmumps/src/Makefile scotch_5.1.12_esmumps.patched/src/
  					-$(CP) -f ../lib/*scotch*$(LIB) $(libdir)
 +					-$(CP) -f ../lib/*esmumps*$(LIB) $(libdir)
  					-$(CP) -Rf ../man/* $(mandir)
- 
+
  clean				:	required
 diff -rupN scotch_5.1.12_esmumps/src/esmumps/Makefile scotch_5.1.12_esmumps.patched/src/esmumps/Makefile
 --- scotch_5.1.12_esmumps/src/esmumps/Makefile	2010-07-02 23:31:06.000000000 +0200
 +++ scotch_5.1.12_esmumps.patched/src/esmumps/Makefile	2013-08-07 14:48:30.000000000 +0200
 @@ -59,7 +59,8 @@ scotch				:	clean
- 
+
  ptscotch			:	clean
  					$(MAKE) CFLAGS="$(CFLAGS) -DSCOTCH_PTSCOTCH" CC=$(CCP) SCOTCHLIB=ptscotch ESMUMPSLIB=ptesmumps	\
 -					libesmumps$(LIB)										\
 +					libesmumps$(LIB)
 +					$(MAKE) CFLAGS="$(CFLAGS) -DSCOTCH_PTSCOTCH" CC=$(CCP) SCOTCHLIB=ptscotch ESMUMPSLIB=ptesmumps	\
  					main_esmumps$(EXE)
- 
+
  install				:

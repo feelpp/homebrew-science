@@ -11,6 +11,11 @@ class Openblas < Formula
   # OS X provides the Accelerate.framework, which is a BLAS/LAPACK impl.
   keg_only :provided_by_osx
 
+  bottle do
+    root_url 'http://feelpp-bottles.u-strasbg.fr/'
+    sha1 "d82f943ea18583a864e39178ad2ce329d30415f5" => :mavericks
+  end
+
   def install
     # Must call in two steps
     system "make", "FC=#{ENV['FC']}", "libs", "netlib", "shared"

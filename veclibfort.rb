@@ -10,6 +10,12 @@ class Veclibfort < Formula
 
   depends_on :fortran
 
+  bottle do
+    root_url 'http://feelpp-bottles.u-strasbg.fr/'
+    cellar :any
+    sha1 "4ffe251615407e8d76931dcecb40414d1bd30cca" => :mavericks
+  end
+
   def install
     ENV.m64 if MacOS.prefer_64_bit?
     system "make", "all"
