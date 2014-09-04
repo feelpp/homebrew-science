@@ -19,8 +19,9 @@ class Mumps < Formula
 
   bottle do
     root_url 'http://feelpp-bottles.u-strasbg.fr/'
-    sha1 "235c99c85aa9f1d8a2c722f35fb22a065792f1c2" => :mavericks
-  end
+    revision 1
+    sha1 "4e10f45da8741b66a40b77b4f2a0013f334dee24" => :mavericks
+   end
 
   def install
     make_args = ["LIBEXT=.dylib",
