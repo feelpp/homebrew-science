@@ -22,11 +22,18 @@ class Slepc < Formula
 
     args=["--download-blopex"]
 
-    petsc_arch = 'arch-darwin-cxx-debug'
     petsc_dir = Formula["petsc"].prefix
     ENV['SLEPC_DIR'] = Dir.getwd
 
     ENV['PETSC_ARCH'] = ""
+
+    petsc_arch = 'arch-darwin-cxx-debug'
+    ENV['PETSC_DIR'] = "#{petsc_dir}/#{petsc_arch}"
+    system "./configure", "--prefix=#{prefix}/#{petsc_arch}",*args
+    system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} "
+    system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} install"
+
+    petsc_arch = 'arch-darwin-cxx-opt'
     ENV['PETSC_DIR'] = "#{petsc_dir}/#{petsc_arch}"
     system "./configure", "--prefix=#{prefix}/#{petsc_arch}",*args
     system "make SLEPC_DIR=$PWD PETSC_DIR=#{petsc_dir}/#{petsc_arch} "

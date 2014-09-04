@@ -18,9 +18,10 @@ class Petsc < Formula
   option 'enable-scalapack', 'Compile with scalapack support'
   option 'without-check', 'Skip build-time tests (not recommended)'
   option 'without-debug', 'Disable building debug flavor'
+  option 'without-opt', 'Disable building opt flavor'
 
   depends_on :mpi => [:cc, :fortran, :cxx]
-  depends_on 'hdf5' => :recommended
+  depends_on 'hdf5' => [:recommended, 'enable-parallel']
   depends_on 'cmake' => :build
 
   depends_on :mpi => :cc
@@ -35,6 +36,7 @@ class Petsc < Formula
 
   def install
     ENV.deparallelize
+    ldflags=[]
     args=["--with-pic=1",
           "--with-shared-libraries",
           "--with-clanguage=C++"];
@@ -87,12 +89,15 @@ class Petsc < Formula
       args+=["--download-scalapack"]
     end
     if build.include? 'enable-mkl'
-      args+=["--with-blas-lapack-dir=/opt/intel/mkl"]
+      args+=["--with-blas-lapack-dir=/opt/intel/mkl/lib","--with-mkl_pardiso-dir=/opt/intel/mkl"]
+      ENV['LDFLAGS'] += ' -L/opt/intel/lib -L/opt/intel/mkl/lib -Xlinker -rpath -Xlinker /opt/intel/lib -Xlinker -rpath -Xlinker /opt/intel/mkl/lib'
     end
-    args+=["--with-blas-lapack-dir=/opt/intel/mkl"]
 
     args << "--with-x=0" if build.without? 'x11'
+    args += ["--LDFLAGS=#{ENV.ldflags}"]
+
     ENV['PETSC_DIR'] = Dir.getwd  # configure fails if those vars are set differently.
+
     if not build.without? 'debug'
       petsc_arch = 'arch-darwin-cxx-debug'
       ENV['PETSC_ARCH'] = petsc_arch
@@ -100,20 +105,16 @@ class Petsc < Formula
       system "make all"
       system "make test" if build.with? "check"
       system "make install"
-
-      # Link only what we want.
-      # include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
-      # prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
-      # lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
-      # share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
-    else
+    end
+    if not build.without? 'opt'
       petsc_arch = 'arch-darwin-cxx-opt'
       ENV['PETSC_ARCH'] = petsc_arch
       system "./configure", "--prefix=#{prefix}/#{petsc_arch}","--with-debugging=0",*args
       system "make all"
       system "make test" if build.with? "check"
       system "make install"
-      # Link only what we want.
+
+      # Link only what we want in opt
       # include.install_symlink Dir["#{prefix}/#{petsc_arch}/include/*h"], "#{prefix}/#{petsc_arch}/include/finclude", "#{prefix}/#{petsc_arch}/include/petsc-private"
       # prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
       # lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"], Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
@@ -124,7 +125,7 @@ class Petsc < Formula
 
   def caveats; <<-EOS
     Set PETSC_DIR to #{prefix}
-    and PETSC_ARCH to arch-darwin-cxx-opt.
+    and PETSC_ARCH to arch-darwin-cxx-opt or arch-darwin-cxx-debug.
     Fortran module files are in #{prefix}/arch-darwin-cxx-opt/include.
     EOS
   end
