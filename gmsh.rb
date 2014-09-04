@@ -17,6 +17,12 @@ class Gmsh < Formula
   depends_on 'cmake' => :build
   depends_on 'fltk' => :optional
 
+  bottle do
+    root_url 'http://feelpp-bottles.u-strasbg.fr/'
+    cellar :any
+    sha1 "73806c61571e482f530d81465fb786f13dbdef89" => :mavericks
+  end
+
   def install
     # In OS X, gmsh sets default directory locations as if building a
     # binary. These locations must be reset so that they make sense
@@ -37,7 +43,7 @@ class Gmsh < Formula
     # disable occ and taucs
     args << "-DENABLE_OCC:BOOL=OFF"
     args << "-DENABLE_TAUCS=OFF"
-    
+
     # enable metis
     args << "-DENABLE_METIS=ON"
 
