@@ -15,6 +15,11 @@ class Scalapack < Formula
   depends_on 'veclibfort' if build.without? 'openblas'
   depends_on :fortran
 
+  bottle do
+    root_url 'http://feelpp-bottles.u-strasbg.fr/'
+    sha1 "80921e303108a207f4ae33885a640cdb390c239c" => :mavericks
+  end
+
   def install
     args = std_cmake_args
     args << "-DBUILD_SHARED_LIBS=ON" if build.with? "shared-libs"
