@@ -34,6 +34,11 @@ class Petsc < Formula
   depends_on 'scalapack' => :recommended
   depends_on :x11 => MacOS::X11.installed? ? :recommended : :optional
 
+  bottle do
+    root_url 'http://feelpp-bottles.u-strasbg.fr/'
+    sha1 "5060aad65b844e71f710a4fd43c38ac4b1f1a907" => :mavericks
+  end
+
   def install
     ENV.deparallelize
     ldflags=[]
