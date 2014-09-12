@@ -8,10 +8,10 @@ end
 
 class Feelpp < Formula
   homepage 'http://www.feelpp.org'
-  url 'https://github.com/feelpp/feelpp/releases/download/v0.98.0/feelpp-0.98.0-final.tar.gz'
+  url 'https://github.com/feelpp/feelpp/releases/download/v0.99.0-final.1/feelpp-0.99.0-final.1.tar.gz'
   head 'https://github.com/feelpp/feelpp.git', :using => GitNoSubmoduleDownloadStrategy
   version '0.98.0-final'
-  sha1 'b711b585b4fbd3ee9271cc6a5711b4126dd19cd4'
+  sha1 'f0bf9a5cc8d28aed7284f4fa1e2c77fe17f746d0'
 
   depends_on 'autoconf'
   depends_on 'automake'
