@@ -3,7 +3,7 @@ require 'formula'
 class Slepc < Formula
   homepage 'http://www.grycap.upv.es/slepc/'
   url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.5.1.tar.gz'
-  sha1 'c316e668e404396e8944c9bcea804f50e6f82c80'
+  sha1 '7ff51078f81fe53dd7738ea27c75aaab6af3a5e8'
 
   depends_on 'petsc' => :build
   depends_on :mpi => [:cc, :f90]
@@ -23,6 +23,7 @@ class Slepc < Formula
     args=["--download-blopex"]
 
     petsc_dir = Formula["petsc"].prefix
+    system "echo petsc dir: #{petsc_dir}"
     ENV['SLEPC_DIR'] = Dir.getwd
 
     ENV['PETSC_ARCH'] = ""

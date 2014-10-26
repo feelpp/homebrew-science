@@ -9,8 +9,8 @@ end
 class Feelpp < Formula
   homepage 'http://www.feelpp.org'
   url 'https://github.com/feelpp/feelpp/releases/download/v0.99.0-final.1/feelpp-0.99.0-final.1.tar.gz'
-  head 'https://github.com/feelpp/feelpp.git', :using => GitNoSubmoduleDownloadStrategy
-  version '0.98.0-final'
+  head 'https://github.com/feelpp/feelpp.git', :branch => 'develop'
+  version '0.99.0-final.1'
   sha1 'f0bf9a5cc8d28aed7284f4fa1e2c77fe17f746d0'
 
   depends_on 'autoconf'
@@ -22,7 +22,7 @@ class Feelpp < Formula
   depends_on 'gmsh' => :recommended #feel++ can download and install it
   depends_on 'scalapack' => ['without-check']
   depends_on 'petsc' => ['enable-ml']
-  depends_on 'slepc' => :recommended
+  #depends_on 'slepc' => :recommended
   depends_on 'boost' => ['without-single', 'without-static', 'with-mpi', 'c++11']
   depends_on 'ann' => :recommended
   depends_on 'glpk' => :recommended
