@@ -2,8 +2,11 @@ require "formula"
 
 class Seqtk < Formula
   homepage "https://github.com/lh3/seqtk"
-  url "https://github.com/lh3/seqtk.git", :revision => "73866e7cc"
-  version "2014-09-12-r68"
+  #tag "bioinformatics"
+  url "https://github.com/lh3/seqtk/archive/73866e7.tar.gz"
+  sha1 "fca37571bb4d49ab8cbbddc284072c8fb4a411f2"
+  version "1.0-r68"
+
   head "https://github.com/lh3/seqtk.git"
 
   def install
