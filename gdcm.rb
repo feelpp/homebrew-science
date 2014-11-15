@@ -7,7 +7,11 @@ class Gdcm < Formula
 
   option "with-check", "Run the GDCM test suite"
 
+  option :cxx11
+  cxx11dep = (build.cxx11?) ? ['c++11'] : []
+
   depends_on "cmake" => :build
+  depends_on "vtk" => [:optional] + cxx11dep
 
   def install
     sourcedir = "#{pwd}/source_files"
@@ -25,6 +29,7 @@ class Gdcm < Formula
       args << "-DGDCM_BUILD_EXAMPLES=ON"
       args << "-DGDCM_BUILD_SHARED_LIBS=ON"
       args << "-DGDCM_BUILD_TESTING=ON" if build.with? "check"
+      args << "-DGDCM_USE_VTK=ON" if build.with? "vtk"
       args << sourcedir
 
       system "cmake", *args
