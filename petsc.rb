@@ -16,7 +16,8 @@ class Petsc < Formula
   depends_on "cmake" => :build
 
   depends_on "openssl"
-  depends_on "superlu_dist" => :recommended
+#  depends_on "superlu_dist" => :recommended
+  depends_on "hdf5"         => [:recommended, 'enable-parallel']
   depends_on "metis"        => :recommended
   depends_on "parmetis"     => :recommended
   depends_on "scalapack"    => :recommended
