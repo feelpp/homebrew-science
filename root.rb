@@ -2,11 +2,18 @@ require "formula"
 
 class Root < Formula
   homepage "http://root.cern.ch"
-  version "5.34.22"
-  sha1 "f0afdd16847e555c38b28e115a88bb4903ce9a29"
+  version "5.34.23"
+  sha1 "50892105b84b9c2c3ee1cbb7b0cca2bde29453e6"
   url "ftp://root.cern.ch/root/root_v#{version}.source.tar.gz"
   mirror "http://ftp.riken.jp/pub/ROOT/root_v#{version}.source.tar.gz"
   head "https://github.com/root-mirror/root.git", :branch => "v5-34-00-patches"
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    sha1 "7e86a20f898832a7eaf19e9f012854cce1f7eb90" => :yosemite
+    sha1 "6b7c8b53442d8277afcb64cda63e84d2e704007c" => :mavericks
+    sha1 "d68af89320af63ced42908b68a6357ae8acaa71a" => :mountain_lion
+  end
 
   option "with-qt", "Build with Qt graphics backend and GSI's Qt integration"
 

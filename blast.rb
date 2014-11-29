@@ -3,9 +3,19 @@ require "formula"
 class Blast < Formula
   homepage "http://blast.ncbi.nlm.nih.gov/"
   #doi "10.1016/S0022-2836(05)80360-2"
-  url "ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.29/ncbi-blast-2.2.29+-src.tar.gz"
-  version "2.2.29"
-  sha1 "6b1e8a4b172ae01dbf2ee1ec3b4c4fce392f3eca"
+
+  url "ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.30/ncbi-blast-2.2.30+-src.tar.gz"
+  mirror "http://mirrors.vbi.vt.edu/mirrors/ftp.ncbi.nih.gov/blast/executables/blast+/2.2.30/ncbi-blast-2.2.30+-src.tar.gz"
+  version "2.2.30"
+  sha256 "66a59b5c76ba187b33ac921f91c1c37872c113ed97b4dff10f52fdba113bfc64"
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    revision 1
+    sha1 "2c601cace5f7e6b0e493750379fc26f0093a1463" => :yosemite
+    sha1 "94527e5cce4b1f26e69b73f3b5810f19a0e095b0" => :mavericks
+    sha1 "88ebde0f73356e61a0dac3845f885044c9740b7a" => :mountain_lion
+  end
 
   option "with-dll", "Create dynamic binaries instead of static"
   option "without-check", "Skip the self tests (Boost not needed)"
@@ -18,16 +28,7 @@ class Blast < Formula
   depends_on "libpng"   => :recommended
   depends_on "pcre"     => :recommended
   depends_on :mysql     => :optional
-  depends_on :python
-
-  fails_with :clang do
-    build 600
-    cause "configure: error: cannot continue; please try different options"
-  end
-
-  fails_with :gcc => "4.9" do
-    cause "error: must #include <typeinfo> before using typeid"
-  end
+  depends_on :python if MacOS.version <= :snow_leopard
 
   def install
     args = %W[--prefix=#{prefix} --without-debug --with-mt]
@@ -45,7 +46,7 @@ class Blast < Formula
     cd "c++" do
       system "./configure", *args
       system "make"
-      system "make install"
+      system "make", "install"
 
       # libproj.a conflicts with the formula proj
       # mv gives the error message:
