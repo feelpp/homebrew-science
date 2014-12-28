@@ -10,16 +10,17 @@ class Abyss < Formula
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
     cellar :any
-    sha1 "0db872766335bd03e961ef7b47c83fd36312f1ce" => :yosemite
-    sha1 "b66683aeb6e7456bb3009b6df6ac497e62debc46" => :mavericks
-    sha1 "e7c417f0354ce0d10521d178cd11985c937b5cf1" => :mountain_lion
+    revision 1
+    sha1 "c8776cb322adf97f681cf861b50cc7446e61882a" => :yosemite
+    sha1 "42dad6232c616687f85d654c92c8a4bb7647e3e7" => :mavericks
+    sha1 "ddb43b491782dbd7a50cf82a88f486857beebe8b" => :mountain_lion
   end
 
   head do
     url "https://github.com/bcgsc/abyss.git"
 
-    depends_on :autoconf => :build
-    depends_on :automake => :build
+    depends_on "autoconf" => :build
+    depends_on "automake" => :build
     depends_on "multimarkdown" => :build
   end
 
@@ -29,12 +30,8 @@ class Abyss < Formula
     sha1 "f85f6d2481e2c6c4a18539e391aa4ea8ab0394af"
   end
 
+  option "enable-maxk=", "Set the maximum k-mer length to N [default is 96]"
   option "without-check", "Skip build-time tests (not recommended)"
-
-  MAXK = [32, 64, 96, 128, 256, 512]
-  MAXK.each do |k|
-    option "enable-maxk=#{k}", "set the maximum k-mer length to #{k}"
-  end
 
   # Only header files are used from these packages, so :build is appropriate
   depends_on "boost" => :build
@@ -54,12 +51,10 @@ class Abyss < Formula
     system "./autogen.sh" if build.head?
 
     args = [
-      "--disable-dependency-tracking",
-      "--prefix=#{prefix}"]
+      "--enable-maxk=#{ARGV.value("enable-maxk") || 96}",
+      "--prefix=#{prefix}",
+      "--disable-dependency-tracking"]
     args << "--with-gtest=#{buildpath}/gtest" if build.with? "check"
-    MAXK.each do |k|
-      args << "--enable-maxk=#{k}" if build.include? "enable-maxk=#{k}"
-    end
 
     system "./configure", *args
     system "make"

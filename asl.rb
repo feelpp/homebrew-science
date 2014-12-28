@@ -1,35 +1,35 @@
-require 'formula'
+require "formula"
 
 class Asl < Formula
-  url 'http://www.ampl.com/netlib/ampl/solvers.tgz'
-  sha1 "27bbf1d0dc0fc18c2362854eccd7a19fc8524faa"
-  version "20141111"
-  homepage 'http://www.ampl.com/hooking.html'
+  homepage "http://www.ampl.com/hooking.html"
+  url "http://www.ampl.com/netlib/ampl/solvers.tgz"
+  sha1 "20af0d3045da3d313e73aaa94d43d25b47b5a9ff"
+  version "20141223"
 
-  option 'with-matlab', 'Build MEX file for use with Matlab'
-  option 'with-mex-path=', 'Path to MEX executable, e.g., /Applications/Matlab/MATLAB_R2013b.app/bin/mex (default: mex)'
+  option "with-matlab", "Build MEX file for use with Matlab"
+  option "with-mex-path=", "Path to MEX executable, e.g., /Applications/Matlab/MATLAB_R2013b.app/bin/mex (default: mex)"
 
-  resource 'spamfunc' do
-    url 'http://netlib.org/ampl/solvers/examples/spamfunc.c'
-    sha1 '429a79fc54facc5ef99219fe460280a883c75dfa'
+  resource "spamfunc" do
+    url "http://netlib.org/ampl/solvers/examples/spamfunc.c"
+    sha1 "429a79fc54facc5ef99219fe460280a883c75dfa"
   end
 
   def install
     ENV.universal_binary if OS.mac?
-    cflags = %w[-I. -O -fPIC]
+    cflags = %w(-I. -O -fPIC)
 
     if OS.mac?
       cflags += ["-arch", "#{Hardware::CPU.arch_32_bit}"]
       soname = "dylib"
       libtool_cmd = ["libtool", "-dynamic", "-undefined", "dynamic_lookup",
-                      "-install_name", "#{lib}/libasl.#{soname}"]
+                     "-install_name", "#{lib}/libasl.#{soname}"]
     else
       soname = "so"
       libtool_cmd = ["ld", "-shared"]
     end
 
     # Dynamic libraries are more user friendly.
-    (buildpath / 'makefile.brew').write <<-EOS.undent
+    (buildpath / "makefile.brew").write <<-EOS.undent
       include makefile.u
 
       libasl.#{soname}: ${a:.c=.o}
@@ -45,10 +45,10 @@ class Asl < Formula
     system "make", "-f", "makefile.brew", "CC=#{ENV.cc}",
            "CFLAGS=#{cflags.join(' ')}", *(targets + libs)
 
-    lib.install *libs
-    (include / 'asl').install Dir["*.h"]
-    (include / 'asl').install Dir["*.hd"]
-    doc.install 'README'
+    lib.install(*libs)
+    (include / "asl").install Dir["*.h"]
+    (include / "asl").install Dir["*.hd"]
+    doc.install "README"
 
     if build.with? "matlab"
       mex = ARGV.value("with-mex-path") || "mex"
@@ -62,11 +62,11 @@ class Asl < Formula
 
   def caveats
     s = <<-EOS.undent
-      Include files are in #{include}/asl.
+      Include files are in #{opt_include}/asl.
       To link with the ASL, you may simply use
-      -L#{lib} -lasl -lfuncadd0
+      -L#{opt_lib} -lasl -lfuncadd0
     EOS
-    s += "\nAdd #{bin} to your MATLABPATH." if build.with? "matlab"
+    s += "\nAdd #{opt_bin} to your MATLABPATH." if build.with? "matlab"
     s
   end
 end

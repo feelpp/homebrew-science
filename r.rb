@@ -12,6 +12,14 @@ class R < Formula
   url 'http://cran.rstudio.com/src/base/R-3/R-3.1.2.tar.gz'
   mirror 'http://cran.r-project.org/src/base/R-3/R-3.1.2.tar.gz'
   sha1 '93809368e5735a630611633ac1fa99010020c5d6'
+  revision 1
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    sha1 "738f9cf484cf9577eeed07f7ba63c22e73b317fe" => :yosemite
+    sha1 "4578f271c00abefb5f5c09836593915d32d5e191" => :mavericks
+    sha1 "a6238fad91bf3101ad9b088a348879c8de8a439e" => :mountain_lion
+  end
 
   head do
     url 'https://svn.r-project.org/R/trunk', :using => RDownloadStrategy
@@ -34,18 +42,37 @@ class R < Formula
   depends_on 'openblas' => :optional
 
   # This is the same script that Debian packages use.
-  resource 'completion' do
-    url 'https://rcompletion.googlecode.com/svn-history/r28/trunk/bash_completion/R', :using => :curl
-    version 'r28'
-    sha1 'af734b8624b33f2245bf88d6782bea0dc5d829a4'
+  resource "completion" do
+    url "https://rcompletion.googlecode.com/svn-history/r31/trunk/bash_completion/R", :using => :curl
+    sha1 "ee39aa2de6319f41025cf8f618197d7efc16097c"
+    version "r31"
   end
 
+  patch :DATA
+
   def install
+    ENV.append_to_cflags "-D__ACCELERATE__" if ENV.compiler != :clang and build.without? "openblas"
+
+    # If LDFLAGS contains any -L options, configure sets LD_LIBRARY_PATH to
+    # search those directories. Remove -LHOMEBREW_PREFIX/lib from LDFLAGS.
+    ENV.remove "LDFLAGS", "-L#{HOMEBREW_PREFIX}/lib" if OS.linux?
+
     args = [
       "--prefix=#{prefix}",
       "--with-libintl-prefix=#{Formula['gettext'].opt_prefix}",
     ]
-    args += ["--with-aqua", "--enable-R-framework"] if OS.mac?
+    if OS.mac?
+      if MacOS::Xcode.version <= "6.0" and MacOS::CLT.version <= "6.0"
+        # Disable building against the Aqua framework with 6.1.
+        # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63651
+        # This should be revisited when new versions of GCC come along.
+        args << "--with-aqua"
+      else
+        args << "--without-aqua"
+      end
+      args << "--enable-R-framework"
+    end
+    args << "--enable-R-shlib" if OS.linux?
 
     if build.with? 'valgrind'
       args << '--with-valgrind-instrumentation=2'
@@ -113,17 +140,41 @@ class R < Formula
   end
 
   test do
-    (testpath / 'test.R').write('print(1+1);')
-    system "r < test.R --no-save"
-    system "rscript test.R"
-  end if build.without? "librmath-only"
+    if build.without? "librmath-only"
+      (testpath / 'test.R').write('print(1+1);')
+      system "r < test.R --no-save"
+      system "rscript test.R"
+    end
+  end
 
-  def caveats; <<-EOS.undent
-    To enable rJava support, run the following command:
-      R CMD javareconf JAVA_CPPFLAGS=-I/System/Library/Frameworks/JavaVM.framework/Headers
-    If you've installed a version of Java other than the default, you might need to instead use:
-      R CMD javareconf JAVA_CPPFLAGS='-I/System/Library/Frameworks/JavaVM.framework/Headers -I/Library/Java/JavaVirtualMachines/jdk<version>.jdk/'
-      (where <version> can be found by running `java -version` or `locate jni.h`)
-    EOS
-  end if build.without? "librmath-only"
+  def caveats
+    if build.without? "librmath-only" then <<-EOS.undent
+      To enable rJava support, run the following command:
+        R CMD javareconf JAVA_CPPFLAGS=-I/System/Library/Frameworks/JavaVM.framework/Headers
+      If you've installed a version of Java other than the default, you might need to instead use:
+        R CMD javareconf JAVA_CPPFLAGS='-I/System/Library/Frameworks/JavaVM.framework/Headers -I/Library/Java/JavaVirtualMachines/jdk<version>.jdk/'
+        (where <version> can be found by running `java -version` or `locate jni.h`)
+      EOS
+    end
+  end
 end
+
+__END__
+diff --git a/src/modules/lapack/vecLibg95c.c b/src/modules/lapack/vecLibg95c.c
+index ffc18e4..6728244 100644
+--- a/src/modules/lapack/vecLibg95c.c
++++ b/src/modules/lapack/vecLibg95c.c
+@@ -2,6 +2,12 @@
+ #include <config.h>
+ #endif
+ 
++#ifndef __has_extension
++#define __has_extension(x) 0
++#endif
++#define vImage_Utilities_h
++#define vImage_CVUtilities_h
++
+ #include <AvailabilityMacros.h> /* for MAC_OS_X_VERSION_10_* -- present on 10.2+ (according to Apple) */
+ /* Since OS X 10.8 vecLib requires Accelerate to be included first (which in turn includes vecLib) */
+ #if defined MAC_OS_X_VERSION_10_8 && MAC_OS_X_VERSION_MIN_REQUIRED >= 1040
+

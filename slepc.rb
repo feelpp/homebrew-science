@@ -2,8 +2,15 @@ require 'formula'
 
 class Slepc < Formula
   homepage 'http://www.grycap.upv.es/slepc'
-  url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.5.2.tar.gz'
-  sha1 '23675bee5c010d20f4a08f80f22120119ddb940a'
+  url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.5.3.tar.gz'
+  sha1 '5e886c5018dc0d227ae815feb80d4cdd8779c23c'
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    sha1 "a4ef9c97bbaa9c9448e501bdeabaa17e82d8bd06" => :yosemite
+    sha1 "0bd9fe0ebe8acc4402595428d201189dbd7b4633" => :mavericks
+    sha1 "f1af93dee89952b511eb2b765a157c1c4b5870ed" => :mountain_lion
+  end
 
   option "complex", "Use complex version by default. Otherwise, real-valued version will be symlinked"
 

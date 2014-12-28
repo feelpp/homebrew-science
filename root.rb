@@ -2,17 +2,17 @@ require "formula"
 
 class Root < Formula
   homepage "http://root.cern.ch"
-  version "5.34.23"
-  sha1 "50892105b84b9c2c3ee1cbb7b0cca2bde29453e6"
+  version "5.34.24"
+  sha1 "b765ee81b4b4f3e99978a237b2a4db9da0b96337"
   url "ftp://root.cern.ch/root/root_v#{version}.source.tar.gz"
   mirror "http://ftp.riken.jp/pub/ROOT/root_v#{version}.source.tar.gz"
   head "https://github.com/root-mirror/root.git", :branch => "v5-34-00-patches"
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "7e86a20f898832a7eaf19e9f012854cce1f7eb90" => :yosemite
-    sha1 "6b7c8b53442d8277afcb64cda63e84d2e704007c" => :mavericks
-    sha1 "d68af89320af63ced42908b68a6357ae8acaa71a" => :mountain_lion
+    sha1 "212376e0d131b903952a9873d9c78ac821911a43" => :yosemite
+    sha1 "1b96cf40824848791c6bd012dcb0bc38d2626ff2" => :mavericks
+    sha1 "952baf8273bd6ed4a245e016c637abb9d401f559" => :mountain_lion
   end
 
   option "with-qt", "Build with Qt graphics backend and GSI's Qt integration"
@@ -60,11 +60,8 @@ class Root < Formula
     if build.with? "qt"
       args << "--enable-qt"
       args << "--enable-qtgsi"
-      # ROOT configure script does not search for Qt framework
-      inreplace "config/Makefile.config" do |s|
-        s.gsub! /^QTLIBDIR .*/, "QTLIBDIR := -F #{Formula["qt"].opt_lib}"
-        s.gsub! /^QTLIB .*/, "QTLIB := -framework QtCore -framework QtGui -framework Qt3Support"
-      end
+      args << "--with-qt-libdir=#{Formula["qt"].opt_lib}"
+      args << "--with-qt-incdir=#{Formula["qt"].opt_include}"
     end
 
     system "./configure", *args

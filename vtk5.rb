@@ -5,6 +5,14 @@ class Vtk5 < Formula
   url "http://www.vtk.org/files/release/5.10/vtk-5.10.1.tar.gz"  # update libdir below, too!
   sha1 "deb834f46b3f7fc3e122ddff45e2354d69d2adc3"
   head "git://vtk.org/VTK.git", :branch => "release-5.10"
+  revision 1
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    sha1 "ddebd8c0d9dc9315f36762b4179d7c4264460b0f" => :yosemite
+    sha1 "365ec2a27a039bc01a7b9ffcb3ff08a2d65d169f" => :mavericks
+    sha1 "78c4a464bf75f62b4b162a015562646aa9f572be" => :mountain_lion
+  end
 
   deprecated_option "examples" => "with-examples"
   deprecated_option "qt-extern" => "with-qt-extern"
@@ -29,7 +37,7 @@ class Vtk5 < Formula
   depends_on "boost" => :recommended
   depends_on "hdf5" => :recommended
   depends_on "jpeg" => :recommended
-  depends_on :libpng => :recommended
+  depends_on "libpng" => :recommended
   depends_on "libtiff" => :recommended
 
   keg_only "Different versions of the same library"

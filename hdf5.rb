@@ -2,15 +2,14 @@ require "formula"
 
 class Hdf5 < Formula
   homepage "http://www.hdfgroup.org/HDF5"
-  url "http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.13/src/hdf5-1.8.13.tar.bz2"
-  mirror "http://www.mirrorservice.org/sites/distfiles.macports.org/hdf5/hdf5-1.8.13.tar.bz2"
-  sha1 "712955025f03db808f000d8f4976b8df0c0d37b5"
+  url "http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.14/src/hdf5-1.8.14.tar.bz2"
+  sha1 "3c48bcb0d5fb21a3aa425ed035c08d8da3d5483a"
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "fbdc27ec94bda3493fb2823041ada25ebee617c8" => :yosemite
-    sha1 "3048c391ab7376f712daec1d50e501c1998a565b" => :mavericks
-    sha1 "51075c8abd6c16eadb0bee699824e7bea9cd74e3" => :mountain_lion
+    sha1 "8be7cc59b05b0018bc22acd967ca1684a5406f35" => :yosemite
+    sha1 "be1e4803cc7f5c38ac0d70cf891c4a34891b13de" => :mavericks
+    sha1 "963c82109013f4bb9e7286106dc453f82d1f59be" => :mountain_lion
   end
 
   deprecated_option "enable-fortran" => "with-fortran"
@@ -20,6 +19,7 @@ class Hdf5 < Formula
   deprecated_option "enable-cxx" => "with-cxx"
 
   option :universal
+  option "without-check", "Skip build-time tests"
   option "with-threadsafe", "Trade performance and C++ or Fortran support for thread safety"
   option "with-fortran2003", "Compile Fortran 2003 bindings. Requires with-fortran"
   option "with-cxx", "Compile C++ bindings"
@@ -71,6 +71,8 @@ class Hdf5 < Formula
     end
 
     system "./configure", *args
+    system "make"
+    system "make", "check" if build.with? "check"
     system "make", "install"
     share.install "#{lib}/libhdf5.settings"
   end

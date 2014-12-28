@@ -17,6 +17,7 @@ class Opencv < Formula
   option "without-opencl", "Disable GPU code in OpenCV using OpenCL"
   option "with-cuda", "Build with CUDA support"
   option "with-quicktime", "Use QuickTime for Video I/O insted of QTKit"
+  option "with-opengl", "Build with OpenGL support"
 
   option :cxx11
 
@@ -26,7 +27,7 @@ class Opencv < Formula
   depends_on "gstreamer"  => :optional
   depends_on "jasper"     => :optional
   depends_on "jpeg"
-  depends_on :libpng
+  depends_on "libpng"
   depends_on "libtiff"
   depends_on "libdc1394"  => :optional
   depends_on "numpy"      => :python
@@ -48,6 +49,7 @@ class Opencv < Formula
     py_version = %x(python -c "import sys; print(sys.version)")[0..2]
 
     ENV.cxx11 if build.cxx11?
+    dylib = if OS.mac? then "dylib" else "so" end
     args = std_cmake_args + %W(
       -DCMAKE_OSX_DEPLOYMENT_TARGET=
       -DBUILD_ZLIB=OFF
@@ -57,8 +59,8 @@ class Opencv < Formula
       -DBUILD_JASPER=OFF
       -DBUILD_JPEG=OFF
       -DJPEG_INCLUDE_DIR=#{jpeg.opt_include}
-      -DJPEG_LIBRARY=#{jpeg.opt_lib}/libjpeg.dylib
-      -DPYTHON_LIBRARY=#{py_prefix}/lib/libpython#{py_version}.dylib
+      -DJPEG_LIBRARY=#{jpeg.opt_lib}/libjpeg.#{dylib}
+      -DPYTHON_LIBRARY=#{py_prefix}/lib/libpython#{py_version}.#{dylib}
       -DPYTHON_INCLUDE_DIR=#{py_prefix}/include/python#{py_version}
     )
 
@@ -75,6 +77,8 @@ class Opencv < Formula
     args << "-DWITH_GSTREAMER=" + ((build.with? "gstreamer") ? "ON" : "OFF")
     args << "-DWITH_QUICKTIME=" + ((build.with? "quicktime") ? "ON" : "OFF")
     args << "-DWITH_1394=" + ((build.with? "libdc1394") ? "ON" : "OFF")
+    args << "-DWITH_OPENGL=" + ((build.with? "opengl") ? "ON" : "OFF")
+    args << "-DWITH_JASPER=" + ((build.with? "jasper") ? "ON" : "OFF")
 
     if build.with? "cuda"
       ENV["CUDA_NVCC_FLAGS"] = "-Xcompiler -stdlib=libstdc++; -Xlinker -stdlib=libstdc++"
