@@ -1,5 +1,3 @@
-require "formula"
-
 class Repeatmodeler < Formula
   homepage "http://www.repeatmasker.org/RepeatModeler.html"
   #tag "bioinformatics"
@@ -7,6 +5,13 @@ class Repeatmodeler < Formula
   version "1.0.7"
   url "http://www.repeatmasker.org/RepeatModeler-open-1-0-7.tar.gz"
   sha1 "01e07eedd051c32285dc650da7643f5aecaf490c"
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    sha1 "3d516316eb1f2292eb69f04c431dfe9a8fea166f" => :yosemite
+    sha1 "a2ca0624ac59dc50db38a798ea196438646ecf7c" => :mavericks
+    sha1 "7b4cb9aa5e075aa33e5aba832547947449bc60e6" => :mountain_lion
+  end
 
   option "without-configure", "Do not run configure"
 
@@ -43,7 +48,9 @@ class Repeatmodeler < Formula
       Y
       3
       EOS
-    system "cd #{prefix} && perl ./configure <config.txt" if build.with? "configure"
+    cd prefix do
+      system "perl ./configure <config.txt"
+    end if build.with? "configure"
   end
 
   def caveats; <<-EOS.undent

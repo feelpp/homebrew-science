@@ -9,9 +9,10 @@ class Scalapack < Formula
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "f93023fc4796abf28a9f4a9c79551569dbdf31e2" => :yosemite
-    sha1 "94fdfa3445c1fc301f8649478aea02576d194865" => :mavericks
-    sha1 "82ab5e50ba36891716c8c9fe2605082fcdc3dc78" => :mountain_lion
+    revision 2
+    sha1 "bae037302eabbea385e6cbc22d125a123b2c08a7" => :yosemite
+    sha1 "934fb738c7bbd4e584533085982f2a61e3d13446" => :mavericks
+    sha1 "8dc227f7b7f55f0b0c3d97d82a718db0447db853" => :mountain_lion
   end
 
   option 'with-shared-libs', 'Build shared libs (some tests may fail)'
@@ -20,7 +21,7 @@ class Scalapack < Formula
   depends_on :mpi => [:cc, :f90]
   depends_on 'cmake' => :build
   depends_on 'openblas' => :optional
-  depends_on 'veclibfort' if build.without? 'openblas'
+  depends_on 'veclibfort' if build.without? 'openblas' and OS.mac?
   depends_on :fortran
 
   bottle do
@@ -31,9 +32,15 @@ class Scalapack < Formula
   def install
     args = std_cmake_args
     args << "-DBUILD_SHARED_LIBS=ON" if build.with? "shared-libs"
-    blas = (build.with? "openblas") ? "openblas" : "vecLibFort"
-    blas = "-L#{Formula["#{blas}"].opt_lib} -l#{blas}"
-    args += ["-DBLAS_LIBRARIES=#{blas}", "-DLAPACK_LIBRARIES=#{blas}"]
+
+    if build.with? "openblas"
+      blas = "-L#{Formula['openblas'].opt_lib} -lopenblas"
+      lapack = blas
+    else
+      blas = (OS.mac?) ? "-L#{Formula['veclibfort'].opt_lib} -lveclibfort" : "-lblas"
+      lapack = (OS.mac?) ? blas : "-llapack"
+    end
+    args += ["-DBLAS_LIBRARIES=#{blas}", "-DLAPACK_LIBRARIES=#{lapack}"]
 
     mkdir "build" do
       system 'cmake', '..', *args

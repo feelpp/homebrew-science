@@ -1,13 +1,20 @@
-require "formula"
-
 class Mrbayes < Formula
   homepage "http://mrbayes.sourceforge.net/"
   #tag "bioinformatics"
   #doi "10.1093/bioinformatics/btg180"
+
   url "https://downloads.sourceforge.net/project/mrbayes/mrbayes/3.2.3/mrbayes-3.2.3.tar.gz"
   sha1 "8492ce3b33369b10e89553f56a9a94724772ae2d"
 
   head "https://mrbayes.svn.sourceforge.net/svnroot/mrbayes/trunk/"
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    cellar :any
+    sha1 "6b0d27db5b1f239bfce612bb9747af35227f9812" => :yosemite
+    sha1 "50aa531fa4ab7328d547280786150f5a39664260" => :mavericks
+    sha1 "993066f9ca815ae3680d5a142772500d5998f4b3" => :mountain_lion
+  end
 
   option "with-beagle", "Build with BEAGLE library support"
 
@@ -47,6 +54,6 @@ class Mrbayes < Formula
   end
 
   test do
-    system "echo 'version' | #{bin}/mb"
+    system "echo version |#{bin}/mb"
   end
 end

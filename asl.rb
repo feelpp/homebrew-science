@@ -1,10 +1,17 @@
-require "formula"
-
 class Asl < Formula
   homepage "http://www.ampl.com/hooking.html"
   url "http://www.ampl.com/netlib/ampl/solvers.tgz"
-  sha1 "20af0d3045da3d313e73aaa94d43d25b47b5a9ff"
-  version "20141223"
+  sha1 "f9d0da264c999c9f7f4667a441a9e90dd131f3e0"
+  version "20150112"
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    cellar :any
+    revision 1
+    sha1 "375d55a734bfc615773aa1748e95954b924af222" => :yosemite
+    sha1 "b8f9988c5a2407ca2fea3cbe199ebab098612ca1" => :mavericks
+    sha1 "d817c5543e6b017ab7c284e4bd240ea77063fca8" => :mountain_lion
+  end
 
   option "with-matlab", "Build MEX file for use with Matlab"
   option "with-mex-path=", "Path to MEX executable, e.g., /Applications/Matlab/MATLAB_R2013b.app/bin/mex (default: mex)"
@@ -14,9 +21,14 @@ class Asl < Formula
     sha1 "429a79fc54facc5ef99219fe460280a883c75dfa"
   end
 
+  resource "miniampl" do
+    url "https://github.com/dpo/miniampl/archive/v1.0.tar.gz"
+    sha1 "4518ee9a9895b0782169085126ee149d05ba66a7"
+  end
+
   def install
     ENV.universal_binary if OS.mac?
-    cflags = %w(-I. -O -fPIC)
+    cflags = %w[-I. -O -fPIC]
 
     if OS.mac?
       cflags += ["-arch", "#{Hardware::CPU.arch_32_bit}"]
@@ -43,7 +55,7 @@ class Asl < Formula
     targets = ["arith.h", "stdio1.h"]
     libs = ["libasl.#{soname}", "libfuncadd0.#{soname}"]
     system "make", "-f", "makefile.brew", "CC=#{ENV.cc}",
-           "CFLAGS=#{cflags.join(' ')}", *(targets + libs)
+           "CFLAGS=#{cflags.join(" ")}", *(targets + libs)
 
     lib.install(*libs)
     (include / "asl").install Dir["*.h"]
@@ -58,6 +70,16 @@ class Asl < Formula
                     "-L#{lib}", "-lasl", "-lfuncadd0", "-outdir", bin
       end
     end
+
+    resource("miniampl").stage do
+      system "make", "CXX=#{ENV["CC"]} -std=c99", "LIBAMPL_DIR=#{prefix}"
+      bin.install "bin/miniampl"
+      (share / "asl/example").install "Makefile", "README.rst", "src", "examples"
+    end
+  end
+
+  test do
+    system "#{bin}/miniampl", "#{share}/asl/example/examples/wb", "showname=1", "showgrad=1"
   end
 
   def caveats

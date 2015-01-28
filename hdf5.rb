@@ -1,5 +1,3 @@
-require "formula"
-
 class Hdf5 < Formula
   homepage "http://www.hdfgroup.org/HDF5"
   url "http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.14/src/hdf5-1.8.14.tar.bz2"
@@ -19,7 +17,7 @@ class Hdf5 < Formula
   deprecated_option "enable-cxx" => "with-cxx"
 
   option :universal
-  option "without-check", "Skip build-time tests"
+  option "with-check", "Run build-time tests"
   option "with-threadsafe", "Trade performance and C++ or Fortran support for thread safety"
   option "with-fortran2003", "Compile Fortran 2003 bindings. Requires with-fortran"
   option "with-cxx", "Compile C++ bindings"
@@ -49,25 +47,26 @@ class Hdf5 < Formula
       --enable-shared=yes
     ]
 
-    args << "--enable-parallel" if build.with? "mpi"
+    args << "--enable-parallel" if build.with? :mpi
 
     if build.with? "threadsafe"
-      raise "--enable-threadsafe conflicts with Fortran bindings" if build.with? "fortran"
-      raise "--enable-threadsafe conflicts with C++ support" if build.cxx11? or build.with? "cxx"
+      fail "--enable-threadsafe conflicts with Fortran bindings" if build.with? :fortran
+      fail "--enable-threadsafe conflicts with C++ support" if build.cxx11? || build.with?("cxx")
       args.concat %w[--with-pthread=/usr --enable-threadsafe]
     else
       ENV.cxx11 if build.cxx11?
-      args << "--enable-cxx" if build.cxx11? or build.with? "cxx"
+      args << "--enable-cxx" if build.cxx11? || build.with?("cxx")
 
-      if build.with? "fortran"
+      if build.with? :fortran
         args << "--enable-fortran"
         args << "--enable-fortran2003" if build.with? "fortran2003"
       end
     end
 
-    if build.with? "mpi"
-      ENV["CC"] = "mpicc"
-      ENV["FC"] = "mpif90"
+    if build.with? :mpi
+      ENV["CC"] = ENV["MPICC"]
+      ENV["CXX"] = ENV["MPICXX"]
+      ENV["FC"] = ENV["MPIFC"]
     end
 
     system "./configure", *args
@@ -75,5 +74,19 @@ class Hdf5 < Formula
     system "make", "check" if build.with? "check"
     system "make", "install"
     share.install "#{lib}/libhdf5.settings"
+  end
+
+  test do
+    (testpath/"test.cpp").write <<-EOS
+    #include <stdio.h>
+    #include "H5public.h"
+    int main()
+    {
+      printf(\"%d.%d.%d\\n\",H5_VERS_MAJOR,H5_VERS_MINOR,H5_VERS_RELEASE);
+      return 0;
+    }
+    EOS
+    system "h5cc", "test.cpp"
+    assert `./a.out`.include?(version)
   end
 end

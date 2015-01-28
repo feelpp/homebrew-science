@@ -1,45 +1,44 @@
-require 'formula'
-
 class RDownloadStrategy < SubversionDownloadStrategy
   def stage
-    quiet_safe_system 'cp', '-r', @clone, Dir.pwd
+    quiet_safe_system "cp", "-r", @clone, Dir.pwd
     Dir.chdir cache_filename
   end
 end
 
 class R < Formula
-  homepage 'http://www.r-project.org/'
-  url 'http://cran.rstudio.com/src/base/R-3/R-3.1.2.tar.gz'
-  mirror 'http://cran.r-project.org/src/base/R-3/R-3.1.2.tar.gz'
-  sha1 '93809368e5735a630611633ac1fa99010020c5d6'
+  homepage "http://www.r-project.org/"
+  url "http://cran.rstudio.com/src/base/R-3/R-3.1.2.tar.gz"
+  mirror "http://cran.r-project.org/src/base/R-3/R-3.1.2.tar.gz"
+  sha1 "93809368e5735a630611633ac1fa99010020c5d6"
   revision 1
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "738f9cf484cf9577eeed07f7ba63c22e73b317fe" => :yosemite
-    sha1 "4578f271c00abefb5f5c09836593915d32d5e191" => :mavericks
-    sha1 "a6238fad91bf3101ad9b088a348879c8de8a439e" => :mountain_lion
+    revision 2
+    sha1 "4adae88cc1e44d1a29e1b2a77e46cb0e8360f0ac" => :yosemite
+    sha1 "98d84a17648b3d51094594dbd148a8e5139043b3" => :mavericks
+    sha1 "6c4df124afaf389458c89b1ee322feb2a56910fa" => :mountain_lion
   end
 
   head do
-    url 'https://svn.r-project.org/R/trunk', :using => RDownloadStrategy
+    url "https://svn.r-project.org/R/trunk", :using => RDownloadStrategy
     depends_on :tex
   end
 
   option "without-accelerate", "Build without the Accelerate framework (use Rblas)"
-  option 'without-check', 'Skip build-time tests (not recommended)'
-  option 'without-tcltk', 'Build without Tcl/Tk'
+  option "without-check", "Skip build-time tests (not recommended)"
+  option "without-tcltk", "Build without Tcl/Tk"
   option "with-librmath-only", "Only build standalone libRmath library"
 
   depends_on :fortran
-  depends_on 'readline'
-  depends_on 'gettext'
-  depends_on 'libtiff'
-  depends_on 'jpeg'
-  depends_on 'cairo' if OS.mac?
+  depends_on "readline"
+  depends_on "gettext"
+  depends_on "libtiff"
+  depends_on "jpeg"
+  depends_on "cairo" if OS.mac?
   depends_on :x11 => :recommended
-  depends_on 'valgrind' => :optional
-  depends_on 'openblas' => :optional
+  depends_on "valgrind" => :optional
+  depends_on "openblas" => :optional
 
   # This is the same script that Debian packages use.
   resource "completion" do
@@ -62,8 +61,10 @@ class R < Formula
       "--with-libintl-prefix=#{Formula['gettext'].opt_prefix}",
     ]
     if OS.mac?
-      if MacOS::Xcode.version <= "6.0" and MacOS::CLT.version <= "6.0"
-        # Disable building against the Aqua framework with 6.1.
+      old_xcode = (MacOS::Xcode.installed? and MacOS::Xcode.version <= "6.0") or
+                  (MacOS::CLT.installed?   and MacOS::CLT.version   <= "6.0")
+      if ENV.compiler == :clang or old_xcode
+        # Disable building against the Aqua framework with CLT >= 6.0.
         # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63651
         # This should be revisited when new versions of GCC come along.
         args << "--with-aqua"
@@ -74,39 +75,39 @@ class R < Formula
     end
     args << "--enable-R-shlib" if OS.linux?
 
-    if build.with? 'valgrind'
-      args << '--with-valgrind-instrumentation=2'
+    if build.with? "valgrind"
+      args << "--with-valgrind-instrumentation=2"
       ENV.Og
     end
 
     if build.with? "openblas"
-      args << "--with-blas=-L#{Formula["openblas"].opt_lib} -lopenblas" << "--with-lapack"
-      ENV.append "LDFLAGS", "-L#{Formula["openblas"].opt_lib}"
+      args << "--with-blas=-L#{Formula['openblas'].opt_lib} -lopenblas" << "--with-lapack"
+      ENV.append "LDFLAGS", "-L#{Formula['openblas'].opt_lib}"
     elsif build.with? "accelerate"
       args << "--with-blas=-framework Accelerate" << "--with-lapack"
       # Fall back to Rblas without-accelerate or -openblas
     end
 
-    args << '--without-tcltk' if build.without? 'tcltk'
-    args << '--without-x' if build.without? 'x11'
+    args << "--without-tcltk" if build.without? "tcltk"
+    args << "--without-x" if build.without? "x11"
 
     # Also add gettext include so that libintl.h can be found when installing packages.
-    ENV.append "CPPFLAGS", "-I#{Formula["gettext"].opt_include}"
-    ENV.append "LDFLAGS",  "-L#{Formula["gettext"].opt_lib}"
+    ENV.append "CPPFLAGS", "-I#{Formula['gettext'].opt_include}"
+    ENV.append "LDFLAGS",  "-L#{Formula['gettext'].opt_lib}"
 
     # Sometimes the wrong readline is picked up.
     ENV.append "CPPFLAGS", "-I#{Formula['readline'].opt_include}"
     ENV.append "LDFLAGS",  "-L#{Formula['readline'].opt_lib}"
 
     # Pull down recommended packages if building from HEAD.
-    system './tools/rsync-recommended' if build.head?
+    system "./tools/rsync-recommended" if build.head?
 
     system "./configure", *args
 
     if build.without? "librmath-only"
       system "make"
       ENV.deparallelize # Serialized installs, please
-      system "make check 2>&1 | tee make-check.log" if build.with? 'check'
+      system "make check 2>&1 | tee make-check.log" if build.with? "check"
       system "make install"
 
       # Link binaries, headers, libraries, & manpages from the Framework
@@ -121,9 +122,9 @@ class R < Formula
         man1.install_symlink prefix/"R.framework/Resources/man1/Rscript.1"
       end
 
-      bash_completion.install resource('completion')
+      bash_completion.install resource("completion")
 
-      prefix.install 'make-check.log' if build.with? 'check'
+      prefix.install "make-check.log" if build.with? "check"
     end
 
     cd "src/nmath/standalone" do
@@ -141,7 +142,7 @@ class R < Formula
 
   test do
     if build.without? "librmath-only"
-      (testpath / 'test.R').write('print(1+1);')
+      (testpath / "test.R").write("print(1+1);")
       system "r < test.R --no-save"
       system "rscript test.R"
     end
@@ -151,8 +152,8 @@ class R < Formula
     if build.without? "librmath-only" then <<-EOS.undent
       To enable rJava support, run the following command:
         R CMD javareconf JAVA_CPPFLAGS=-I/System/Library/Frameworks/JavaVM.framework/Headers
-      If you've installed a version of Java other than the default, you might need to instead use:
-        R CMD javareconf JAVA_CPPFLAGS='-I/System/Library/Frameworks/JavaVM.framework/Headers -I/Library/Java/JavaVirtualMachines/jdk<version>.jdk/'
+      If you"ve installed a version of Java other than the default, you might need to instead use:
+        R CMD javareconf JAVA_CPPFLAGS="-I/System/Library/Frameworks/JavaVM.framework/Headers -I/Library/Java/JavaVirtualMachines/jdk<version>.jdk/"
         (where <version> can be found by running `java -version` or `locate jni.h`)
       EOS
     end

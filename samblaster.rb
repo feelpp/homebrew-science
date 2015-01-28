@@ -1,20 +1,21 @@
-require "formula"
-
 class Samblaster < Formula
   homepage "https://github.com/GregoryFaust/samblaster"
   #doi "10.1093/bioinformatics/btu314"
   #tag "bioinformatics"
 
-  url "https://github.com/GregoryFaust/samblaster/releases/download/v.0.1.20/samblaster-v.0.1.20.tar.gz"
-  sha1 "202eef231c7d4e188a7ec1646702642ecf976037"
+  url "https://github.com/GregoryFaust/samblaster/releases/download/v.0.1.21/samblaster-v.0.1.21.tar.gz"
+  sha1 "69514701966b1876af24ee09d4b4dd5a1622af86"
   head "https://github.com/GregoryFaust/samblaster"
 
-  # Pull request submitted upstream:
-  # https://github.com/GregoryFaust/samblaster/pull/8
-  patch :DATA
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    cellar :any
+    sha1 "01da597dca44539d4c8218f6320c1d333cbbf9f4" => :yosemite
+    sha1 "17c2c763ff473604a5f0e492980c562222a83708" => :mavericks
+    sha1 "16eb49671b88fb0ddc9730f7f3bb3ccd76231c52" => :mountain_lion
+  end
 
   def install
-    inreplace "samblaster.cpp", "sig_t", "signal_t"
     system "make"
     bin.install "samblaster"
   end
@@ -23,23 +24,3 @@ class Samblaster < Formula
     system "#{bin}/samblaster", "--version"
   end
 end
-
-__END__
-diff --git a/samblaster.cpp b/samblaster.cpp
-index 14a2a40..1d8f52c 100644
---- a/samblaster.cpp
-+++ b/samblaster.cpp
-@@ -26,6 +26,13 @@
- #include <map>
- #include "sbhash.h"
-
-+// Define mempcpy for Mac OS
-+#ifdef __APPLE__
-+void* mempcpy(void* dst, const void* src, size_t len) {
-+    return (char*)memcpy(dst, src, len) + len;
-+}
-+#endif
-+
- // Rename common integer types.
- // I like having these shorter name.
- typedef uint64_t UINT64;

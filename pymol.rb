@@ -1,15 +1,25 @@
-require "formula"
-
 class Pymol < Formula
   homepage "http://pymol.org"
   url "https://downloads.sourceforge.net/project/pymol/pymol/1.7/pymol-v1.7.2.1.tar.bz2"
   sha1 "477ac127794ddf40f5177ffa4f141f097ca2fc9f"
   head "https://pymol.svn.sourceforge.net/svnroot/pymol/trunk/pymol"
 
-  depends_on "glew"
-  depends_on "pmw"
-  depends_on "python" => "with-brewed-tk"
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    cellar :any
+    revision 1
+    sha1 "f5dc810c3e76fc9822565767f582ccce5e7b342a" => :yosemite
+    sha1 "bab1e2f537e946a5fcb49b7cf7a48707f02e4cd6" => :mavericks
+    sha1 "f4467ac59d136eae2d3d8ce379ef549c8e3eb414" => :mountain_lion
+  end
+
+  deprecated_option "default-stereo" => "with-default-stereo"
+
+  option "with-default-stereo", "Set stereo graphics as default"
+
   depends_on "homebrew/dupes/tcl-tk" => ["enable-threads", "with-x11"]
+  depends_on "glew"
+  depends_on "python" => "with-brewed-tk"
   depends_on "freetype"
   depends_on "libpng"
   depends_on :x11
@@ -18,10 +28,13 @@ class Pymol < Formula
   # and python must be setup to use that version of tk with --with-brewed-tk
   depends_on "Tkinter" => :python
 
-  option "default-stereo", "Set stereo graphics as default"
+  resource "pmw" do
+    url "https://downloads.sourceforge.net/project/pmw/Pmw/Pmw.1.3.3/Pmw.1.3.3.tar.gz"
+    sha1 "0ff7f03245640da4f37a97167967de8d09e4c6a6"
+  end
 
   # This patch adds checks that force mono as default
-  unless build.include? "default-stereo"
+  if build.without? "default-stereo"
     patch :p1 do
       url "https://gist.githubusercontent.com/scicalculator/1b84b2ad3503395f1041/raw/2a85dc56b4bd1ea28d99ce0b94acbf7ac880deff/pymol_disable_stereo.diff"
       sha1 "03585cef10b1f0729f4a50e306e0f448ddfc6b4c"
@@ -36,34 +49,29 @@ class Pymol < Formula
   end
 
   def install
+    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python2.7/site-packages"
+    resource("pmw").stage do
+      system "python", *Language::Python.setup_install_args(libexec/"vendor")
+    end
+
     # PyMol uses ./ext as a backup to look for ./ext/include and ./ext/lib
     ln_s HOMEBREW_PREFIX, "./ext"
-
-    temp_site_packages = lib/which_python/"site-packages"
-    mkdir_p temp_site_packages
-    ENV["PYTHONPATH"] = temp_site_packages
+    ENV.prepend_create_path "PYTHONPATH", libexec/"lib/python2.7/site-packages"
 
     args = [
-      "--verbose",
       "install",
-      "--install-scripts=#{bin}",
-      "--install-lib=#{temp_site_packages}",
+      "--verbose",
+      "--install-scripts=#{libexec}/bin",
+      "--install-lib=#{libexec}/lib/python2.7/site-packages",
     ]
 
-    # build the pymol libraries
     system "python", "-s", "setup.py", *args
-
-    # get the executable
-    bin.install("pymol")
-  end
-
-  def which_python
-    "python" + `python -c 'import sys;print(sys.version[:3])'`.strip
+    bin.install Dir[libexec/"bin/*"]
+    bin.env_script_all_files(libexec/"bin", :PYTHONPATH => ENV["PYTHONPATH"])
   end
 
   test do
-    system "#{bin}/pymol #{lib}/python2.7/site-packages/pymol/pymol_path/data/demo/pept.pdb"
-    #   system "pymol","-b","-d","quit"
+    system bin/"pymol", libexec/"lib/python2.7/site-packages/pymol/pymol_path/data/demo/pept.pdb"
   end
 
   def caveats

@@ -2,17 +2,25 @@ require "formula"
 
 class Cppad < Formula
   homepage "http://www.coin-or.org/CppAD"
-  url "http://www.coin-or.org/download/source/CppAD/cppad-20141101.epl.tgz"
-  version "20141101"
-  sha1 "4f5971160c458d65dc751daa1ba6937514901714"
-  head "https://projects.coin-or.org/svn/CppAD/trunk", :using => :svn
+  url "http://www.coin-or.org/download/source/CppAD/cppad-20150000.2.epl.tgz"
+  version "20150000"
+  sha1 "1542da5283dbba6bcc7d8ba513fcb2f5d5a7675e"
+  head "https://github.com/coin-or/CppAD.git"
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    cellar :any
+    sha1 "319ab2e269a4af07de3fc27455e903f511ce1e58" => :yosemite
+    sha1 "82a159c76205f98760d9dd993a9648a035b7a3c8" => :mavericks
+    sha1 "8e9c6e05d8a3881fbd30bc20ed6feb4a3414b3c3" => :mountain_lion
+  end
 
   # Only one of --with-boost, --with-eigen and --with-std should be given.
   depends_on "boost" => :optional
   depends_on "eigen" => :optional
   depends_on "adol-c" => :optional
   option "with-std", "Use std test vector"
-  option "without-check", "Skip comprehensive tests (not recommended)"
+  option "with-check", "Perform comprehensive tests (very slow w/out OpenMP)"
 
   depends_on "cmake" => :build
   depends_on "ipopt" => :optional
