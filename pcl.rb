@@ -36,6 +36,13 @@ class Pcl < Formula
   sha1 "7a59e9348a81f42725db1f8b1194c9c3313372ae"
   head "https://github.com/PointCloudLibrary/pcl.git"
 
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    sha1 "c252870bf7c0655ee3f0192e6e566153348b2a95" => :yosemite
+    sha1 "89b4740ccfea0a56b5026fbc59a9ed7d9bd37c1b" => :mavericks
+    sha1 "30d199105b80ca6aeb5935fb14fed2f17d06a667" => :mountain_lion
+  end
+
   option "with-examples", "Build pcl examples."
   option "without-tools", "Build without tools."
   option "without-apps", "Build without apps."
@@ -52,6 +59,8 @@ class Pcl < Formula
   depends_on "libusb"
   depends_on "qt" => :recommended
   if build.with? "qt"
+    depends_on "sip" # Fix for building system
+    depends_on "pyqt" # Fix for building system
     depends_on "vtk" => [:recommended,"with-qt"]
   else
     depends_on "vtk" => :recommended
@@ -69,8 +78,8 @@ class Pcl < Formula
 
   stable do
     patch do
-      url "https://gist.githubusercontent.com/fran6co/a6e1e44b1b43b2d150cd/raw/e7953b409a6c4a21d8a9ea0b380b440e95a1254b/boost.patch"
-      sha1 "6fbce5d408df3883b5f532a1bff4d20a6e78d41a"
+      url "https://gist.githubusercontent.com/fran6co/a6e1e44b1b43b2d150cd/raw/0c4aeb301ed523c81cd57c63b0a9804d49af9848/boost.patch"
+      sha1 "af223b0d312a0404d5c9281de62f0cedd9e3651a"
     end
   end
 

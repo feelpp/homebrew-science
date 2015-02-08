@@ -3,17 +3,17 @@ class Bedops < Formula
   #doi "10.1093/bioinformatics/bts277"
   #tag "bioinformatics"
 
-  url "https://github.com/bedops/bedops/archive/v2.4.3.tar.gz"
-  sha1 "d9304c63f53cb948e59fe04b0ea96c3ea4da1da3"
+  url "https://github.com/bedops/bedops/archive/v2.4.7.tar.gz"
+  sha1 "972e16cd1dc9d3d0ad4432e31289264398b57ece"
 
   head 'https://github.com/bedops/bedops.git'
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
     cellar :any
-    sha1 "a11fa843cf57a66cc8df65c9258589678a162790" => :yosemite
-    sha1 "aa9862870a8b866d3fa4cea6ec50d16107ecbe83" => :mavericks
-    sha1 "edd6cbf28e1c1f9f4db6fcec8ce373bfc1e12554" => :mountain_lion
+    sha1 "b047b7d458bf751fb46045d6fa8e3d1a52a91eef" => :yosemite
+    sha1 "c6f7d47e30777f7707961e59f5baa8caafcbcf8f" => :mavericks
+    sha1 "2f9c45d2b58c6a1522672269e403b89f35903e56" => :mountain_lion
   end
 
   env :std
