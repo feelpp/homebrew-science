@@ -30,12 +30,6 @@ class Gmsh < Formula
   depends_on "opencascade" => :recommended
   depends_on 'fltk' => :optional
 
-  bottle do
-    root_url 'http://feelpp-bottles.u-strasbg.fr/'
-    cellar :any
-    sha1 "73806c61571e482f530d81465fb786f13dbdef89" => :mavericks
-  end
-
   def install
     if not build.head? and (build.with? "petsc" or build.with? "slepc")
       onoe "stable is incompatible with PETSc/SLEPc 3.5.2. Build with --HEAD."

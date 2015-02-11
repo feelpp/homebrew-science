@@ -24,12 +24,6 @@ class Mumps < Formula
 
   depends_on :fortran
 
-  bottle do
-    root_url 'http://feelpp-bottles.u-strasbg.fr/'
-    revision 1
-    sha1 "4e10f45da8741b66a40b77b4f2a0013f334dee24" => :mavericks
-   end
-
   def install
     if OS.mac?
       # Building dylibs with mpif90 causes segfaults on 10.8 and 10.10. Use gfortran.
