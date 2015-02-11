@@ -26,9 +26,6 @@ class Petsc < Formula
 
   depends_on "openssl"
 
-#  depends_on "superlu_dist" => :recommended
-  depends_on "hdf5"         => [:recommended, 'enable-parallel']
-
   depends_on "superlu"      => :recommended
   depends_on "superlu_dist" => :recommended
 
