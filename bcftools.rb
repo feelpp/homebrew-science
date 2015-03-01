@@ -1,10 +1,18 @@
-require "formula"
-
 class Bcftools < Formula
-  homepage "https://github.com/samtools/bcftools"
-  url "https://github.com/samtools/bcftools/archive/1.1.tar.gz"
-  sha1 "550596839eae7a4ab29411504fdab23f715bb4c8"
+  homepage "http://www.htslib.org/"
+  # tag "bioinformatics"
+
+  url "https://github.com/samtools/bcftools/archive/1.2.tar.gz"
+  sha1 "fa6280426ae50acd70b98aa6acce3d0375c419e9"
   head "https://github.com/samtools/bcftools.git"
+
+  bottle do
+    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    cellar :any
+    sha1 "8cfb381d2fb4521a3750084a6c67790a0b248ffa" => :yosemite
+    sha1 "3a216df0a0f34ab4187d082523b3c0bfef11eace" => :mavericks
+    sha1 "628e8bd74cd72548fb3907cb75e1e9bd65e512c3" => :mountain_lion
+  end
 
   depends_on "htslib"
 

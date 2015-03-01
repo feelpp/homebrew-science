@@ -1,20 +1,19 @@
-require "formula"
-
 class Samtools < Formula
-  homepage "http://samtools.sourceforge.net/"
-  #doi "10.1093/bioinformatics/btp352"
-  #tag "bioinformatics"
-  head "https://github.com/samtools/samtools.git"
+  homepage "http://www.htslib.org/"
+  # doi "10.1093/bioinformatics/btp352"
+  # tag "bioinformatics"
 
-  url "https://github.com/samtools/samtools/archive/1.1.tar.gz"
-  sha1 "ca446ec24eabd2f71605dde55a787f182cb50f13"
+  url "https://github.com/samtools/samtools/archive/1.2.tar.gz"
+  sha1 "9fabb4903b9d1521aeea8a5538e64aefe8e85526"
+
+  head "https://github.com/samtools/samtools.git"
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
     cellar :any
-    sha1 "357b85ba2c27f240446812dc6d9b1914eaee20ea" => :yosemite
-    sha1 "bfc5a0bf7e3a847a4dc35b4497ce3156f7d5e128" => :mavericks
-    sha1 "4dad7a93f91501e72546bfabd84fdccb3c785e37" => :mountain_lion
+    sha1 "de1ad3b2b528b175bdfcf0e78ac923da8187c7de" => :yosemite
+    sha1 "37fca3fb8113838ae9178c2fc17043e9e3e42791" => :mavericks
+    sha1 "e4d41de74cd32b2d88519e16f08abad025955582" => :mountain_lion
   end
 
   option "with-dwgsim", "Build with Whole Genome Simulation"

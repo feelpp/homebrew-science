@@ -2,22 +2,22 @@ class Trinity < Formula
   homepage "https://trinityrnaseq.github.io"
   # doi "10.1038/nbt.1883"
   # tag "bioinformatics"
-  url "https://github.com/trinityrnaseq/trinityrnaseq/archive/v2.0.2.tar.gz"
-  sha1 "2245a03d02b2b47cee012fefe13d39d1ada4cbf0"
+
+  url "https://github.com/trinityrnaseq/trinityrnaseq/archive/v2.0.4.tar.gz"
+  sha1 "c61ea4871d2b5e45f9df9e547c20ec5da0cb340b"
   head "https://github.com/trinityrnaseq/trinityrnaseq.git"
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    revision 2
-    sha1 "10116f6c9729d299408c13682bb1af301e1fea21" => :yosemite
-    sha1 "48657ef1bb9102a6413c4d3abc1589b03b40b560" => :mavericks
-    sha1 "5a41ede6afcf92b88eeddff2f5e5e85da09bbe2a" => :mountain_lion
+    sha1 "fb1453f377c9cfcd652064df4e3a47d4b79141d7" => :yosemite
+    sha1 "997c097fc8b634c8c2f069082b2ce2aee671b120" => :mavericks
+    sha1 "324d435256637fe0059af339703a22b2444c2fbd" => :mountain_lion
   end
 
   depends_on "bowtie"
   depends_on "express"
-  depends_on "samtools-0.1"
-  depends_on :java => "1.6"
+  depends_on "samtools"
+  depends_on :java => "1.7"
 
   needs :openmp
 
@@ -44,10 +44,18 @@ class Trinity < Formula
     EOS
   end
 
+  def caveats; <<-EOS.undent
+    Trinity only officially supports Java 1.7. To skip this check pass
+    the option --bypass_java_version_check to Trinity. A specific Java version
+    may also be set via environment variable:
+      JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+    EOS
+  end
+
   test do
     cp_r Dir["#{prefix}/sample_data/test_Trinity_Assembly/*.fq.gz"], "."
     system "#{bin}/Trinity",
-      "--no_distributed_trinity_exec",
+      "--no_distributed_trinity_exec", "--bypass_java_version_check",
       "--seqType", "fq", "--max_memory", "1G", "--SS_lib_type", "RF",
       "--left", "reads.left.fq.gz,reads2.left.fq.gz",
       "--right", "reads.right.fq.gz,reads2.right.fq.gz"

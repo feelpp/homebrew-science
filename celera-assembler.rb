@@ -5,17 +5,15 @@ class CeleraAssembler < Formula
   #   "miller2008aggressive" => "10.1093/bioinformatics/btn548"
   # tag "bioinformatics"
 
-  url "https://downloads.sourceforge.net/project/wgs-assembler/wgs-assembler/wgs-8.2/wgs-8.2.tar.bz2"
-  sha1 "a3c299e145bcdd1492bab4a677a445a308509e57"
+  url "https://downloads.sourceforge.net/project/wgs-assembler/wgs-assembler/wgs-8.3/wgs-8.3rc1.tar.bz2"
+  sha1 "be8e92dc48cdabf64992bc2e4d8b7a39b2f95ff7"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "3a85819d72beed36990f358167bcbd0f28faea6b" => :yosemite
-    sha1 "dc1c3f744d0ce05e79fcadb6561f5b91d22bf56b" => :mavericks
-    sha1 "97a5c61310b924a03bb1d587f256f5ac35cb425c" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha1 "2a80ee6d9d44414259b847007a3b7e3c499946f4" => :yosemite
+    sha1 "4b0bd699c4e9ff6463f4184bfe39b86dc707b3dc" => :mavericks
+    sha1 "1d667e16abea494ea04f3cf50109144e6260973f" => :mountain_lion
   end
-
-  depends_on "samtools-0.1"
 
   # Fails with clang: https://sourceforge.net/p/wgs-assembler/bugs/262/
   needs :openmp

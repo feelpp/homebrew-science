@@ -2,14 +2,14 @@ require "formula"
 
 class Vips < Formula
   homepage "http://www.vips.ecs.soton.ac.uk/"
-  url "http://www.vips.ecs.soton.ac.uk/supported/7.42/vips-7.42.1.tar.gz"
-  sha1 "b31576c776b9590e3e9ae06c0d1849ebd7775997"
+  url "http://www.vips.ecs.soton.ac.uk/supported/7.42/vips-7.42.2.tar.gz"
+  sha1 "3867242fc9023f943cc4dac09a71bde0dc36cae3"
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "dd53d46bc27968f97c3c4e818f6f0151ac980312" => :yosemite
-    sha1 "e0ef1938bee08bb7d929d1036e15442c183f644e" => :mavericks
-    sha1 "35717ed244e370645f7cdaa3112a2a15cc6afbd8" => :mountain_lion
+    sha1 "fbd9aeaf7f1fe2bfb6c6767d85e584f9e86e330f" => :yosemite
+    sha1 "a48e24b9f314b23fce06693e76958f8d62d63114" => :mavericks
+    sha1 "1f364bb02abafc5275a878e8e0e588a1c82e482f" => :mountain_lion
   end
 
   option "without-check", "Disable build time checks (not recommended)"
