@@ -34,7 +34,7 @@ class Petsc < Formula
   depends_on "scalapack"    => :recommended
   depends_on "mumps"        => :recommended # mumps is built with mpi by default
   depends_on "hypre"        => ["with-mpi", :recommended]
-  depends_on "sundials"     => ["with-mpi", :recommended]
+  depends_on "sundials"     => ["with-mpi", "without-check", :recommended]
   depends_on "hdf5"         => ["with-mpi", :recommended]
   depends_on "hwloc"        => :recommended
   depends_on "suite-sparse" => :recommended

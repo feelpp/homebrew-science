@@ -28,11 +28,6 @@ class Hdf5 < Formula
   depends_on "szip"
   depends_on :mpi => [:optional, :cc, :cxx, :f90]
 
-  bottle do
-    root_url 'http://feelpp-bottles.u-strasbg.fr/'
-    sha1 "6d00d17301fb798f06e3f463b836cad7a575dc03" => :mavericks
-  end
-
   def install
     ENV.universal_binary if build.universal?
 
