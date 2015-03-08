@@ -9,15 +9,15 @@ class R < Formula
   homepage "http://www.r-project.org/"
   url "http://cran.rstudio.com/src/base/R-3/R-3.1.2.tar.gz"
   mirror "http://cran.r-project.org/src/base/R-3/R-3.1.2.tar.gz"
-  sha1 "93809368e5735a630611633ac1fa99010020c5d6"
+  sha256 "bcd150afcae0e02f6efb5f35a6ab72432be82e849ec52ce0bb89d8c342a8fa7a"
   revision 1
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    revision 2
-    sha1 "4adae88cc1e44d1a29e1b2a77e46cb0e8360f0ac" => :yosemite
-    sha1 "98d84a17648b3d51094594dbd148a8e5139043b3" => :mavericks
-    sha1 "6c4df124afaf389458c89b1ee322feb2a56910fa" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    revision 3
+    sha256 "e54773280cddf8a096b2457725ca1e4932002d501a56ea52c633183cff49ad46" => :yosemite
+    sha256 "f6a31b1f3583195b135851cdb237300fbc0906e8ffe4bfd128db0764117419af" => :mavericks
+    sha256 "d67674d0e7d2bca77d70fcc7fa0753113253af02064af0c29fa6868c7ee904e3" => :mountain_lion
   end
 
   head do
@@ -43,7 +43,7 @@ class R < Formula
   # This is the same script that Debian packages use.
   resource "completion" do
     url "https://rcompletion.googlecode.com/svn-history/r31/trunk/bash_completion/R", :using => :curl
-    sha1 "ee39aa2de6319f41025cf8f618197d7efc16097c"
+    sha256 "2b5cac905ab5dd4889e8a356bbdf2dddff60f718a4104b169e48ca856716e705"
     version "r31"
   end
 
@@ -53,6 +53,7 @@ class R < Formula
     args = [
       "--prefix=#{prefix}",
       "--with-libintl-prefix=#{Formula["gettext"].opt_prefix}",
+      "--enable-memory-profiling",
     ]
 
     if OS.linux?
@@ -107,7 +108,7 @@ class R < Formula
       system "make"
       ENV.deparallelize # Serialized installs, please
       system "make check 2>&1 | tee make-check.log" if build.with? "check"
-      system "make install"
+      system "make", "install"
 
       # Link binaries, headers, libraries, & manpages from the Framework
       # into the normal locations
@@ -136,14 +137,13 @@ class R < Formula
         include.install_symlink prefix/"R.framework/Versions/3.1/Resources/include/Rmath.h"
       end
     end
-
   end
 
   test do
     if build.without? "librmath-only"
       (testpath / "test.R").write("print(1+1);")
       system "r < test.R --no-save"
-      system "rscript test.R"
+      system "rscript", "test.R"
     end
   end
 

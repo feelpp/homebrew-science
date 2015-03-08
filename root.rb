@@ -1,26 +1,16 @@
-require "formula"
-
 class Root < Formula
   homepage "http://root.cern.ch"
-  version "5.34.25"
-  sha1 "dccd5b10c136c53f2ef94a7503b569daba6422f8"
+  version "5.34.26"
+  sha1 "f9013c37c37946b79dce777d731ccb64e5b28bb8"
   url "ftp://root.cern.ch/root/root_v#{version}.source.tar.gz"
   mirror "http://ftp.riken.jp/pub/ROOT/root_v#{version}.source.tar.gz"
   head "https://github.com/root-mirror/root.git", :branch => "v5-34-00-patches"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    revision 2
-    sha1 "6f4d211fb0d98d7c40df8737251ca110432b4274" => :yosemite
-    sha1 "b3e05b2ecf4b3905c6239fff7733a2e7c81fa24d" => :mavericks
-    sha1 "5587405366e3dc3c40e3c4d86ffef4d95134961c" => :mountain_lion
-  end
-
-  # Fixes compilation with recent xrootd; see:
-  # https://sft.its.cern.ch/jira/browse/ROOT-6998?
-  patch do
-    url "https://sft.its.cern.ch/jira/secure/attachment/17857/0001-TNetXNGFile-explicitly-include-XrdVersion.hh.patch"
-    sha1 "ded7da0a65ccd481dfd5639f7dcd899afeb2244f"
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha1 "94980703c0d054341efc6e9fbb51affbd8f93190" => :yosemite
+    sha1 "34b2ddd5e9f9432f6f327b16cbddcce19053adb0" => :mavericks
+    sha1 "351cf0629eea5352640e264de2b9e1dfe6f12e63" => :mountain_lion
   end
 
   option "with-qt", "Build with Qt graphics backend and GSI's Qt integration"

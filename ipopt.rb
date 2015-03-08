@@ -1,15 +1,15 @@
 class Ipopt < Formula
   homepage "https://projects.coin-or.org/Ipopt"
-  url "http://www.coin-or.org/download/source/Ipopt/Ipopt-3.11.10.tgz"
-  sha1 "50a28e257ddbf2df0cdc2d1edaf55cd021d83cb5"
+  url "http://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.1.tgz"
+  sha1 "cbb197f6a90e0e1d64e438a5159da5f33f06aa08"
   head "https://projects.coin-or.org/svn/Ipopt/trunk", :using => :svn
   revision 1
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "26280861eec2ab79ec9817c72391620fc7648076" => :yosemite
-    sha1 "d601b717f9cf9a3a7898dbc3834795681f861444" => :mavericks
-    sha1 "97146c29a7ba532f7c60ec9b10e01092c0540891" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha1 "f029ffd9a451fcbd9084990ca5219a4ef88621b8" => :yosemite
+    sha1 "95239d26cac57d0b1ea542d74369d7111adde128" => :mavericks
+    sha1 "49e3f04ec304f2ccc9ebd7fca47a3698af941c8e" => :mountain_lion
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
