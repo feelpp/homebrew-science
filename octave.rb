@@ -1,27 +1,18 @@
 class Octave < Formula
   homepage "https://www.gnu.org/software/octave/index.html"
-  url "http://ftpmirror.gnu.org/octave/octave-3.8.1.tar.bz2"
-  mirror "https://ftp.gnu.org/gnu/octave/octave-3.8.1.tar.bz2"
-  sha1 "2951aeafe58d562672feb80dd8c3cfe0643a5087"
-  head "http://www.octave.org/hg/octave", :branch => "gui-release", :using => :hg
-  revision 1
+  url "http://ftpmirror.gnu.org/octave/octave-3.8.2.tar.bz2"
+  mirror "https://ftp.gnu.org/gnu/octave/octave-3.8.2.tar.bz2"
+  sha256 "83bbd701aab04e7e57d0d5b8373dd54719bebb64ce0a850e69bf3d7454f33bae"
+  head "http://www.octave.org/hg/octave", :branch => "default", :using => :hg
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    revision 4
-    sha1 "4f1b7ee35c095046277ce9ec29b863e71eb3e670" => :yosemite
-    sha1 "fd53f7510ee393c1fcb8e7d10554b907fefed10d" => :mavericks
-    sha1 "ff6273d0cbea639f12a27a35e515130f5d529626" => :mountain_lion
+    sha256 "dc908422d6642e975030bc1bc8cb8627263ac3d1caae3a08e852eaa1611045cb" => :yosemite
+    sha256 "67184251fc692ca7db6d339a04e1043ea18386aec2ab90c286bba55955c1c21b" => :mavericks
+    sha256 "6534179f8066aaa4aa1792067e0038b1a2868b4275738e9a10ef5b0086130689" => :mountain_lion
   end
 
   stable do
-    # Allows the arrow keys to page through command history.
-    # See: https://savannah.gnu.org/bugs/?41337
-    patch do
-      url "https://savannah.gnu.org/bugs/download.php?file_id=30734"
-      sha1 "e8fb39b7ca1525d67e6d24f3c189b441b60fcdab"
-    end
-
     # Allows clang 3.5 to compile with a recent libc++ release.
     # See: https://savannah.gnu.org/bugs/?43298
     patch do
@@ -53,7 +44,7 @@ class Octave < Formula
   skip_clean "share/info" # Keep the docs
 
   option "without-check",          "Skip build-time tests (not recommended)"
-  option "with-docs",              "Build documentation (requires LaTeX)"
+  option "without-docs",           "Don't build documentation"
   option "without-gui",            "Do not build the experimental GUI"
   option "with-native-graphics",   "Use native OpenGL/FLTKgraphics (does not work with the GUI)"
   option "without-gnuplot",        "Do not use gnuplot graphics"
@@ -73,11 +64,7 @@ class Octave < Formula
 
   depends_on "pkg-config"     => :build
   depends_on "gnu-sed"        => :build
-
-  if build.with? "docs"
-    depends_on "texinfo"      => :build
-    depends_on :tex           => :build
-  end
+  depends_on "texinfo"        => :build if build.with? "docs"
 
   head do
     depends_on "bison"        => :build

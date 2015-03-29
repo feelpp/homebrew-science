@@ -3,23 +3,26 @@ class Trinity < Formula
   # doi "10.1038/nbt.1883"
   # tag "bioinformatics"
 
-  url "https://github.com/trinityrnaseq/trinityrnaseq/archive/v2.0.4.tar.gz"
-  sha1 "c61ea4871d2b5e45f9df9e547c20ec5da0cb340b"
+  url "https://github.com/trinityrnaseq/trinityrnaseq/archive/v2.0.6.tar.gz"
+  sha256 "e0c3ec885fdcfe3422ea492372518ddf5d1aed3daa187c69c4254516b0845de1"
   head "https://github.com/trinityrnaseq/trinityrnaseq.git"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "fb1453f377c9cfcd652064df4e3a47d4b79141d7" => :yosemite
-    sha1 "997c097fc8b634c8c2f069082b2ce2aee671b120" => :mavericks
-    sha1 "324d435256637fe0059af339703a22b2444c2fbd" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha256 "f9541b1af75e7159212656ca4150d1a31463731f1fd750ca402f902709436c75" => :yosemite
+    sha256 "519e843cd74610987b2fa6757a17b1d565d147904ceb0c0287aec1eafad90bb7" => :mavericks
+    sha256 "f79aeab456fad74f45276ff723e05c14783b81083cc87ff18fa72209e7485ade" => :mountain_lion
   end
 
   depends_on "bowtie"
-  depends_on "express"
+  depends_on "express" => :recommended
   depends_on "samtools"
-  depends_on :java => "1.7"
 
   needs :openmp
+
+  fails_with :llvm do
+    cause 'error: unrecognized command line option "-std=c++0x"'
+  end
 
   def install
     ENV.deparallelize

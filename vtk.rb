@@ -1,18 +1,8 @@
-require "formula"
-
 class Vtk < Formula
   homepage "http://www.vtk.org"
-  url "http://www.vtk.org/files/release/6.1/VTK-6.1.0.tar.gz"
-  mirror "http://fossies.org/linux/misc/VTK-6.1.0.tar.gz"
-  sha1 "91d1303558c7276f031f8ffeb47b4233f2fd2cd9"
-  revision 1
-
-  bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "745eb8b7c7eeb14b7226d7f075560625a8fd940d" => :yosemite
-    sha1 "3f38f458c793b8fcb3c8b08e1f6174ec74e05a15" => :mavericks
-    sha1 "795331c1241eaee7b41aec442e9d55cffb7ce84c" => :mountain_lion
-  end
+  url "http://www.vtk.org/files/release/6.2/VTK-6.2.0.tar.gz"
+  mirror "https://fossies.org/linux/misc/VTK-6.2.0.tar.gz"
+  sha256 "efa3ddfba118f3988ead08bdaf9441d33f23a4245d78511a6ce7f267b4f13277"
 
   head "https://github.com/Kitware/VTK.git"
 
@@ -42,7 +32,7 @@ class Vtk < Formula
   depends_on "matplotlib" => :python if build.with? "matplotlib"
 
   # If --with-qt and --with-python, then we automatically use PyQt, too!
-  if build.with? "qt" or build.with? "qt5"
+  if build.with?("qt") || build.with?("qt5")
     if build.with? "python"
       depends_on "sip"
       depends_on "pyqt"
@@ -71,7 +61,7 @@ class Vtk < Formula
       args << "-DBUILD_TESTING=OFF"
     end
 
-    if build.with? "qt" or build.with? "qt5" or build.with? "qt-extern"
+    if build.with?("qt") || build.with?("qt5") || build.with?("qt-extern")
       args << "-DVTK_QT_VERSION:STRING=5" if build.with? "qt5"
       args << "-DVTK_Group_Qt=ON"
     end
@@ -143,7 +133,6 @@ class Vtk < Formula
 
       EOS
     end
-    return s.empty? ? nil : s
+    s.empty? ? nil : s
   end
-
 end

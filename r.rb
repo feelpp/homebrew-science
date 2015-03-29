@@ -7,17 +7,15 @@ end
 
 class R < Formula
   homepage "http://www.r-project.org/"
-  url "http://cran.rstudio.com/src/base/R-3/R-3.1.2.tar.gz"
-  mirror "http://cran.r-project.org/src/base/R-3/R-3.1.2.tar.gz"
-  sha256 "bcd150afcae0e02f6efb5f35a6ab72432be82e849ec52ce0bb89d8c342a8fa7a"
-  revision 1
+  url "http://cran.rstudio.com/src/base/R-3/R-3.1.3.tar.gz"
+  mirror "http://cran.r-project.org/src/base/R-3/R-3.1.3.tar.gz"
+  sha256 "07e98323935baa38079204bfb9414a029704bb9c0ca5ab317020ae521a377312"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    revision 3
-    sha256 "e54773280cddf8a096b2457725ca1e4932002d501a56ea52c633183cff49ad46" => :yosemite
-    sha256 "f6a31b1f3583195b135851cdb237300fbc0906e8ffe4bfd128db0764117419af" => :mavericks
-    sha256 "d67674d0e7d2bca77d70fcc7fa0753113253af02064af0c29fa6868c7ee904e3" => :mountain_lion
+    sha256 "ded0eb716b80d099999b61b4c2b54fc51f5b3097bdb7c0934cf0b6dbc8366f8f" => :yosemite
+    sha256 "388232be637e3a35b58e829f8a8ef0d05ae2933d84ed92c9ebef488246407506" => :mavericks
+    sha256 "ba6aa9cdd484947ffbcdc6549f7884c089eb15c1eba44921d9fb6b6c6dfddb19" => :mountain_lion
   end
 
   head do
@@ -63,7 +61,6 @@ class R < Formula
       ENV.remove "LDFLAGS", "-L#{HOMEBREW_PREFIX}/lib"
     else
       args << "--enable-R-framework"
-      ENV.append_to_cflags "-D__ACCELERATE__" if build.without? "openblas"
 
       # Disable building against the Aqua framework with CLT >= 6.0.
       # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63651
@@ -85,6 +82,7 @@ class R < Formula
       ENV.append "LDFLAGS", "-L#{Formula["openblas"].opt_lib}"
     elsif build.with? "accelerate"
       args << "--with-blas=-framework Accelerate" << "--with-lapack"
+      ENV.append_to_cflags "-D__ACCELERATE__" if ENV.compiler != :clang
       # Fall back to Rblas without-accelerate or -openblas
     end
 
@@ -133,8 +131,8 @@ class R < Formula
       system "make", "install"
 
       if OS.mac?
-        lib.install_symlink prefix/"R.framework/Versions/3.1/Resources/lib/libRmath.dylib"
-        include.install_symlink prefix/"R.framework/Versions/3.1/Resources/include/Rmath.h"
+        lib.install_symlink Dir[prefix/"R.framework/Versions/[0-9]*/Resources/lib/libRmath.dylib"]
+        include.install_symlink Dir[prefix/"R.framework/Versions/[0-9]*/Resources/include/Rmath.h"]
       end
     end
   end
@@ -149,13 +147,23 @@ class R < Formula
 
   def caveats
     if build.without? "librmath-only" then <<-EOS.undent
+      If you would like your installed R packages to survive minor R upgrades,
+      you can run:
+        mkdir -p ~/Library/R/#{xy}/library
+      so R will preferentially install packages under your home directory
+      instead of in the Cellar.
+
       To enable rJava support, run the following command:
         R CMD javareconf JAVA_CPPFLAGS=-I/System/Library/Frameworks/JavaVM.framework/Headers
-      If you"ve installed a version of Java other than the default, you might need to instead use:
+      If you've installed a version of Java other than the default, you might need to instead use:
         R CMD javareconf JAVA_CPPFLAGS="-I/System/Library/Frameworks/JavaVM.framework/Headers -I/Library/Java/JavaVirtualMachines/jdk<version>.jdk/"
         (where <version> can be found by running `java -version` or `locate jni.h`)
       EOS
     end
+  end
+
+  def xy
+    stable.version.to_s.slice(/(\d.\d)/)
   end
 end
 

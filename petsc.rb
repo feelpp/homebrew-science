@@ -6,10 +6,11 @@ class Petsc < Formula
   revision 2
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "a0ad9f6652d864303516aad9b746a37e7bbd699f" => :yosemite
-    sha1 "b47c5b0079833bdab9575c04f755e6b2d1e442dc" => :mavericks
-    sha1 "4772fd8e2e72930c350b5d9b3b69625399edf86e" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    revision 7
+    sha256 "3d29c06d60491664a9d76fe52ab01b9505bbcbeb150b5d6268ead84c82462696" => :yosemite
+    sha256 "629d30bda1bdc8479e8bc7cd8d95cdc04b0b1df6df7accb273287229edaf6267" => :mavericks
+    sha256 "ba95edc4e890ef2d2dc9a6464d435462c4f81e57777e4477a72597c59d278f02" => :mountain_lion
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
@@ -25,7 +26,6 @@ class Petsc < Formula
   depends_on "cmake" => :build
 
   depends_on "openssl"
-
   depends_on "superlu"      => :recommended
   depends_on "superlu_dist" => :recommended
 
@@ -40,6 +40,7 @@ class Petsc < Formula
   depends_on "suite-sparse" => :recommended
   depends_on "netcdf"       => ["with-fortran", :recommended]
   depends_on "fftw"         => ["with-mpi", "with-fortran", :recommended]
+  depends_on "openblas"     => :optional
 
   #TODO: add ML, YAML dependencies when the formulae are available
 
@@ -66,6 +67,9 @@ class Petsc < Formula
            ]
     args << ("--with-debugging=" + ((build.with? "debug") ? "1" : "0"))
 
+    # We don't dowload anything, don't need to build against openssl
+    args << "--with-ssl=0"
+
     if build.with? "superlu_dist"
       slud = Formula["superlu_dist"]
       args << "--with-superlu_dist-include=#{slud.opt_include}/superlu_dist"
@@ -87,6 +91,13 @@ class Petsc < Formula
     args << "--with-scalapack-dir=#{oprefix("scalapack")}" if build.with? "scalapack"
     args << "--with-mumps-dir=#{oprefix("mumps")}" if build.with? "mumps"
     args << "--with-x=0" if build.without? "x11"
+
+    # if build with openblas, need to provide lapack as well.
+    if build.with? "openblas"
+      exten = (OS.mac?) ? "dylib" : "so"
+      args << ("--with-blas-lib=#{Formula["openblas"].opt_lib}/libopenblas.#{exten}")
+      args << ("--with-lapack-lib=#{Formula["openblas"].opt_lib}/libopenblas.#{exten}")
+    end
 
     # configure fails if those vars are set differently.
     ENV["PETSC_DIR"] = Dir.getwd
@@ -129,8 +140,8 @@ class Petsc < Formula
                                 "#{prefix}/#{petsc_arch}/include/finclude",
                                 "#{prefix}/#{petsc_arch}/include/petsc-private"
     prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
-    lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.a"],
-                        Dir["#{prefix}/#{petsc_arch}/lib/*.dylib"]
+    # symlink only files (don't symlink pkgconfig as it won't symlink to opt/lib)
+    lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.*"]
     share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
   end
 

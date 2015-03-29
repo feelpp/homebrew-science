@@ -3,15 +3,16 @@ require "formula"
 class Paml < Formula
   homepage "http://abacus.gene.ucl.ac.uk/software/paml.html"
   url "http://abacus.gene.ucl.ac.uk/software/paml4.8a.tgz"
-  sha1 "6160f441577a2bb82afd793e7691c42bd5491376"
+  sha256 "e45f37e1cfc1c24de276266a7bc2926fc12eac9602c56c1c025bc8f6dfb737f3"
   version "4.8a"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "ce419b8e5908fde0054ab5869534fde7a4e346c1" => :yosemite
-    sha1 "219f8dfb87f93093fad1ab8f28a04d6938f182cd" => :mavericks
-    sha1 "37142a7141b15cf2af6871525cc5491ab42100f6" => :mountain_lion
+    revision 1
+    sha256 "578a692dadffed72b1845b1e64ba9e1561ff7fcc79c986c4c2e9e9731ad2e69e" => :yosemite
+    sha256 "a56081655e0a7e59e6266c385d1a7ad7183b0223da698c660a64be66627a71f9" => :mavericks
+    sha256 "b50727426a1324fb3e945e19e1453a9587355e4961d74c2ef04f9f18c3470233" => :mountain_lion
   end
 
   def install

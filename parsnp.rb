@@ -6,19 +6,20 @@ class Parsnp < Formula
   head "https://github.com/marbl/parsnp.git"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "af0037b92270e74ceb80b73786ef48eb59b84631" => :yosemite
-    sha1 "7c06289d5ed3f3a82ca3249f3be52e99076afc7c" => :mavericks
-    sha1 "7d6a77928bef48b20e3a7a83704949a161fe0391" => :mountain_lion
+    revision 1
+    sha256 "17db88e2d32cf5305289c6f01efc7c5aa84322b320c88a5fb3b1edb08af38d66" => :yosemite
+    sha256 "2af68fb53847adc2dfaccae9de21298f158e818afb2672c64d0b092298440030" => :mavericks
+    sha256 "a29141c0299d5fc72be88c9b29b1501ecba66b29d79e3c756d70a13c1bd1bac2" => :mountain_lion
   end
 
   if OS.mac?
     url "https://github.com/marbl/parsnp/releases/download/v1.1/parsnp-OSX64-v1.1.tar.gz"
-    sha1 "230387082702a57ad41989507a8c1f7c63d4dfd0"
+    sha256 "e11dd913b9a4ba1a87c29fd38b101119ce0dda3180fdc4ec0382bc4e8438366d"
   elsif OS.linux?
     url "https://github.com/marbl/parsnp/releases/download/v1.1/parsnp-Linux64-v1.1.tar.gz"
-    sha1 "443d2db8b498081b1c608ce8641d25dfcc39ad48"
+    sha256 "d530b2be99b9a21acaa4e66e00adc7e1bd602440c67e86c73b8821e5327e8813"
   end
 
   def install

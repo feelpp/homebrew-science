@@ -5,10 +5,10 @@ class Hdf5 < Formula
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    revision 1
-    sha1 "bb05237bc790a3ee91fe29ee156fca1e99bede36" => :yosemite
-    sha1 "52c328ec0133756690f6d38ac24ed943806e85fb" => :mavericks
-    sha1 "b7e1cd355a8d64bffc87b0143ce207ca8541a0ec" => :mountain_lion
+    revision 2
+    sha256 "167816e82ce219b054419289c29debb70638ae25d8013c53485d1e31868e3905" => :yosemite
+    sha256 "54de74a2a43c4802ab5c94f406655af72058f707366799611a5d7dfb8194952e" => :mavericks
+    sha256 "bcbe32e875373859b9871cf33c2c0f152d7fcad052fd83d9a2f533e19eb04a8e" => :mountain_lion
   end
 
   deprecated_option "enable-fortran" => "with-fortran"
@@ -19,9 +19,10 @@ class Hdf5 < Formula
 
   option :universal
   option "with-check", "Run build-time tests"
-  option "with-threadsafe", "Trade performance and C++ or Fortran support for thread safety"
-  option "with-fortran2003", "Compile Fortran 2003 bindings. Requires with-fortran"
-  option "with-cxx", "Compile C++ bindings"
+  option "with-threadsafe", "Trade performance for C API thread-safety"
+  option "with-fortran2003", "Compile Fortran 2003 bindings (requires --with-fortran)"
+  option "with-mpi", "Compile with parallel support (unsupported with thread-safety)"
+  option "without-cxx", "Disable the C++ interface"
   option :cxx11
 
   depends_on :fortran => :optional
@@ -41,25 +42,25 @@ class Hdf5 < Formula
       --enable-filters=all
       --enable-static=yes
       --enable-shared=yes
+      --enable-unsupported
     ]
+    args << "--enable-threadsafe" << "--with-pthread=/usr" if build.with? "threadsafe"
 
-    args << "--enable-parallel" if build.with? :mpi
-
-    if build.with? "threadsafe"
-      fail "--enable-threadsafe conflicts with Fortran bindings" if build.with? :fortran
-      fail "--enable-threadsafe conflicts with C++ support" if build.cxx11? || build.with?("cxx")
-      args.concat %w[--with-pthread=/usr --enable-threadsafe]
+    if build.with? "cxx"
+      args << "--enable-cxx"
     else
-      ENV.cxx11 if build.cxx11?
-      args << "--enable-cxx" if build.cxx11? || build.with?("cxx")
-
-      if build.with? :fortran
-        args << "--enable-fortran"
-        args << "--enable-fortran2003" if build.with? "fortran2003"
-      end
+      args << "--disable-cxx"
     end
 
-    if build.with? :mpi
+    if build.with? "fortran"
+      args << "--enable-fortran"
+      args << "--enable-fortran2003" if build.with? "fortran2003"
+    else
+      args << "--disable-fortran"
+    end
+
+    if build.with? "mpi"
+      args << "--enable-parallel"
       ENV["CC"] = ENV["MPICC"]
       ENV["CXX"] = ENV["MPICXX"]
       ENV["FC"] = ENV["MPIFC"]
@@ -67,19 +68,19 @@ class Hdf5 < Formula
 
     system "./configure", *args
     system "make"
-    system "make", "check" if build.with? "check"
+    system "make", "check" if build.with?("check") || build.bottle?
     system "make", "install"
   end
 
   test do
-    (testpath/"test.cpp").write <<-EOS
-    #include <stdio.h>
-    #include "H5public.h"
-    int main()
-    {
-      printf(\"%d.%d.%d\\n\",H5_VERS_MAJOR,H5_VERS_MINOR,H5_VERS_RELEASE);
-      return 0;
-    }
+    (testpath/"test.cpp").write <<-EOS.undent
+      #include <stdio.h>
+      #include "H5public.h"
+      int main()
+      {
+        printf(\"%d.%d.%d\\n\",H5_VERS_MAJOR,H5_VERS_MINOR,H5_VERS_RELEASE);
+        return 0;
+      }
     EOS
     system "h5cc", "test.cpp"
     assert `./a.out`.include?(version)

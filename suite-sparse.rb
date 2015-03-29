@@ -5,11 +5,12 @@ class SuiteSparse < Formula
   sha1 "2fec3bf93314bd14cbb7470c0a2c294988096ed6"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "da49ff267c1d282636903c56e055c02f6a7ba960" => :yosemite
-    sha1 "842474e5a2826e0c97af83673ae8225038ed194f" => :mavericks
-    sha1 "9a878b9b12423338ef1d7b6f8ab7d55e8754a635" => :mountain_lion
+    revision 1
+    sha256 "eb1d00f07d210c490cdf8bdf6a4530972a95090d4edbe69b73d720bd3d70d3b3" => :yosemite
+    sha256 "08c6b1a8c071bb340d3073fddffc44ac314a6e44ac54a14a2ef3e3cd10a0f4d3" => :mavericks
+    sha256 "a6ca4a319b6550f56a1249d78d05efe883c90f419e3c250876af504ad8dc10d9" => :mountain_lion
   end
 
   option "with-matlab", "Install Matlab interfaces and tools"
@@ -33,12 +34,23 @@ class SuiteSparse < Formula
        "SuiteSparse_config/SuiteSparse_config.mk"
 
     make_args = ["INSTALL_LIB=#{lib}", "INSTALL_INCLUDE=#{include}"]
-    make_args << "BLAS=" + ((build.with? "openblas") ? "-L#{Formula["openblas"].opt_lib} -lopenblas" : "-framework Accelerate")
+    if build.with? "openblas"
+      make_args << "BLAS=-L#{Formula["openblas"].opt_lib} -lopenblas"
+    elsif OS.mac?
+      make_args << "BLAS=-framework Accelerate"
+    else
+      make_args << "BLAS=-lblas -llapack"
+    end
+
     make_args << "LAPACK=$(BLAS)"
     make_args += ["SPQR_CONFIG=-DHAVE_TBB",
                   "TBB=-L#{Formula["tbb"].opt_lib} -ltbb"] if build.with? "tbb"
     make_args += ["METIS_PATH=",
                   "METIS=-L#{Formula["metis4"].opt_lib} -lmetis"] if build.with? "metis4"
+
+    # Add some flags for linux
+    # -DNTIMER is needed to avoid undefined reference to SuiteSparse_time
+    make_args << "CF=-fPIC -O3 -fno-common -fexceptions -DNTIMER $(CFLAGS)" if not(OS.mac?)
 
     system "make", "default", *make_args  # Also build demos.
     lib.mkpath
