@@ -9,8 +9,8 @@ end
 
 class Gmsh < Formula
   homepage 'http://geuz.org/gmsh'
-  url 'http://geuz.org/gmsh/src/gmsh-2.8.5-source.tgz'
-  sha1 '352671f95816440ddb2099478f3e9f189e40e27a'
+  url 'http://geuz.org/gmsh/src/gmsh-2.9.1-source.tgz'
+  sha1 '32b818482a89a158bf3843c639be4be9a676d598'
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
