@@ -1,37 +1,34 @@
-# -*- mode: ruby -*-
-require 'formula'
-
 class GmshSvnStrategy < SubversionDownloadStrategy
-  def quiet_safe_system *args
-    super *args + ['--username', 'gmsh', '--password', 'gmsh']
+  def quiet_safe_system(*args)
+    super *args + ["--username", "gmsh", "--password", "gmsh"]
   end
 end
 
 class Gmsh < Formula
-  homepage 'http://geuz.org/gmsh'
-  url 'http://geuz.org/gmsh/src/gmsh-2.9.1-source.tgz'
-  sha1 '32b818482a89a158bf3843c639be4be9a676d598'
+  homepage "http://geuz.org/gmsh"
+  url "http://geuz.org/gmsh/src/gmsh-2.9.2-source.tgz"
+  sha256 "541cfb469655912380ad3dcc509c0fac5f3efd218c29da0e32c9ffdfc589aa99"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "d039d605b267aa6325cbb2b1511d437179c412ef" => :yosemite
-    sha1 "684e5d1a9697edfe66e580652394f9230e1e1662" => :mavericks
-    sha1 "7d85445c4fdb2c4524c54a222647285090a02e5b" => :mountain_lion
+    sha256 "f07372aebcf35e65f80a9a0998dd80015c77ff267a8a837a33cd41ebf13d9958" => :yosemite
+    sha256 "7d909b229d1670ff66baac584e2452b236bef2405f517bd72f6767307f351dac" => :mavericks
+    sha256 "6b0e18382376ce0fbc3cedef3e087d116c599b16c7609c2c68c37dc46fcb10a3" => :mountain_lion
   end
 
-  head 'https://geuz.org/svn/gmsh/trunk', :using => GmshSvnStrategy
+  head "https://geuz.org/svn/gmsh/trunk", :using => GmshSvnStrategy
 
   depends_on :fortran
   depends_on :mpi => [:cc, :cxx, :f90, :recommended]
-  depends_on 'cmake' => :build
+  depends_on "cmake" => :build
   depends_on "petsc" => :optional
   depends_on "slepc" => :optional
   depends_on "opencascade" => :recommended
-  depends_on 'fltk' => :optional
+  depends_on "fltk" => :optional
 
   def install
-    if not build.head? and (build.with? "petsc" or build.with? "slepc")
+    if !build.head? && ((build.with? "petsc") || (build.with? "slepc"))
       onoe "stable is incompatible with PETSc/SLEPc 3.5.2. Build with --HEAD."
       exit 1
     end
@@ -60,13 +57,13 @@ class Gmsh < Formula
     end
 
     if build.with? "slepc"
-      ENV["SLEPC_DIR"] = "#{Formula['slepc'].opt_prefix}/real"
+      ENV["SLEPC_DIR"] = "#{Formula["slepc"].opt_prefix}/real"
     else
       args << "-DENABLE_SLEPC=OFF"
     end
 
-    if (build.with? "petsc") or (build.with? "slepc")
-      args << "-DENABLE_MPI=ON" if build.with? :mpi
+    if (build.with? "petsc") || (build.with? "slepc")
+      args << "-DENABLE_MPI=ON" if build.with? "mpi"
     end
 
     # Make sure native file dialogs are used
@@ -102,7 +99,7 @@ class Gmsh < Formula
   end
 
   def caveats
-     "To use onelab.py set your PYTHONDIR to #{libexec}"
+    "To use onelab.py set your PYTHONDIR to #{libexec}"
   end
 
   test do

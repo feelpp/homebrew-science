@@ -3,27 +3,27 @@ class Sratoolkit < Formula
   # doi "10.1093/nar/gkq1019"
   # tag "bioinformatics"
 
-  url "https://github.com/ncbi/sra-tools/archive/2.4.5.tar.gz"
-  sha1 "d2acda13662feecff653d2ba1d7f8c7f321e3c15"
+  url "https://github.com/ncbi/sra-tools/archive/2.4.5-5.tar.gz"
+  sha256 "dabebdba7003862293eaab3b9d5f08018216338f1c389f2371220075feb6d986"
   head "https://github.com/ncbi/sra-tools.git"
+  version "2.4.5-5"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    revision 1
-    sha256 "f0e076f62fe7f8f49f637d18e46dbe567bfd29122347193358903639be33ac88" => :yosemite
-    sha256 "ff0903992da610367f88e53c19b86171234786f2e8c84994436bc455a8b9c4fb" => :mavericks
-    sha256 "7bcf7ee41f0dd177a72a6d0c4dab9d4fa6392a2d359d1e970fcbfe4f4f5ecf99" => :mountain_lion
+    sha256 "964d931b8e9c57bb32622d5627f914c8e0e9f54bec52e95a2429e264668cf80e" => :yosemite
+    sha256 "d67ebf5724b97eb1862a2fc5b6d2a872d2af80bbc52bf465eb69e975113c02b6" => :mavericks
+    sha256 "03a4a2de29671c99a87d738642aecedfb35fab035a238dc87bb966207c3473d5" => :mountain_lion
   end
 
   resource "ngs-sdk" do
     url "https://github.com/ncbi/ngs/archive/1.1.0.tar.gz"
-    sha1 "0386bd85f4843df0933a18b0950b97665b716ecf"
+    sha256 "1ccaf90e3a4ee66662007c1e26be0e5236ecb3ad9f4f705e7a8e1ec4d39eca25"
   end
 
   resource "ncbi-vdb" do
-    url "https://github.com/ncbi/ncbi-vdb/archive/3973c21.tar.gz"
-    sha1 "5fa5ba9bd18c8d9114af9d710006ad2b28fc472c"
+    url "https://github.com/ncbi/ncbi-vdb/archive/2.4.5-5.tar.gz"
+    sha256 "7e1bbd203314bf65990f1db8a61483bb3963ca36a36f20f653582317cdb448b2"
   end
 
   depends_on "autoconf" => :build

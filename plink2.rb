@@ -7,12 +7,26 @@ class Plink2 < Formula
   sha256 "2f4afc193c288b13af4410e4587358ee0a6f76ed7c98dd77ca1317aac28adf0d"
 
   depends_on :fortran
-  depends_on "openblas"
+  depends_on "openblas" => :optional
+  depends_on "homebrew/dupes/zlib"
+
+  bottle do
+    root_url "https://homebrew.bintray.com/bottles-science"
+    cellar :any
+    revision 1
+    sha256 "02fcc689eaa65c3a2125ae9431c8c023856a17a39c0df8b10d073aca31019ded" => :yosemite
+    sha256 "90b3d7eb2189afc68c05764cc88c826b5cd72386fa0e66b779ce439fb052c7e5" => :mavericks
+    sha256 "912423fe36c51e093ee43ae8d35382a1ebdff619ce197a88ff0193498f27e85b" => :mountain_lion
+  end
 
   def install
     mv "Makefile.std", "Makefile"
-    system "./plink_first_compile"
-    system "make", "plink"
+    ln_s Formula["zlib"].opt_include, "zlib-1.2.8"
+    cflags = "-Wall -O2 -flax-vector-conversions"
+    cflags += " -I#{Formula["openblas"].opt_include}" if build.with? "openblas"
+    args = ["CFLAGS=#{cflags}", "ZLIB=-L#{Formula["zlib"].opt_lib} -lz"]
+    args << "BLASFLAGS=-L#{Formula["openblas"].opt_lib} -lopenblas" if build.with? "openblas"
+    system "make", "plink", *args
     bin.install "plink" => "plink2"
   end
 

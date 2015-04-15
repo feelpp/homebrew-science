@@ -3,24 +3,35 @@ class Opencv < Formula
   head "https://github.com/Itseez/opencv.git"
 
   stable do
-    url "https://github.com/Itseez/opencv/archive/2.4.10.1.tar.gz"
-    sha256 "1be191790a0e279c085ddce62f44b63197f2801e3eb66b5dcb5e19c52a8c7639"
-    # do not blacklist GStreamer
-    # https://github.com/Itseez/opencv/pull/3639
-    patch :DATA
+    url "https://github.com/Itseez/opencv/archive/2.4.11.tar.gz"
+    sha256 "b5331ea85a709b0fe871b1ce92e631afcd5ae822423863da6b559dd2cb7845bc"
+
+    # Avoid explicit links to a Python framework
+    # https://github.com/Itseez/opencv/pull/3865
+    patch do
+      url "https://gist.githubusercontent.com/tdsmith/484553cd2d0c19a4baa7/raw/b766154fa6c7ac1be3491b0c6b58b3d66c07f818/opencv_python.diff"
+      sha256 "cfe31c32d5a4ef0e89df684e210360602fb2d295b19f9ca4791731a9e274d776"
+    end
   end
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "ccc506ef6cf339048d21c4ef3d8995c76706c9d9" => :yosemite
-    sha1 "fc69f870b36504f271dfe42deb5cb27c49bf21cd" => :mavericks
-    sha1 "1726a921ced13ebe7f2df0f18f64997091070f71" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha256 "e158921e8fbaa19fece4c04ba86935179ec136a94d6d86f2f0ef1ab026f41e57" => :yosemite
+    sha256 "b1f00877317eda123a7bde6c1541738f70b808e84b398658464d068503875f37" => :mavericks
+    sha256 "c7dcc02ba840aeaabb629aa36b0ce41840fd8da0d77b4f637fadadeb05259e1d" => :mountain_lion
   end
 
   devel do
     url "https://github.com/Itseez/opencv/archive/3.0.0-beta.tar.gz"
     sha1 "560895197d1a61ed88fab9ec791328c4c57c0179"
     version "3.0.0-beta"
+
+    # Avoid explicit links to a Python framework
+    # https://github.com/Itseez/opencv/pull/3866
+    patch do
+      url "https://gist.githubusercontent.com/tdsmith/f67fd567702f2b51dacd/raw/b4c5428b87a5551ad75f951d45c38aacec4f2441/opencv3_python.diff"
+      sha256 "be689ac2ce44edfb1f8f9bdaf11e3cd5933fe26e9195ff57e391e6c49b3a1607"
+    end
   end
 
   option "32-bit"
@@ -32,7 +43,10 @@ class Opencv < Formula
   option "with-cuda", "Build with CUDA support"
   option "with-quicktime", "Use QuickTime for Video I/O insted of QTKit"
   option "with-opengl", "Build with OpenGL support"
-  option "without-brewed-numpy", "Build without Homebrew-packaged NumPy"
+  option "without-numpy", "Use a numpy you've installed yourself instead of a Homebrew-packaged numpy"
+  option "without-python", "Build without Python support"
+
+  deprecated_option "without-brewed-numpy" => "without-numpy"
 
   option :cxx11
 
@@ -53,8 +67,8 @@ class Opencv < Formula
   depends_on "qt"         => :optional
   depends_on "tbb"        => :optional
 
-  depends_on :python      => :recommended
-  depends_on "homebrew/python/numpy" if build.with? "brewed-numpy"
+  depends_on :python => :recommended unless OS.mac? && MacOS.version > :snow_leopard
+  depends_on "homebrew/python/numpy" => :recommended if build.with? "python"
 
   # Can also depend on ffmpeg, but this pulls in a lot of extra stuff that
   # you don't need unless you're doing video analysis, and some of it isn't
@@ -105,11 +119,9 @@ class Opencv < Formula
 
     if build.with? "cuda"
       ENV["CUDA_NVCC_FLAGS"] = "-Xcompiler -stdlib=libstdc++; -Xlinker -stdlib=libstdc++"
-      inreplace "cmake/FindCUDA.cmake",
-        "list(APPEND CUDA_LIBRARIES -Wl,-rpath \"-Wl,${_cuda_path_to_cudart}\")",
-        "#list(APPEND CUDA"
       args << "-DWITH_CUDA=ON"
       args << "-DCMAKE_CXX_FLAGS=-stdlib=libstdc++"
+      args << "-DCUDA_GENERATION=Kepler"
     else
       args << "-DWITH_CUDA=OFF"
     end
@@ -160,19 +172,3 @@ class Opencv < Formula
     assert_equal `./test`.strip, version.to_s
   end
 end
-
-
-__END__
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 1d7d78a..1e92c52 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -135,7 +135,7 @@ OCV_OPTION(WITH_NVCUVID        "Include NVidia Video Decoding library support"
- OCV_OPTION(WITH_EIGEN          "Include Eigen2/Eigen3 support"               ON)
- OCV_OPTION(WITH_VFW            "Include Video for Windows support"           ON   IF WIN32 )
- OCV_OPTION(WITH_FFMPEG         "Include FFMPEG support"                      ON   IF (NOT ANDROID AND NOT IOS))
--OCV_OPTION(WITH_GSTREAMER      "Include Gstreamer support"                   ON   IF (UNIX AND NOT APPLE AND NOT ANDROID) )
-+OCV_OPTION(WITH_GSTREAMER      "Include Gstreamer support"                   ON   IF (UNIX AND NOT ANDROID) )
- OCV_OPTION(WITH_GSTREAMER_0_10 "Enable Gstreamer 0.10 support (instead of 1.x)"   OFF )
- OCV_OPTION(WITH_GTK            "Include GTK support"                         ON   IF (UNIX AND NOT APPLE AND NOT ANDROID) )
- OCV_OPTION(WITH_IMAGEIO        "ImageIO support for OS X"                    OFF  IF APPLE )
