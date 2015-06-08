@@ -1,21 +1,21 @@
 class Scotch < Formula
   homepage "https://gforge.inria.fr/projects/scotch"
-  url "https://gforge.inria.fr/frs/download.php/file/34099/scotch_6.0.3.tar.gz"
-  sha1 "7bad26fbe2304759a77bd92348229876edcead1e"
+  url "https://gforge.inria.fr/frs/download.php/file/34099/scotch_6.0.4.tar.gz"
+  sha256 "6461cc9f28319a9dbe6cc10e28c0cbe90b4b25e205723c3edcde9a3ff974d6d8"
+  revision 1
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "f86dcb86ef14e9861736f2e51f1d8e3675625ba0" => :yosemite
-    sha1 "31f8ed4c57bc77a49ab1795c098b8a3edde0a5a4" => :mavericks
-    sha1 "8cd53c51772977558b4d2b052769ec1243b71122" => :mountain_lion
+    sha256 "1e8625ed27ad1e9326acea04e570e41c7cc42b7373991dd8db7e45fa213a13aa" => :yosemite
+    sha256 "12ab21d4df72976c5aa82c9d5aace2d8c8b2b30b2a92344ee5a74399e5383d54" => :mavericks
+    sha256 "21752692104035f6ce6125a97124d38bc0f161730180bbe3bcd1c6582621886b" => :mountain_lion
   end
 
   option "without-check", "skip build-time tests (not recommended)"
 
   depends_on :mpi => :cc
-
-  depends_on "xz"   => :optional  # Provides lzma compression.
+  depends_on "xz" => :optional # Provides lzma compression.
 
   patch :DATA
 

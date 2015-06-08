@@ -3,13 +3,13 @@ class Ipopt < Formula
   url "http://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.1.tgz"
   sha1 "cbb197f6a90e0e1d64e438a5159da5f33f06aa08"
   head "https://projects.coin-or.org/svn/Ipopt/trunk", :using => :svn
-  revision 1
+  revision 3
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    sha1 "f029ffd9a451fcbd9084990ca5219a4ef88621b8" => :yosemite
-    sha1 "95239d26cac57d0b1ea542d74369d7111adde128" => :mavericks
-    sha1 "49e3f04ec304f2ccc9ebd7fca47a3698af941c8e" => :mountain_lion
+    sha256 "129d9e418612d9771f509d1c3c7c349fc23e6ca9955ee2af6a38456660a4690d" => :yosemite
+    sha256 "afa33eb1ac04988d72eb0a01874df8aaf4c0b394efee678457b672bab69910c1" => :mavericks
+    sha256 "f705d7a6a0f743a1618baa28754d4edd44bba3ddd76d675f8f3118745157cdc9" => :mountain_lion
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
@@ -28,7 +28,7 @@ class Ipopt < Formula
     ENV.delete("MPIFC")  # which leads to the linker crashing.
     ENV.delete("MPICXX")
     mumps_libs = %w[-ldmumps -lmumps_common -lpord -lmpiseq]
-    mumps_incdir = Formula["mumps"].libexec / "include"
+    mumps_incdir = Formula["mumps"].opt_libexec/"include"
     mumps_libcmd = "-L#{Formula["mumps"].opt_lib} " + mumps_libs.join(" ")
 
     args = ["--disable-debug",

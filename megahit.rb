@@ -1,19 +1,18 @@
 class Megahit < Formula
   homepage "https://github.com/voutcn/megahit"
-  # doi "arXiv:1409.7208"
+  # doi "10.1093/bioinformatics/btv033"
   # tag "bioinformatics"
 
-  url "https://github.com/voutcn/megahit/archive/v0.2.0-a.tar.gz"
-  version "0.2.0-a"
-  sha256 "5b30a163027b248bf2d96c766c3bcf1f4fe50466e368a3844b3c4e0a2491d8c4"
+  url "https://github.com/voutcn/megahit/archive/v0.2.1.tar.gz"
+  sha256 "28299b06e20950eed8a3f5b580b26a0bdffc260112f27dde860bd12f99d06f7b"
 
   head "https://github.com/voutcn/megahit.git"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "6d171e0c21bcc67ef9e4bbd538a718c362d43fc513d655d3241df44a3290b8dc" => :yosemite
-    sha256 "0706495a817b98545f158039186c43949801c76b10a5f9cb73da0602fac25f22" => :mavericks
-    sha256 "393cae05797379670d7aa726e652801552d0ac775406547936a67869b756eedf" => :mountain_lion
+    sha256 "c3dbc085c578e6110f2af2ce1aecfd5737b936ac18a902aca2e7b48cdcbc285d" => :yosemite
+    sha256 "3173ed97b7b230965812a35ff91d4d92a87c9de4d8b900a4778a7a1b50d45943" => :mavericks
+    sha256 "89f238296db52b731e8f769ff8dc62bb23165e075576bef5ec2e60fe1db5e829" => :mountain_lion
   end
 
   fails_with :llvm do

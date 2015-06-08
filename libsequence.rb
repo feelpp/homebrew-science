@@ -7,21 +7,30 @@ class Libsequence < Formula
   head "https://github.com/molpopgen/libsequence.git"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "a3030e966af22921d8c3180e86e38af3825da183" => :yosemite
-    sha1 "dba61184fe4016a653dd9f361f8aec4957340441" => :mavericks
-    sha1 "5354fe0f9e6d8d2ed265cf53048ba70d00f9e398" => :mountain_lion
+    revision 2
+    sha256 "3488ce470dd77c1bb26cd28d2104393de35a8c780ad89e83f499ec5b59813c87" => :yosemite
+    sha256 "6ba89329001cdacc6434016f78d1053e760a1468363b98e1b8b553205bc850a6" => :mavericks
+    sha256 "a1d89ba3fa084506185ed5842b6a8b5709281591178a9a3df414edb22d459463" => :mountain_lion
   end
 
-  depends_on "boost" => :build
+  cxx11 = OS.linux? || MacOS.version > :mountain_lion ? [] : ["c++11"]
+
+  depends_on "boost" => cxx11
   depends_on "gsl"
 
-  def install
-    ENV.libcxx if MacOS.version < :mavericks
+  needs :cxx11
 
-    system "./configure", "--enable-shared=no", "--prefix=#{prefix}"
+  def install
+    ENV.cxx11
+    system "./configure", "--prefix=#{prefix}",
+                          "--docdir=#{doc}",
+                          "--mandir=#{man}",
+                          "--disable-dependency-tracking",
+                          "--disable-silent-rules"
     system "make"
+    system "make", "check"
     system "make", "install"
   end
 end

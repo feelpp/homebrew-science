@@ -1,6 +1,7 @@
 class Opencv < Formula
   homepage "http://opencv.org/"
   head "https://github.com/Itseez/opencv.git"
+  revision 1
 
   stable do
     url "https://github.com/Itseez/opencv/archive/2.4.11.tar.gz"
@@ -16,21 +17,24 @@ class Opencv < Formula
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "e158921e8fbaa19fece4c04ba86935179ec136a94d6d86f2f0ef1ab026f41e57" => :yosemite
-    sha256 "b1f00877317eda123a7bde6c1541738f70b808e84b398658464d068503875f37" => :mavericks
-    sha256 "c7dcc02ba840aeaabb629aa36b0ce41840fd8da0d77b4f637fadadeb05259e1d" => :mountain_lion
+    sha256 "15160718f0baa14ff5ffdfdcb7fe27ee1980ff5388275c743eda9e7fa65730f1" => :yosemite
+    sha256 "eed5669d5840aa0ead8e36fb9f421b47f69ddb99cfdd7acdc16a40128198acc1" => :mavericks
+    sha256 "6b113f9d44eee1ce6681dda5d1411cb9a0f981e0efd9403e216e848ae18df605" => :mountain_lion
   end
 
   devel do
-    url "https://github.com/Itseez/opencv/archive/3.0.0-beta.tar.gz"
-    sha1 "560895197d1a61ed88fab9ec791328c4c57c0179"
-    version "3.0.0-beta"
+    url "https://github.com/Itseez/opencv/archive/3.0.0-rc1.tar.gz"
+    sha256 "8f14897d9d191448e12e9902f7dd05ecbef027a7faf489a7c30a4e715e987e7e"
+    version "3.0.0-rc1"
 
-    # Avoid explicit links to a Python framework
-    # https://github.com/Itseez/opencv/pull/3866
-    patch do
-      url "https://gist.githubusercontent.com/tdsmith/f67fd567702f2b51dacd/raw/b4c5428b87a5551ad75f951d45c38aacec4f2441/opencv3_python.diff"
-      sha256 "be689ac2ce44edfb1f8f9bdaf11e3cd5933fe26e9195ff57e391e6c49b3a1607"
+    resource "icv-macosx" do
+      url "https://downloads.sourceforge.net/project/opencvlibrary/3rdparty/ippicv/ippicv_macosx_20141027.tgz", :using => :nounzip
+      sha256 "07e9ae595154f1616c6c3e33af38695e2f1b0c99c925b8bd3618aadf00cd24cb"
+    end
+
+    resource "icv-linux" do
+      url "https://downloads.sourceforge.net/project/opencvlibrary/3rdparty/ippicv/ippicv_linux_20141027.tgz", :using => :nounzip
+      sha256 "a5669b0e3b500ee813c18effe1de2477ef44af59422cf7f8862a360f3f821d80"
     end
   end
 
@@ -115,6 +119,9 @@ class Opencv < Formula
       py_lib = OS.linux? ? `python-config --configdir`.chomp : "#{py_prefix}/lib"
       args << "-DPYTHON#{py_ver}_LIBRARY=#{py_lib}/libpython2.7.#{dylib}"
       args << "-DPYTHON#{py_ver}_INCLUDE_DIR=#{py_prefix}/include/python2.7"
+      # Make sure find_program locates system Python
+      # https://github.com/Homebrew/homebrew-science/issues/2302
+      args << "-DCMAKE_PREFIX_PATH=#{py_prefix}" if OS.mac?
     end
 
     if build.with? "cuda"
@@ -149,6 +156,14 @@ class Opencv < Formula
       args << "-DENABLE_SSE41=ON" if Hardware::CPU.sse4?
       args << "-DENABLE_SSE42=ON" if Hardware::CPU.sse4_2?
       args << "-DENABLE_AVX=ON" if Hardware::CPU.avx?
+    end
+
+    if devel?
+      inreplace buildpath/"3rdparty/ippicv/downloader.cmake",
+        "${OPENCV_ICV_PLATFORM}-${OPENCV_ICV_PACKAGE_HASH}",
+        "${OPENCV_ICV_PLATFORM}"
+      platform = OS.mac? ? "macosx" : "linux"
+      resource("icv-#{platform}").stage buildpath/"3rdparty/ippicv/downloads/#{platform}"
     end
 
     mkdir "macbuild" do

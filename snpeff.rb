@@ -1,18 +1,20 @@
 class Snpeff < Formula
   homepage "http://snpeff.sourceforge.net/"
-  #tag "bioinformatics"
+  # tag "bioinformatics"
 
-  url "https://downloads.sourceforge.net/project/snpeff/snpEff_v4_1c_core.zip"
-  version "4.1c"
-  sha256 "93202eb4a42c18d1a13230a2661eb0d55fd50555462dd4a980d8293294a9496e"
+  url "https://downloads.sourceforge.net/project/snpeff/snpEff_v4_1g_core.zip"
+  version "4.1g"
+  sha256 "c8528928f5f206d5bb6003f0ef12e50c40d84cd69d3c2dff21df9f93704e2ca0"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "bb74b43f2915d2411b736a2634df7d067ca2e8a21ba6f2b7db20dffc108fd448" => :yosemite
-    sha256 "2837819766c36310cf3644f56cd35474f5b9ff026ea52642034d77b866782c4c" => :mavericks
-    sha256 "1473f06c20fb1554866bce64d40dcede198dbbab32aee4ad2c6c8ddae8fd7ef1" => :mountain_lion
+    sha256 "ccbeeb69dc15af0e5fd9e951a7a7a5268065e86a6d04fc0f687f9b865f9713e9" => :yosemite
+    sha256 "695f0dd0f5fc4e557c79ccbc4b73a39521279c04e2df5043470863733d3a33fc" => :mavericks
+    sha256 "4aca12e9fbbf6ee3266cd0133d02bdbac5e2e45e356650f63e527df36f11e5e9" => :mountain_lion
   end
+
+  depends_on :java => "1.7+"
 
   def install
     inreplace "scripts/snpEff" do |s|

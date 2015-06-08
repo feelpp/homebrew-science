@@ -2,15 +2,16 @@ class Genometools < Formula
   homepage "http://genometools.org/"
   # doi "10.1109/TCBB.2013.68"
   # tag "bioinformatics"
-  url "http://genometools.org/pub/genometools-1.5.3.tar.gz"
-  sha1 "aa2bd8e2fe7ca274d7c9aecda6f23ab6547d935a"
+  url "http://genometools.org/pub/genometools-1.5.5.tar.gz"
+  sha256 "b28a9b3424898cdbdafa26a522db7d14f6295275d4746e7c409c581377060872"
   head "https://github.com/genometools/genometools.git"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "fac555854a828ce2e20d60e2d0b10e81c6fbad46" => :yosemite
-    sha1 "ab2fcd86cdfd77d63cb7f30f690715b91a883c86" => :mavericks
-    sha1 "b3ce4c82dfe55dac04690f8a7c2755b2709df9a1" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    cellar :any
+    sha256 "ee67c68ce596c7c2436fd2dabb93560ae132a256aab5a104d34e5cae36cc7802" => :yosemite
+    sha256 "9194816db5777b9054d5d6f3335540670d07fd5808a4067d118d9e20c77179a7" => :mavericks
+    sha256 "0d2493080712493c0d7fe7550d41dccca78cb36ae4493b1bec4a9eb6cd258cdd" => :mountain_lion
   end
 
   option :universal

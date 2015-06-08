@@ -1,14 +1,14 @@
 class Sumo < Formula
   homepage "https://sourceforge.net/projects/sumo/"
-  url "https://downloads.sourceforge.net/project/sumo/sumo/version%200.22.0/sumo-all-0.22.0.tar.gz"
-  sha1 "32206adaccb35e41afb697bb3c841a5578e8f167"
+  url "https://downloads.sourceforge.net/project/sumo/sumo/version%200.23.0/sumo-all-0.23.0.tar.gz"
+  sha256 "8a6354a11717cdff2f3f247239fb55472ea57268b392e5e442777a1c05d92299"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "c8c74bfec8a87bd8d5dd40639160083d00bd79ed" => :yosemite
-    sha1 "43ff8b705a99a6f30c919f36ce447baec192605f" => :mavericks
-    sha1 "ba8193a50e9954bfad8b36f9ee3aad7054f1fe39" => :mountain_lion
+    sha256 "fc42a513a71d13b54d230ac0bc26cbc96a0aa2323ee434c4313ef28e4e1f3217" => :yosemite
+    sha256 "13ab2b7e6d904ee4009162a7a8a3c6038d3aec2a48c4407a5093b5aa729ab9e4" => :mavericks
+    sha256 "4b2e04b94e1a95cc5759d422402b34c9534cbc8873911038fe41a2ee0fbc271d" => :mountain_lion
   end
 
   option "with-check", "Enable additional build-time checking"
@@ -24,13 +24,13 @@ class Sumo < Formula
   depends_on :python
 
   resource "gtest" do
-    url "http://googletest.googlecode.com/files/gtest-1.7.0.zip"
-    sha1 "f85f6d2481e2c6c4a18539e391aa4ea8ab0394af"
+    url "https://googletest.googlecode.com/files/gtest-1.7.0.zip"
+    sha256 "247ca18dd83f53deb1328be17e4b1be31514cedfc1e3424f672bf11fd7e0d60d"
   end
 
   resource "TextTest" do
-    url "https://pypi.python.org/packages/source/T/TextTest/TextTest-3.27.tar.gz"
-    sha1 "065495abe3d0b19161ef81f110c82ad4d09efe39"
+    url "https://pypi.python.org/packages/source/T/TextTest/TextTest-3.28.tar.gz"
+    sha256 "700e9648c193fd29796af7df6074a306224f99d1837966433d612abce08ca47a"
   end
 
   def install

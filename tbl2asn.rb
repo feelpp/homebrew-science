@@ -1,27 +1,28 @@
 class Tbl2asn < Formula
   homepage "https://www.ncbi.nlm.nih.gov/genbank/tbl2asn2/"
-  #tag "bioinformatics"
+  # tag "bioinformatics"
 
-  version "24.2"
+  version "24.3"
   if OS.mac?
     url "ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/mac.tbl2asn.gz"
-    sha256 "c8c307b11d4089ad2a368d1ff1a1ce94dc0c40993478a233bc3331ef3f37ff00"
+    sha256 "1e7052673a26a55cf710bad58245af3a2534358d368e2077a17fed8ff13bbc32"
   elsif OS.linux?
     url "ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/linux64.tbl2asn.gz"
-    sha256 "a5fe31cfa37e5de1f7e4d971f294ad2ca2be9868f5591477fcfb2862668d04c7"
+    sha256 "00265752e4b69f17e2e1066e42187bf0f65126ce3a2c6ac4bc2fd6ddae139163"
   end
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "d6267f0ee43987f34aec6b81027ea3bb847efbefad7de94ced009f3c58e76c8d" => :yosemite
-    sha256 "da8bed566415973b70668dd970304db43e08629ab6c6323196d3516d85f6cc98" => :mavericks
-    sha256 "47e97e133b2a477510985f6d882d9691028073052e2d7943c3d85658ded72ed1" => :mountain_lion
+    revision 1
+    sha256 "7334c59c85df90646a14652275e756c4726d4e58003f940d98bd5f9d582442d7" => :yosemite
+    sha256 "3cccf7c5e9a3838417806595462c8923c84194dba5a65485c0beaaf2d85cf9da" => :mavericks
+    sha256 "136ae8998d9a0d121445f3213374c260c6d0cc9c491df2af00afd9b724acd73a" => :mountain_lion
   end
 
   resource "doc" do
     url "ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/DOCUMENTATION/tbl2asn.txt"
-    sha256 "f2da249ee8d60b385a8e71b67b480bff9c6d905a9d674e035c1186ce40a4f5c7"
+    sha256 "b5e139c2a22cea4e1b5c7a063e3fb1f311d6b8802f2a8cca1433d7f16f816300"
   end
 
   def install

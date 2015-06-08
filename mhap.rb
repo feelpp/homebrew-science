@@ -1,28 +1,27 @@
-require "formula"
-
 class Mhap < Formula
   homepage "https://github.com/marbl/MHAP"
+  # doi "10.1101/008003"
+  # tag "bioinformatics"
+
+  url "https://github.com/marbl/MHAP/releases/download/v1.5b1/mhap-1.5b1.tar.gz"
+  sha256 "fa3a7fbf370d61deedb1866cf141ddf6b7538b05009be1fd8f2cbd55ff28ca99"
+
   head "https://github.com/marbl/MHAP.git"
+
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "effd7e5aa3d11957c679f2049f93849d5b6d9d8f" => :yosemite
-    sha1 "fb2198b8e91a6d7ba99ec84ecda4e4cf7329a91c" => :mavericks
-    sha1 "af6b3d2dc212fc2e4a3ba0c4a81d1a0f7903593b" => :mountain_lion
+    sha256 "04759dd37c8096f22e57b8ce8022292efe112013e9d59c51269469e641945161" => :yosemite
+    sha256 "69455089478902596629aa009ac76f98e7779fc29dbf7b069ca2f6060092ae47" => :mavericks
+    sha256 "adbf98a0bf965072416d2c0aaeaec677b921f9455904c62589536ed2d22c83b5" => :mountain_lion
   end
 
-  #doi "10.1101/008003" => "bioRxiv"
-  #tag "bioinformatics"
-
-  url "https://github.com/marbl/MHAP/releases/download/v0.1/mhap-0.1.tar.gz"
-  sha1 "c98096803c12d9d5e5281f0bf7809d909bccf185"
-
   def install
-    prefix.install "mhap-0.1.jar", Dir["lib/*"]
-    bin.write_jar_script prefix/"mhap-0.1.jar", "mhap"
+    prefix.install "mhap-#{version}.jar", Dir["lib/*"]
+    bin.write_jar_script prefix/"mhap-#{version}.jar", "mhap"
   end
 
   test do
-    system "#{bin}/mhap 2>&1 |grep MHAP"
+    assert_match "Usage", shell_output("#{bin}/mhap --help")
   end
 end

@@ -1,22 +1,24 @@
-require "formula"
-
 class Blast < Formula
   homepage "http://blast.ncbi.nlm.nih.gov/"
-  #doi "10.1016/S0022-2836(05)80360-2"
-  #tag "bioinformatics"
+  # doi "10.1016/S0022-2836(05)80360-2"
+  # tag "bioinformatics"
 
   url "ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.30/ncbi-blast-2.2.30+-src.tar.gz"
-  mirror "http://mirrors.vbi.vt.edu/mirrors/ftp.ncbi.nih.gov/blast/executables/blast+/2.2.30/ncbi-blast-2.2.30+-src.tar.gz"
+  mirror "https://mirrors.kernel.org/debian/pool/main/n/ncbi-blast+/ncbi-blast+_2.2.30.orig.tar.gz"
   version "2.2.30"
   sha256 "26f72d51c81b9497f33b7274109565c36692572faef4d72377f79b7e59910e40"
+  revision 1
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    revision 3
-    sha1 "b7f6177936c360afb001db0f9743fecccfdd932e" => :yosemite
-    sha1 "0d595ea4d7c57f4b3fb4f9ca473dd031daac14b9" => :mavericks
-    sha1 "8d9d1aea37644bb8fa85574a826054e408c0b2e7" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha256 "93f8dace4ea679ffa89c390f3d8bb8eb935bbd9a1a1703d11469a8c61bc8bd4d" => :yosemite
+    sha256 "e723325cfd5be95604b12272f82fc9889f0771a02c7eecc3ca77799b97834a31" => :mavericks
+    sha256 "4f15450fba3980e6c838f802540e2fb303254bc89f96c4dcafd9637f38a6b65d" => :mountain_lion
   end
+
+  # Build failure reported to toolbox@ncbi.nlm.nih.gov on 11 May 2015,
+  # patch provided by developers; should be included in next release
+  patch :p0, :DATA
 
   option "without-static", "Build without static libraries & binaries"
   option "with-dll", "Build dynamic libraries"
@@ -38,7 +40,8 @@ class Blast < Formula
     # See http://www.ncbi.nlm.nih.gov/viewvc/v1?view=revision&revision=65204
     inreplace "c++/src/build-system/Makefile.in.top", "/usr/bin/basename", "basename"
 
-    args = %W[--prefix=#{prefix} --without-debug --with-mt]
+    # Move libraries to libexec. Libraries and headers conflict with ncbi-c++-toolkit.
+    args = %W[--prefix=#{prefix} --libdir=#{libexec} --without-debug --with-mt]
 
     args << (build.with?("mysql") ? "--with-mysql" : "--without-mysql")
     args << (build.with?("freetype") ? "--with-freetype=#{Formula["freetype"].opt_prefix}" : "--without-freetype")
@@ -64,8 +67,8 @@ class Blast < Formula
       system "make"
       system "make", "install"
 
-      # libproj.a conflicts with the formula proj
-      libexec.install Dir["#{lib}/lib*.a"] if build.with? "static"
+      # Remove headers. Libraries and headers conflict with ncbi-c++-toolkit.
+      rm_r include
     end
   end
 
@@ -77,12 +80,32 @@ class Blast < Formula
     Static binaries should be used for speed if the executable requires
     fast startup time, such as if another program is frequently restarting
     the blast executables.
-
-    Static libraries are installed in #{libexec}
     EOS
   end
 
   test do
-    system 'blastn -version'
+    system bin/"blastn", "-version"
   end
 end
+
+__END__
+--- c++/include/corelib/ncbimtx.inl (revision 467211)
++++ c++/include/corelib/ncbimtx.inl (working copy)
+@@ -388,7 +388,17 @@
+     _ASSERT(m_Lock);
+
+     m_ObjLock.Lock();
+-    m_Listeners.remove(TRWLockHolder_ListenerWeakRef(listener));
++    // m_Listeners.remove(TRWLockHolder_ListenerWeakRef(listener));
++    // The above gives strange errors about invalid operands to operator==
++    // with the Apple Developer Tools release containing Xcode 6.3.1 and
++    // "Apple LLVM version 6.1.0 (clang-602.0.49) (based on LLVM 3.6.0svn)".
++    // The below workaround should be equivalent.
++    TRWLockHolder_ListenerWeakRef ref(listener);
++    TListenersList::iterator it;
++    while ((it = find(m_Listeners.begin(), m_Listeners.end(), ref))
++           != m_Listeners.end()) {
++        m_Listeners.erase(it);
++    }
+     m_ObjLock.Unlock();
+ }

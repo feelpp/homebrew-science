@@ -1,21 +1,21 @@
 class RDownloadStrategy < SubversionDownloadStrategy
   def stage
-    quiet_safe_system "cp", "-r", @clone, Dir.pwd
-    Dir.chdir cache_filename
+    cp_r File.join(cached_location, "."), Dir.pwd
   end
 end
 
 class R < Formula
   homepage "http://www.r-project.org/"
-  url "http://cran.rstudio.com/src/base/R-3/R-3.1.3.tar.gz"
-  mirror "http://cran.r-project.org/src/base/R-3/R-3.1.3.tar.gz"
-  sha256 "07e98323935baa38079204bfb9414a029704bb9c0ca5ab317020ae521a377312"
+  url "http://cran.rstudio.com/src/base/R-3/R-3.2.0.tar.gz"
+  mirror "http://cran.r-project.org/src/base/R-3/R-3.2.0.tar.gz"
+  sha256 "f5ae953f18ba6f3d55b46556bbbf73441350f9fd22625402b723a2b81ff64f35"
+  revision 1
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "ded0eb716b80d099999b61b4c2b54fc51f5b3097bdb7c0934cf0b6dbc8366f8f" => :yosemite
-    sha256 "388232be637e3a35b58e829f8a8ef0d05ae2933d84ed92c9ebef488246407506" => :mavericks
-    sha256 "ba6aa9cdd484947ffbcdc6549f7884c089eb15c1eba44921d9fb6b6c6dfddb19" => :mountain_lion
+    sha256 "baa67a1e8a6f5a0b40dfd30f42735434212982444d316e87321f5f1d017ced64" => :yosemite
+    sha256 "7a1dc5269813cbc75fbfcd8d39570afd9fb67662d0b90e59a0168bd874b73f4b" => :mavericks
+    sha256 "8793bec92dfd69fe99c18037fefe09865bfb53cd04d621abb6242f688d76caf2" => :mountain_lion
   end
 
   head do
@@ -28,11 +28,16 @@ class R < Formula
   option "without-tcltk", "Build without Tcl/Tk"
   option "with-librmath-only", "Only build standalone libRmath library"
 
+  depends_on "pkg-config" => :build
   depends_on :fortran
   depends_on "readline"
   depends_on "gettext"
   depends_on "libtiff"
+  depends_on "pcre"
   depends_on "jpeg"
+  depends_on "libpng"
+  depends_on "xz"
+
   depends_on "cairo" if OS.mac?
   depends_on :x11 => :recommended
   depends_on "valgrind" => :optional
@@ -61,6 +66,7 @@ class R < Formula
       ENV.remove "LDFLAGS", "-L#{HOMEBREW_PREFIX}/lib"
     else
       args << "--enable-R-framework"
+      args << "--with-cairo"
 
       # Disable building against the Aqua framework with CLT >= 6.0.
       # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63651
@@ -114,7 +120,7 @@ class R < Formula
         bin.install_symlink prefix/"R.framework/Resources/bin/R"
         bin.install_symlink prefix/"R.framework/Resources/bin/Rscript"
         frameworks.install_symlink prefix/"R.framework"
-        include.install_symlink prefix/"R.framework/Resources/include/R.h"
+        include.install_symlink Dir[prefix/"R.framework/Resources/include/*"]
         lib.install_symlink prefix/"R.framework/Resources/lib/libR.dylib"
         man1.install_symlink prefix/"R.framework/Resources/man1/R.1"
         man1.install_symlink prefix/"R.framework/Resources/man1/Rscript.1"
@@ -175,7 +181,7 @@ index ffc18e4..6728244 100644
 @@ -2,6 +2,12 @@
  #include <config.h>
  #endif
- 
+
 +#ifndef __has_extension
 +#define __has_extension(x) 0
 +#endif
@@ -185,4 +191,3 @@ index ffc18e4..6728244 100644
  #include <AvailabilityMacros.h> /* for MAC_OS_X_VERSION_10_* -- present on 10.2+ (according to Apple) */
  /* Since OS X 10.8 vecLib requires Accelerate to be included first (which in turn includes vecLib) */
  #if defined MAC_OS_X_VERSION_10_8 && MAC_OS_X_VERSION_MIN_REQUIRED >= 1040
-

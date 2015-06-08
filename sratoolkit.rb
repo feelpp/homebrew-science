@@ -3,27 +3,26 @@ class Sratoolkit < Formula
   # doi "10.1093/nar/gkq1019"
   # tag "bioinformatics"
 
-  url "https://github.com/ncbi/sra-tools/archive/2.4.5-5.tar.gz"
-  sha256 "dabebdba7003862293eaab3b9d5f08018216338f1c389f2371220075feb6d986"
+  url "https://github.com/ncbi/sra-tools/archive/2.5.0.tar.gz"
+  sha256 "4aca37fcb022c67bbf7acd8c78386a2f46f68817d369144fc24ac1a22ddb94df"
   head "https://github.com/ncbi/sra-tools.git"
-  version "2.4.5-5"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "964d931b8e9c57bb32622d5627f914c8e0e9f54bec52e95a2429e264668cf80e" => :yosemite
-    sha256 "d67ebf5724b97eb1862a2fc5b6d2a872d2af80bbc52bf465eb69e975113c02b6" => :mavericks
-    sha256 "03a4a2de29671c99a87d738642aecedfb35fab035a238dc87bb966207c3473d5" => :mountain_lion
+    sha256 "4fc7c18f137a50a1bce786baf565295d73fce7dd76393867bd9b7210f30862e5" => :yosemite
+    sha256 "11f66c21d9329765495b6c5651a5628a66f4247593895c8fc712b991a21acd48" => :mavericks
+    sha256 "8a43efea621a11bb6e6f54c27ccde6bf0ee8ed12ab4a3b0fe4c42cd3bcf54336" => :mountain_lion
   end
 
   resource "ngs-sdk" do
-    url "https://github.com/ncbi/ngs/archive/1.1.0.tar.gz"
-    sha256 "1ccaf90e3a4ee66662007c1e26be0e5236ecb3ad9f4f705e7a8e1ec4d39eca25"
+    url "https://github.com/ncbi/ngs/archive/1.1.1.tar.gz"
+    sha256 "1eedd2aa2363b2320559762fa0223a98f9b766ac0f252566edc09253ea7da8f4"
   end
 
   resource "ncbi-vdb" do
-    url "https://github.com/ncbi/ncbi-vdb/archive/2.4.5-5.tar.gz"
-    sha256 "7e1bbd203314bf65990f1db8a61483bb3963ca36a36f20f653582317cdb448b2"
+    url "https://github.com/ncbi/ncbi-vdb/archive/2.5.0.tar.gz"
+    sha256 "f3ab2f05471e160bee19b59e641e2004df406bc9a30f335d6efe532b32e9901e"
   end
 
   depends_on "autoconf" => :build
@@ -37,6 +36,7 @@ class Sratoolkit < Formula
       cd "ngs-sdk" do
         system "./configure", "--prefix=#{prefix}", "--build=#{prefix}"
         system "make"
+        system "make", "test"
         system "make", "install"
       end
     end
@@ -65,6 +65,7 @@ class Sratoolkit < Formula
   end
 
   test do
-    system "#{bin}/fastq-dump", "--version"
+    system bin/"fastq-dump", "SRR000001"
+    assert File.read("SRR000001.fastq").include?("@SRR000001.1 EM7LVYS02FOYNU length=284")
   end
 end
