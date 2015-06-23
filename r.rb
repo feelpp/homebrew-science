@@ -6,16 +6,15 @@ end
 
 class R < Formula
   homepage "http://www.r-project.org/"
-  url "http://cran.rstudio.com/src/base/R-3/R-3.2.0.tar.gz"
-  mirror "http://cran.r-project.org/src/base/R-3/R-3.2.0.tar.gz"
-  sha256 "f5ae953f18ba6f3d55b46556bbbf73441350f9fd22625402b723a2b81ff64f35"
-  revision 1
+  url "http://cran.rstudio.com/src/base/R-3/R-3.2.1.tar.gz"
+  mirror "http://cran.r-project.org/src/base/R-3/R-3.2.1.tar.gz"
+  sha256 "d59dbc3f04f4604a5cf0fb210b8ea703ef2438b3ee65fd5ab536ec5234f4c982"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "baa67a1e8a6f5a0b40dfd30f42735434212982444d316e87321f5f1d017ced64" => :yosemite
-    sha256 "7a1dc5269813cbc75fbfcd8d39570afd9fb67662d0b90e59a0168bd874b73f4b" => :mavericks
-    sha256 "8793bec92dfd69fe99c18037fefe09865bfb53cd04d621abb6242f688d76caf2" => :mountain_lion
+    sha256 "0a8587a238808f28820073cdff21c513d31c5629ef74ea05bd05ee830b2e08ca" => :yosemite
+    sha256 "7d9640d5a165c079566ada8e853ca71d9ac42b5cf8c10d2cce3a8ef083ae7338" => :mavericks
+    sha256 "138c364f26fb91012992308868ab3eda0b574154ea40054a6f59e47c67482558" => :mountain_lion
   end
 
   head do
@@ -29,6 +28,7 @@ class R < Formula
   option "with-librmath-only", "Only build standalone libRmath library"
 
   depends_on "pkg-config" => :build
+  depends_on "texinfo" => :build
   depends_on :fortran
   depends_on "readline"
   depends_on "gettext"

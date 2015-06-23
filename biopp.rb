@@ -7,10 +7,14 @@ class Biopp < Formula
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "7b10fdfea716cfb8246d98ea5935106a89dd2a9d575bfe1cfa4c53e4e90f9265" => :yosemite
-    sha256 "75e4db0699c879390bd95d7195a97235035a4e3f819bae2ac7118136628b475c" => :mavericks
-    sha256 "448f891edff3e24b7188c17f0ae5cba1eb38c7c709dbf68d3c601b15c817097a" => :mountain_lion
+    revision 1
+    sha256 "78bfb23487417b433c6ab4cccc895e7a3b0584e96868bf59f001c22a3f715f09" => :yosemite
+    sha256 "a09ed60fc8333de3c1d9a15192d647fd02ca80e9a6fec79db8163b1ef26fbe4a" => :mavericks
+    sha256 "07026550e81a868284e88c9db44dcd34f7f0b6f1885e44a2651b7489dbd45365" => :mountain_lion
   end
+
+  depends_on "cmake" => :build
+  depends_on "qt" => :recommended
 
   resource "bppcore" do
     url "http://biopp.univ-montp2.fr/repos/sources/bpp-core-2.2.0.tar.gz"
@@ -42,7 +46,10 @@ class Biopp < Formula
     sha256 "c7ec73a5af84808362f301479c548b6a01c47a66065b28a053ff8043409e861a"
   end
 
-  depends_on "cmake" => :build
+  resource "bppqt" do
+    url "http://biopp.univ-montp2.fr/repos/sources/bpp-qt-2.2.0.tar.gz"
+    sha256 "9662f66bc3491d8e128263f6bd91fcdbecdb375ec9f24519f44855cdcdb9d553"
+  end
 
   def install
     %w[bppcore bppseq bppphyl bpppopgen bppseqomics bppraa].each do |r|
@@ -50,6 +57,16 @@ class Biopp < Formula
         mkdir "build" do
           system "cmake", "..", *std_cmake_args
           system "make", "#{r}-shared", "#{r}-static"
+          system "make", "install"
+        end
+      end
+    end
+
+    if build.with? "qt"
+      resource("bppqt").stage do
+        mkdir "build" do
+          system "cmake", "..", *std_cmake_args
+          system "make", "bppqt-shared", "bppqt-static"
           system "make", "install"
         end
       end
@@ -98,9 +115,11 @@ class Biopp < Formula
           return(0);
       }
     EOS
+    libs = %W[-lbpp-core -lbpp-seq -lbpp-phyl -lbpp-raa -lbpp-seq-omics
+              -lbpp-phyl-omics -lbpp-popgen]
+    libs << "-lbpp-qt" if build.with? "qt"
     system ENV.cxx, "-o", "test", "bpp-phyl-test.cpp",
-      "-I#{include}", "-L#{lib}", "-lbpp-core", "-lbpp-seq", "-lbpp-phyl",
-      "-lbpp-raa", "-lbpp-seq-omics", "-lbpp-phyl-omics", "-lbpp-popgen"
+           "-I#{include}", "-L#{lib}", *libs
     system "./test"
   end
 end

@@ -1,6 +1,7 @@
 class Opencv < Formula
+  desc "Open source computer vision library"
   homepage "http://opencv.org/"
-  head "https://github.com/Itseez/opencv.git"
+  head "https://github.com/Itseez/opencv.git", :branch => "2.4"
   revision 1
 
   stable do
@@ -17,25 +18,10 @@ class Opencv < Formula
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "15160718f0baa14ff5ffdfdcb7fe27ee1980ff5388275c743eda9e7fa65730f1" => :yosemite
-    sha256 "eed5669d5840aa0ead8e36fb9f421b47f69ddb99cfdd7acdc16a40128198acc1" => :mavericks
-    sha256 "6b113f9d44eee1ce6681dda5d1411cb9a0f981e0efd9403e216e848ae18df605" => :mountain_lion
-  end
-
-  devel do
-    url "https://github.com/Itseez/opencv/archive/3.0.0-rc1.tar.gz"
-    sha256 "8f14897d9d191448e12e9902f7dd05ecbef027a7faf489a7c30a4e715e987e7e"
-    version "3.0.0-rc1"
-
-    resource "icv-macosx" do
-      url "https://downloads.sourceforge.net/project/opencvlibrary/3rdparty/ippicv/ippicv_macosx_20141027.tgz", :using => :nounzip
-      sha256 "07e9ae595154f1616c6c3e33af38695e2f1b0c99c925b8bd3618aadf00cd24cb"
-    end
-
-    resource "icv-linux" do
-      url "https://downloads.sourceforge.net/project/opencvlibrary/3rdparty/ippicv/ippicv_linux_20141027.tgz", :using => :nounzip
-      sha256 "a5669b0e3b500ee813c18effe1de2477ef44af59422cf7f8862a360f3f821d80"
-    end
+    revision 1
+    sha256 "d21eb0ec17c67f071ab36a35567247a66b5f2b6a3244a811a6bd329bf3081109" => :yosemite
+    sha256 "1735be17e9a31f78fdde4a0899b597ff7ab3a6dd5887dcf605c9e638870a8a86" => :mavericks
+    sha256 "86d8819b3f4bea67a8bcb3df1db4f789638622952d3b582f0a74fc7f21d3ccb6" => :mountain_lion
   end
 
   option "32-bit"
@@ -45,7 +31,7 @@ class Opencv < Formula
   option "without-tests", "Build without accuracy & performance tests"
   option "without-opencl", "Disable GPU code in OpenCV using OpenCL"
   option "with-cuda", "Build with CUDA support"
-  option "with-quicktime", "Use QuickTime for Video I/O insted of QTKit"
+  option "with-quicktime", "Use QuickTime for Video I/O instead of QTKit"
   option "with-opengl", "Build with OpenGL support"
   option "without-numpy", "Use a numpy you've installed yourself instead of a Homebrew-packaged numpy"
   option "without-python", "Build without Python support"
@@ -87,7 +73,6 @@ class Opencv < Formula
     ENV.cxx11 if build.cxx11?
     jpeg = Formula["jpeg"]
     dylib = OS.mac? ? "dylib" : "so"
-    py_ver = build.stable? ? "" : "2"
 
     args = std_cmake_args + %W[
       -DCMAKE_OSX_DEPLOYMENT_TARGET=
@@ -101,7 +86,7 @@ class Opencv < Formula
       -DJPEG_LIBRARY=#{jpeg.opt_lib}/libjpeg.#{dylib}
     ]
     args << "-DBUILD_TESTS=OFF" << "-DBUILD_PERF_TESTS=OFF" if build.without? "tests"
-    args << "-DBUILD_opencv_python#{py_ver}=" + arg_switch("python")
+    args << "-DBUILD_opencv_python=" + arg_switch("python")
     args << "-DBUILD_opencv_java=" + arg_switch("java")
     args << "-DWITH_OPENEXR="   + arg_switch("openexr")
     args << "-DWITH_EIGEN="     + arg_switch("eigen")
@@ -117,8 +102,8 @@ class Opencv < Formula
     if build.with? "python"
       py_prefix = `python-config --prefix`.chomp
       py_lib = OS.linux? ? `python-config --configdir`.chomp : "#{py_prefix}/lib"
-      args << "-DPYTHON#{py_ver}_LIBRARY=#{py_lib}/libpython2.7.#{dylib}"
-      args << "-DPYTHON#{py_ver}_INCLUDE_DIR=#{py_prefix}/include/python2.7"
+      args << "-DPYTHON_LIBRARY=#{py_lib}/libpython2.7.#{dylib}"
+      args << "-DPYTHON_INCLUDE_DIR=#{py_prefix}/include/python2.7"
       # Make sure find_program locates system Python
       # https://github.com/Homebrew/homebrew-science/issues/2302
       args << "-DCMAKE_PREFIX_PATH=#{py_prefix}" if OS.mac?
@@ -156,14 +141,6 @@ class Opencv < Formula
       args << "-DENABLE_SSE41=ON" if Hardware::CPU.sse4?
       args << "-DENABLE_SSE42=ON" if Hardware::CPU.sse4_2?
       args << "-DENABLE_AVX=ON" if Hardware::CPU.avx?
-    end
-
-    if devel?
-      inreplace buildpath/"3rdparty/ippicv/downloader.cmake",
-        "${OPENCV_ICV_PLATFORM}-${OPENCV_ICV_PACKAGE_HASH}",
-        "${OPENCV_ICV_PLATFORM}"
-      platform = OS.mac? ? "macosx" : "linux"
-      resource("icv-#{platform}").stage buildpath/"3rdparty/ippicv/downloads/#{platform}"
     end
 
     mkdir "macbuild" do

@@ -1,16 +1,19 @@
 class Hmmer < Formula
+  desc "Build profile HMMs and scan against sequence databases"
   homepage "http://hmmer.janelia.org"
   # doi "10.1371/journal.pcbi.1002195"
   # tag "bioinformatics"
+
   url "http://selab.janelia.org/software/hmmer3/3.1b2/hmmer-3.1b2.tar.gz"
   sha256 "dd16edf4385c1df072c9e2f58c16ee1872d855a018a2ee6894205277017b5536"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "91c47db3e1fb729881d01b710b0f9ee9c138effe6184fbdffcb8f7a08706e43b" => :yosemite
-    sha256 "1336dc5a1fa0952a3910e170bc1d25d601596f4c57793177ec5e001a1a26b74c" => :mavericks
-    sha256 "cec39b2d2266736b52062879e4c87ff5b4fff106d7a96b6a0cf2b38bdfc501f4" => :mountain_lion
+    revision 2
+    sha256 "763b5182ac642be5cf45334e801d35540c4d7db7bf8767791b652dcaed669c6b" => :yosemite
+    sha256 "a3f95b4293f5dac713c558e40a6b0ebcad140234b8f03d2144c4b3625fd17271" => :mavericks
+    sha256 "96ddaa4a6cedbb776bf94aeff38c102d5c5fd619e89056ba6d6fa645c946259f" => :mountain_lion
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
@@ -27,10 +30,14 @@ class Hmmer < Formula
     system "make", "check" if build.with? "check"
     system "make", "install"
 
-    share.install "tutorial"
+    # Installing libhmmer.a causes trouble for infernal.
+    # See https://github.com/Homebrew/homebrew-science/issues/1931
+    libexec.install lib/"libhmmer.a", include
+
+    doc.install "Userguide.pdf", "tutorial"
   end
 
   test do
-    system "#{bin}/hmmsearch", "-h"
+    assert_match "PF00069.17", shell_output("#{bin}/hmmstat #{doc}/tutorial/minifam")
   end
 end
