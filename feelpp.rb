@@ -30,6 +30,8 @@ class Feelpp < Formula
   depends_on 'doxygen' => :optional
 
   def install
+    # Quick Fix for petsc version
+    system "sed -i.bak \"s/set(PETSC_VERSIONS /set(PETSC_VERSIONS 3.5.3_3 /g\" cmake/modules/FindPETSc.cmake"
     args=std_cmake_args+ ['-DFEELPP_ENABLE_TESTS=OFF',
                           '-DFEELPP_ENABLE_APPLICATIONS=OFF']
 
