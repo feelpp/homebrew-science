@@ -1,37 +1,35 @@
-require "formula"
-
 class Z3 < Formula
   homepage "http://z3.codeplex.com/"
-  version "4.3.1"
-  url "http://download-codeplex.sec.s-msft.com/Download/SourceControlFileDownload.ashx?ProjectName=z3&changeSetId=89c1785b73225a1b363c0e485f854613121b70a7"
-  sha1 "91726a94a6bc0c1035d978b225f3f034387fdfe0"
-  head "https://git01.codeplex.com/z3", :using => :git
+  url "https://github.com/Z3Prover/z3/archive/z3-4.4.0.tar.gz"
+  sha256 "65b72f9eb0af50949e504b47080fb3fc95f11c435633041d9a534473f3142cba"
+  head "https://github.com/Z3Prover/z3.git"
 
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
+  bottle do
+    root_url "https://homebrew.bintray.com/bottles-science"
+    cellar :any
+    sha256 "f288000445d47ae31fd3ed128cc560d0b3792bfc528a9f76168d8a1bb766e501" => :yosemite
+    sha256 "494af7b3806ad8d222d7d4f0a15a0fd649f648e40a30e29353afa80948a0df44" => :mavericks
+    sha256 "a9b987921c8e84bb8759e9a408861d791fc0a1ec3698563bb80fd8fead6b03b6" => :mountain_lion
+  end
+
   depends_on :python
 
   def install
     package_dir = lib/"python2.7/site-packages"
     mkdir_p package_dir
     inreplace "scripts/mk_util.py", /^PYTHON_PACKAGE_DIR=.*/, "PYTHON_PACKAGE_DIR=\"#{package_dir}\""
-    # Fixes compilation with Clang.
-    inreplace "src/util/hwf.cpp", "#include<float.h>", "#include <emmintrin.h>\n#include <float.h>"
 
-    system "autoconf"
-    system "./configure", "--prefix=#{prefix}"
-    system "python", "scripts/mk_make.py"
+    system "python", "scripts/mk_make.py", "--prefix=#{prefix}"
     cd "build" do
       system "make"
       system "make", "install"
-      (share/"z3").install "test-z3"
     end
+    share.install "examples"
   end
 
   test do
-    # There doesn't seem to be a convenient way to run all unit tests...
-    %x[#{share}/z3/test-z3 -h].split[33..-1].each do |testcase|
-      system "#{share}/z3/test-z3", testcase
-    end
+    system ENV.cc, "-I#{include}", "-L#{lib}", "-lz3",
+           share/"examples/c/test_capi.c", "-o", testpath/"test"
+    system "./test"
   end
 end

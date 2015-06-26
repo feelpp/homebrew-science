@@ -1,15 +1,14 @@
-require "formula"
-
 class Vips < Formula
   homepage "http://www.vips.ecs.soton.ac.uk/"
-  url "http://www.vips.ecs.soton.ac.uk/supported/7.42/vips-7.42.2.tar.gz"
-  sha1 "3867242fc9023f943cc4dac09a71bde0dc36cae3"
+  url "http://www.vips.ecs.soton.ac.uk/supported/8.0/vips-8.0.2.tar.gz"
+  sha256 "1e6d102b425685467f58003f9d41cd097b772cdf50b4d7995f73751dce86fa3a"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "fbd9aeaf7f1fe2bfb6c6767d85e584f9e86e330f" => :yosemite
-    sha1 "a48e24b9f314b23fce06693e76958f8d62d63114" => :mavericks
-    sha1 "1f364bb02abafc5275a878e8e0e588a1c82e482f" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    revision 1
+    sha256 "48352eb8154fb4ebe9f107fd894658a53816adfb6f0f7593836a10a1193d737e" => :yosemite
+    sha256 "75c929255d36eed9403db0c15d4c6ae54ebdfaf64237cf0329140643879b1cfb" => :mavericks
+    sha256 "0038d628b9ef4b00d7ba96f3f65ebb42df399c347b1d89da395fa9485ae4ad5f" => :mountain_lion
   end
 
   option "without-check", "Disable build time checks (not recommended)"
@@ -39,6 +38,7 @@ class Vips < Formula
   depends_on "cfitsio" => :optional
   depends_on "webp" => :optional
   depends_on "python3" => :optional
+  depends_on "libmatio" => :optional
 
   def install
     args = %W[
@@ -50,5 +50,10 @@ class Vips < Formula
     system "./configure", *args
     system "make", "check" if build.with? "check"
     system "make", "install"
+  end
+
+  test do
+    system "#{bin}/vips", "-l"
+    system "#{bin}/vipsheader", test_fixtures("test.png")
   end
 end

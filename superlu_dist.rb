@@ -1,15 +1,14 @@
 class SuperluDist < Formula
   homepage "http://crd-legacy.lbl.gov/~xiaoye/SuperLU/"
   url "http://crd-legacy.lbl.gov/~xiaoye/SuperLU/superlu_dist_3.3.tar.gz"
-  sha1 "1f44b6e8382b402a61ef107d962f8602e90498a4"
-  revision 1
+  sha256 "d2fd8dc847ae63ed7980cff2ad4db8d117640ecdf0234c9711e0f6ee1398cac2"
+  revision 2
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    revision 2
-    sha256 "4919b574eb4ac76c89fce13af6d9b0bf552aca676203b936619361a6687c3679" => :yosemite
-    sha256 "f220fe2183c126df7fcaa352e4fe13e926a0f51c1462ba90444ec2ab26408db1" => :mavericks
-    sha256 "8e9207d5533a9166ba9e870661d53689c60a088e9627ed4348883d343c675395" => :mountain_lion
+    sha256 "4ee905552a04328f91b8ed94ef5de50e6528ee9901d0809fca67cf3bfaa759cc" => :yosemite
+    sha256 "07e5ccc50442e335e68a2787166f138b1d1f9ee492ad99153cd29de793a0179e" => :mavericks
+    sha256 "ec296ebdd3e9af551c99969953fb1390c0d516cc9ba9a56d0e2097a85b06f85c" => :mountain_lion
   end
 
   depends_on :fortran
@@ -19,6 +18,8 @@ class SuperluDist < Formula
   depends_on "openblas" => :optional
 
   def install
+    # prevent linking errors on linuxbrew:
+    ENV.deparallelize
     rm "#{buildpath}/make.inc"
     blaslib = ((build.with? "openblas") ? "-L#{Formula["openblas"].opt_lib} -lopenblas" : "-framework Accelerate")
     (buildpath / "make.inc").write <<-EOS.undent

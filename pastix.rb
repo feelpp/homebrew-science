@@ -3,17 +3,16 @@ class Pastix < Formula
   url "https://gforge.inria.fr/frs/download.php/file/34392/pastix_5.2.2.20.tar.bz2"
   sha1 "d55acf287ed0b6a59fc12606a21e42e3d38507c5"
   head "git://scm.gforge.inria.fr/ricar/ricar.git"
-  revision 1
+  revision 3
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    revision 1
-    sha1 "3a68c6e5d78b8ab750370e92f29ffb8f51abd14d" => :yosemite
-    sha1 "0c280a7b759067ecac5e3f32a151f1bfca17e15e" => :mavericks
-    sha1 "1192570bc5cb3339f69d962743bb597323e6a3bf" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha256 "4dc1de1d66b728154b6157095259c4231b20f450e57d872f7b8252c8a558d55f" => :yosemite
+    sha256 "8ba979033897b56109d1f50a5e5270ff11d3ed756b771498ffd2cfd299724b44" => :mavericks
+    sha256 "c937cf0feae8da2a185ac9e984c917fba3b5cfd0c19f6518d4ca0938ec671efc" => :mountain_lion
   end
 
-  depends_on "scotch"   => :build
+  depends_on "scotch"
   depends_on "hwloc"
   depends_on "metis4"   => :optional     # Use METIS ordering.
   depends_on "openblas" => :optional     # Use Accelerate by default.

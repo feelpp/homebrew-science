@@ -1,16 +1,17 @@
 class Root6 < Formula
+  desc "An object oriented framework for large scale data analysis"
   homepage "http://root.cern.ch"
-  version "6.02.05"
+  version "6.04.00"
   url "http://root.cern.ch/download/root_v#{version}.source.tar.gz"
   mirror "https://fossies.org/linux/misc/root_v#{version}.source.tar.gz"
-  sha1 "3cec8b763d8c1ddfd80b41983000359704f16e1e"
+  sha256 "c5fa1e5706f2f5f4e134c78926ed9cfcfe543aff3d39c41762911668a9eebeea"
   head "http://root.cern.ch/git/root.git"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    sha1 "1689e8f11a5b54c2c4fb0a0e397037cb0581bef4" => :yosemite
-    sha1 "a33bfe58e62c6ab19550c638b6cace609a1fe86d" => :mavericks
-    sha1 "77907f45cc903d5bbcb6458e2687cffed21eab96" => :mountain_lion
+    sha256 "2cc02fe8446a264e31ccaa0927e8d7b2c45a3e56478d53babbc43e54bf7cb2e3" => :yosemite
+    sha256 "521f4db183d5f7127f27edbac6941c0cdf69b38f5fe172e6e81578a33d15c7fc" => :mavericks
+    sha256 "b959b55c00c942f613ac7fadeaec86dc8221be49592254ecb8e227d61c19289c" => :mountain_lion
   end
 
   depends_on "cmake" => :build
@@ -18,6 +19,8 @@ class Root6 < Formula
   depends_on "openssl" => :optional
   depends_on :python => :recommended
   depends_on :x11 => :recommended if OS.linux?
+
+  conflicts_with "root"
 
   needs :cxx11
 

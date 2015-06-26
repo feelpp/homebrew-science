@@ -3,12 +3,13 @@ class XmiMsim < Formula
   url "http://lvserver.ugent.be/xmi-msim/xmimsim-5.0.tar.gz"
   mirror "https://xmi-msim.s3.amazonaws.com/xmimsim-5.0.tar.gz"
   sha1 "cb8f83fe594f8808079d64dfd7e592c710891efc"
+  revision 1
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "f498a5402679a6ffbffb463775b04ccd7c1e94e7" => :yosemite
-    sha1 "c9da8882d9613159c547decb97c9fd6ab0fb8560" => :mavericks
-    sha1 "517f5934dfae0065872ad70cd3731e8d9913df5a" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha256 "20d513767c84fdce79035995a1c944baa502c8902d9ada3e5936b21b7634b2c2" => :yosemite
+    sha256 "256f4aacfda4a9ce1e86a6c568c9f8fee0fe6e88ed93b18ae1ae86356fe5a83d" => :mavericks
+    sha256 "1761c9e032b189f30309a6afdb46f4883a3e06e49818a5a8164a7b098d6babf9" => :mountain_lion
   end
 
   depends_on :fortran

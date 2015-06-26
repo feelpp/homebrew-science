@@ -7,10 +7,10 @@ class SuiteSparse < Formula
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    revision 1
-    sha256 "eb1d00f07d210c490cdf8bdf6a4530972a95090d4edbe69b73d720bd3d70d3b3" => :yosemite
-    sha256 "08c6b1a8c071bb340d3073fddffc44ac314a6e44ac54a14a2ef3e3cd10a0f4d3" => :mavericks
-    sha256 "a6ca4a319b6550f56a1249d78d05efe883c90f419e3c250876af504ad8dc10d9" => :mountain_lion
+    revision 3
+    sha256 "a8a12ded1414f3221509b8f69d5c31ef2c2b119dc0d7b1f4ea4b2280468ff211" => :yosemite
+    sha256 "1a72480470bad707c47527b9f8681eadce7d48c349459f1ff7646b41bb399c79" => :mavericks
+    sha256 "8f7ee4f0c536a695417b248f3af6927448e1cd07f0759d5eb827c30e95ffabab" => :mountain_lion
   end
 
   option "with-matlab", "Install Matlab interfaces and tools"
@@ -56,9 +56,13 @@ class SuiteSparse < Formula
     lib.mkpath
     include.mkpath
     system "make", "install", *make_args
+    ["AMD", "CAMD", "CHOLMOD", "KLU", "LDL", "SPQR", "UMFPACK"].each do |pkg|
+      (doc/pkg).install Dir["#{pkg}/Doc/*"]
+    end
 
-    matlab = ARGV.value("with-matlab-path") || "matlab"
+
     if build.with? "matlab"
+      matlab = ARGV.value("with-matlab-path") || "matlab"
       system matlab,
              "-nodesktop", "-nosplash",
              "-r", "run('SuiteSparse_install(false)'); exit;"
@@ -71,6 +75,7 @@ class SuiteSparse < Formula
       mdest = share / "suite-sparse/matlab"
       mdest.install "MATLAB_Tools"
       mdest.install "RBio/RBio"
+      (doc/"matlab").install Dir["MATLAB_Tools/Factorize/Doc/*"]
     end
   end
 

@@ -1,30 +1,33 @@
 class Diamond < Formula
+  desc "Accelerated BLAST compatible local sequence aligner"
   homepage "http://ab.inf.uni-tuebingen.de/software/diamond/"
   # doi "10.1038/nmeth.3176"
   # tag "bioinformatics"
 
-  url "http://www-ab.informatik.uni-tuebingen.de/data/software/diamond/download/public/diamond.tar.gz"
-  version "0.7.1"
-  sha256 "3f46c4c96a81d84dee23e82154d17330e33dd557c6a955f59cf1913acac1f110"
+  url "https://github.com/bbuchfink/diamond/archive/v0.7.9.tar.gz"
+  sha256 "25dc43e41768f7a41c98b8b1dcf5aa2c51c0eaf62e71bff22ad01c97b663d341"
 
-  # Fix fatal error: 'omp.h' file not found
-  needs :openmp
+  bottle do
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha256 "e0eb3edc6f875a6b8e37b2d369b27510ec714faf2e94ff414edb94fbd34a1141" => :yosemite
+    sha256 "da0750e96465902fbd7827dc2220c2cb298f71ae488d6175885eb2044e2066ad" => :mavericks
+    sha256 "459c5a98274de600b7a270e51a589c21bae1add6384fe76d4a4b5c3d988778cb" => :mountain_lion
+  end
 
   depends_on "boost"
 
   def install
-    # Fix error: ld: library not found for -lrt
-    inreplace "Makefile.in", " -lrt ", " " if OS.mac?
-
-    system "./configure",
-      "--disable-debug",
-      "--disable-dependency-tracking",
-      "--disable-silent-rules",
-      "--prefix=#{prefix}"
-    system "make", "install"
+    Dir.chdir("src") do
+      inreplace "Makefile", "-Iboost/include", "-I#{Formula["boost"].include}"
+      inreplace "Makefile", "LIBS=-l", "LIBS=-L#{Formula["boost"].lib} -l"
+      inreplace "Makefile", "-lboost_thread", "-lboost_thread-mt"
+      system "make"
+    end
+    bin.install "bin/diamond"
+    doc.install "README.rst"
   end
 
   test do
-    system "#{bin}/diamond", "-h"
+    assert_match "gapextend", shell_output("diamond -h 2>&1", 0)
   end
 end

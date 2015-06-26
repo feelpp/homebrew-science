@@ -1,16 +1,19 @@
 class Genometools < Formula
+  desc "GenomeTools: The versatile open source genome analysis software"
   homepage "http://genometools.org/"
   # doi "10.1109/TCBB.2013.68"
   # tag "bioinformatics"
-  url "http://genometools.org/pub/genometools-1.5.3.tar.gz"
-  sha1 "aa2bd8e2fe7ca274d7c9aecda6f23ab6547d935a"
+  url "http://genometools.org/pub/genometools-1.5.6.tar.gz"
+  sha256 "f0dce0ba75fe7c74c278651c52ec716485bb2dd1cbb197ec38e13f239aace61c"
   head "https://github.com/genometools/genometools.git"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "fac555854a828ce2e20d60e2d0b10e81c6fbad46" => :yosemite
-    sha1 "ab2fcd86cdfd77d63cb7f30f690715b91a883c86" => :mavericks
-    sha1 "b3ce4c82dfe55dac04690f8a7c2755b2709df9a1" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    cellar :any
+    revision 1
+    sha256 "b3e1555202c919115e3c4fb6199f5062d3819894df6a74c76894a65af15c31de" => :yosemite
+    sha256 "1b5bde3c8025a545a1f4b05c19cb8a9868bd2a736ef26e6688b199915fefe529" => :mavericks
+    sha256 "22787830d70fdc4519aa9dd401293a7aaeeb98cddaab2e146fff1d33426f954b" => :mountain_lion
   end
 
   option :universal
@@ -36,7 +39,7 @@ class Genometools < Formula
     system "make", "test", *args if build.with? "check"
     system "make", "install", *args
 
-    (share/"genometools").install bin/"gtdata"
+    prefix.install bin/"gtdata"
   end
 
   test do

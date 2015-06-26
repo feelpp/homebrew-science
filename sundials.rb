@@ -1,13 +1,14 @@
 class Sundials < Formula
   homepage "https://computation.llnl.gov/casc/sundials/main.html"
   url "http://ftp.mcs.anl.gov/pub/petsc/externalpackages/sundials-2.5.0.tar.gz"
-  sha1 "9affcc525269e80c8ec6ae1db1e0a0ff201d07e0"
+  sha256 "9935760931fa6539edd0741acbcf4986770426fd5ea40e50ad4ebed0fc77b0d3"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    sha1 "6ce2d98a061a44ade157093254cd86813f041174" => :yosemite
-    sha1 "82a43cfedf44a69ddc967ce2420f13e423d38f56" => :mavericks
-    sha1 "c1e2aa6e4e2269d5609ebfec87aa34f518318673" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    revision 2
+    sha256 "e7ba57874cf0857e4608d57053854533fd184942bc0f65e0074f2f6132a25d00" => :yosemite
+    sha256 "6f320bc63ca42d5be05aaef4ff1aaaea43d553fb25c806d9f674aebd3b5cb2a4" => :mavericks
+    sha256 "bf22fef98adaba27225a2cd83bf416f76f102baf8cc66eba7497167d2d05885e" => :mountain_lion
   end
 
   depends_on "openblas" => :optional
@@ -53,9 +54,9 @@ class Sundials < Formula
     config_args << "--enable-examples" if build.with? "check"
     config_args += ["--with-blas=openblas",
                     "--with-lapack=openblas"] if build.with? "openblas"
-    config_args << ((build.with? :fortran) ? "--enable-fcmix" : "--disable-fcmix")
+    config_args << ((build.with? "fortran") ? "--enable-fcmix" : "--disable-fcmix")
 
-    if build.with? :mpi
+    if build.with? "mpi"
       ENV["CC"] = ENV["MPICC"]
       ENV["F77"] = ENV["MPIF77"]
       config_args += ["--enable-mpi",
@@ -124,7 +125,7 @@ class Sundials < Formula
         # Serial IDAS examples with command-line args
         system "./idas/serial/idasRoberts_FSA_dns", "-sensi", "stg", "t"
 
-        if build.with? :fortran
+        if build.with? "fortran"
 
           # Serial FCVODE examples
           %w[fcvAdvDiff_bnd fcvDiurnal_kry
@@ -143,7 +144,7 @@ class Sundials < Formula
 
         end
 
-        if build.with? :mpi
+        if build.with? "mpi"
 
           # Parallel CVODE examples; number of processors specified in source
           system "mpiexec", "-np", "4", "./cvode/parallel/cvAdvDiff_non_p"
@@ -181,7 +182,7 @@ class Sundials < Formula
 
           system "mpiexec", "-np", "4", "./idas/parallel/idasHeat2D_FSA_kry_bbd_p", "-sensi", "stg", "t"
 
-          if build.with? :fortran
+          if build.with? "fortran"
 
             # Parallel FCVODE examples
             system "mpiexec", "-np", "4", "./cvode/fcmix_parallel/fcvDiag_kry_bbd_p"
@@ -196,12 +197,18 @@ class Sundials < Formula
             system "mpiexec", "-np", "4", "./kinsol/fcmix_parallel/fkinDiagon_kry_p"
 
           end
-
         end
       end
     end
 
     system "make", "install"
+  end
+
+  def caveats; <<-EOS.undent
+    Some failures were observed on Yosemite when using MPICH2.
+    The failures did not occur with OpenMPI. For more information, see
+    https://github.com/Homebrew/homebrew-science/issues/1814.
+    EOS
   end
 end
 

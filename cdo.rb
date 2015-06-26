@@ -1,14 +1,14 @@
 class Cdo < Formula
   homepage "https://code.zmaw.de/projects/cdo"
-  url "https://code.zmaw.de/attachments/download/9444/cdo-1.6.7.tar.gz"
-  sha256 "b7471dbe50d3726277ce30a92a429427158445e08bb90a8f9cb3aaa5b46f9e56"
+  url "https://code.zmaw.de/attachments/download/10198/cdo-1.6.9.tar.gz"
+  sha256 "9970a7d5c29a59011fea8df6977e66b7d2a5d2dc8b0723a28ac0237d6e69dea8"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "c69849e24f64d430ec28232f6289ad76d94b05b0fdf013594943b62831d8a113" => :yosemite
-    sha256 "bc3ee079e07bc8651ed819384ba435841d4b0aea7f5b7e413291cd8c6b6fe0b6" => :mavericks
-    sha256 "469855d7fbe1e263724a1df292e662a31ecce6a0c984b6f5d34f00f36e15a013" => :mountain_lion
+    sha256 "0ecdd9d6614622ef3ce5b0c209d3641affbf58f2a093fb54efc4947a4c1a1a2e" => :yosemite
+    sha256 "8e85667e942f3f4dcb32c5a951077c6954c9729c1a0de373db346d231748919d" => :mavericks
+    sha256 "83e4fc8a3b07ff67be8f9ff4abd42dd2f3f481b3d565328c49a6c7cff8249c43" => :mountain_lion
   end
 
   option "with-grib2", "Compile Fortran bindings"

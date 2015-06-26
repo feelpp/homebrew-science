@@ -1,16 +1,15 @@
 class Snid < Formula
   homepage "http://people.lam.fr/blondin.stephane/software/snid"
   url "http://people.lam.fr/blondin.stephane/software/snid/snid-5.0.tar.gz"
-  sha1 "0ba81c23584388065169b88bf54a9c3975b12460"
-  revision 1
+  sha256 "22199803971fdd1bb394a550e81da661bd315224827373aae67408166873ec5c"
+  revision 2
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    revision 1
-    sha1 "2ef005bb6abe42793d2cd4cfe07c46ec4b3a2e21" => :yosemite
-    sha1 "2a7b4f7002c84b9f2ebac050b1098abc98c07177" => :mavericks
-    sha1 "7dadd38507870b8edda727636748e6f1df7fbb85" => :mountain_lion
+    sha256 "0ec373a313ba1961806f28bb46217786f0010c37e95261d664b46336b7a83af9" => :yosemite
+    sha256 "855d5fe8b71e8d9f2ad2b4ae9dbc21f7f736e40e0ec8d3ded403530b5176f877" => :mavericks
+    sha256 "3cb5fe729d14efdc2ec972e5e224141be7cb5564c09cfa68598da67e1441016a" => :mountain_lion
   end
 
   depends_on :x11
@@ -19,12 +18,12 @@ class Snid < Formula
 
   resource "templates" do
     url "http://people.lam.fr/blondin.stephane/software/snid/templates-2.0.tgz"
-    sha1 "1e5c33ee998203abc171e7fdda7114a27130d418"
+    sha256 "c4bbe8795bd48dc21d707bfcb84e09ca5dca84034e54659523478a61571663db"
   end
 
   resource "bsnip_templates" do
     url "http://hercules.berkeley.edu/database/BSNIPI/bsnip_v7_snid_templates.tar.gz"
-    sha1 "1d1d2534d9201c864ad60e58acf6337cec0700e2"
+    sha256 "e3db3a08667c9adc4ab826b2a10f0d2a48010b81cb9418875df5f23c0cba9605"
     version "7"
   end
 
@@ -49,7 +48,7 @@ class Snid < Formula
     inreplace "source/snidmore.f", "INSTALL_DIR/snid-5.0/templates", "#{prefix}/templates-2.0"
 
     ENV.append "FCFLAGS", "-O -fno-automatic"
-    ENV["PGLIBS"] = "-Wl,-framework -Wl,Foundation -L#{HOMEBREW_PREFIX}/lib -lpgplot"
+    ENV["PGLIBS"] = "-Wl,-framework -Wl,Foundation -L#{Formula["pgplot"].opt_lib} -lpgplot"
     system "make"
     bin.install "snid", "logwave", "plotlnw"
     prefix.install "templates", "test"
@@ -57,7 +56,9 @@ class Snid < Formula
   end
 
   test do
-    system "#{bin}/snid inter=0 plot=0 #{prefix}/test/sn2003jo.dat"
+    system "#{bin}/snid", "inter=0", "plot=0", "#{prefix}/test/sn2003jo.dat"
+    assert File.exist?("sn2003jo_snid.output")
+    assert File.exist?("snid.param")
   end
 end
 

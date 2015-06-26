@@ -1,19 +1,20 @@
 class Megahit < Formula
+  desc "Ultra-fast SMP/GPU succinct DBG metagenome assembly"
   homepage "https://github.com/voutcn/megahit"
-  # doi "arXiv:1409.7208"
+  # doi "10.1093/bioinformatics/btv033"
   # tag "bioinformatics"
 
-  url "https://github.com/voutcn/megahit/archive/v0.2.0-a.tar.gz"
-  version "0.2.0-a"
-  sha256 "5b30a163027b248bf2d96c766c3bcf1f4fe50466e368a3844b3c4e0a2491d8c4"
+  url "https://github.com/voutcn/megahit/archive/v0.3.0-beta3.tar.gz"
+  version "3.0b3"
+  sha256 "bc45ac0c7a62f8cb96521cc1a74b0f657bc81280101dfd5afc1863c16d904add"
 
   head "https://github.com/voutcn/megahit.git"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "6d171e0c21bcc67ef9e4bbd538a718c362d43fc513d655d3241df44a3290b8dc" => :yosemite
-    sha256 "0706495a817b98545f158039186c43949801c76b10a5f9cb73da0602fac25f22" => :mavericks
-    sha256 "393cae05797379670d7aa726e652801552d0ac775406547936a67869b756eedf" => :mountain_lion
+    sha256 "41a61c841545d46ef17a5ab3f7d4c29f4eb6a177be26b2d4849fa570ba400f8e" => :yosemite
+    sha256 "6702ed1aadd3fac6797e53adf2dd783ec222993829c87f80c8783a3d4a8e8576" => :mavericks
+    sha256 "f9823210aee5b6d6383d06bb91a4771d8352ff0da4ffa2837901562dc814b48c" => :mountain_lion
   end
 
   fails_with :llvm do
@@ -29,17 +30,15 @@ class Megahit < Formula
 
   def install
     system "make"
-    bin.install ["megahit",
-                 "megahit_assemble",
-                 "megahit_iter_k124",
-                 "megahit_iter_k61",
-                 "megahit_iter_k92",
-                 "sdbg_builder_cpu"]
-
-    doc.install "ChangeLog.md", "README.md"
+    bin.install Dir["megahi*"]
+    doc.install "LICENSE", "ChangeLog.md", "README.md"
+    (share/"megahit").install "example"
   end
 
   test do
-    system "#{bin}/megahit --help 2>&1 |grep megahit"
+    outdir = "megahit.outdir"
+    system "#{bin}/megahit", "--12", "#{share}/megahit/example/readsInterleaved1.fa.gz", "-o", outdir
+    assert File.exist?("#{outdir}/final.contigs.fa")
+    assert File.read("#{outdir}/opts.txt").include?(outdir)
   end
 end

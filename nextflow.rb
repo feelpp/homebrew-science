@@ -1,22 +1,24 @@
 class Nextflow < Formula
+  desc "Data-driven computational pipelines"
   homepage "http://www.nextflow.io/"
+  # doi "10.6084/m9.figshare.1254958"
   # tag "bioinformatics"
 
-  version "0.12.2"
-  url "http://www.nextflow.io/releases/v0.12.2/nextflow"
-  sha1 "d6637cdb5913e7dbffa6fa8e774e2c73ee3f1ac8"
+  version "0.14.2"
+  url "http://www.nextflow.io/releases/v0.14.2/nextflow"
+  sha256 "26b7f29c3682173900290b664a8e3e9e0cdb98553317345842e524bd033c2a3d"
 
   head "https://github.com/nextflow-io/nextflow.git"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "2796e3426cf1c3a046964d6c3bb61776810f63db" => :yosemite
-    sha1 "60005442faa7450f8904f2b8152080aabf5b9ef7" => :mavericks
-    sha1 "b237b096d6c6a82ea6afe90c292f8a5732961357" => :mountain_lion
+    sha256 "a63c9eeb236de4d38bf14b3c5ae84d054c16335c9afeee85274eee914c1c7956" => :yosemite
+    sha256 "0233a03b52b2e2cef07922ad4a3166b0895ac193d48904e9f95662d5ffd1185d" => :mavericks
+    sha256 "f6a838b641fac81bb55df883d01f41985af753ac1a6ba1ddb916732a1c72b2c9" => :mountain_lion
   end
 
-  depends_on :java => "1.7"
+  depends_on :java => "1.7+"
 
   def install
     bin.install "nextflow"

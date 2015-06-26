@@ -1,19 +1,17 @@
-require "formula"
-
 class Openimageio < Formula
   homepage "http://openimageio.org"
-  url "https://github.com/OpenImageIO/oiio/archive/Release-1.5.13.tar.gz"
-  sha256 "ff9fd20eb2ad3a4d05e9e2849f18a62d4fe7a9330de21f177db597562d947429"
+  url "https://github.com/OpenImageIO/oiio/archive/Release-1.5.14.tar.gz"
+  sha256 "b9553fe616c94b872b1e17d1a74d450cdcaf1ad512905253e7d02683dfaa9d63"
+
+  head "https://github.com/OpenImageIO/oiio.git"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "6c83fb520dc611786ae3a04463a278e85051dc773203586b0e2f27fc9752dd5a" => :yosemite
-    sha256 "96f85a546724428a655d8fa13fd23b5c3edff414602e81f85317c64e1ae7c5dc" => :mavericks
-    sha256 "6317fa951007310d7544f4c185ccbe12db85dfcb0662d229b3f66b0d8b75fcd4" => :mountain_lion
+    sha256 "434018fb5d454145ca6bcebb756e2feb3a7e1b20990e706dd906fa6c35f40364" => :yosemite
+    sha256 "0065c7db083fc0a6b67dc229473a27437efda04067fbce0be3224153303c80ee" => :mavericks
+    sha256 "4b5a7ac6395cf8c913d44d00f00a4957f452a20c4c95ee4b3975fdf56bb45f85" => :mountain_lion
   end
-
-  head "https://github.com/OpenImageIO/oiio.git"
 
   option "with-tests",  "Dowload 95MB of test images and verify Oiio (~2 min)"
 
@@ -38,41 +36,36 @@ class Openimageio < Formula
   depends_on "openssl"
   depends_on "giflib" => :optional
 
-  # don't link to a specific Python framework
-  # https://github.com/OpenImageIO/oiio/pull/1099
-  patch :DATA
-
   resource "j2kp4files" do
     url "http://pkgs.fedoraproject.org/repo/pkgs/openjpeg/j2kp4files_v1_5.zip/27780ed3254e6eb763ebd718a8ccc340/j2kp4files_v1_5.zip"
-    sha1 "a90cad94abbe764918175db72b49df6d2f63704b"
+    sha256 "21cf3156ed2a2a39765c0d57f36c71d1291e9c30054775a2f0a8fdd2964f1799"
   end
 
   resource "tiffpic" do
     url "ftp://ftp.remotesensing.org/pub/libtiff/pics-3.8.0.tar.gz"
-    sha1 "f50e14335fd98f73c6a235d3ff4d83cf4767ab37"
+    sha256 "e0e34732b61e1ce49eff2c7a079994c856d2a5f772f5228c84678272bc6829a9"
   end
 
   resource "bmpsuite" do
     url "http://entropymine.com/jason/bmpsuite/bmpsuite.zip"
-    sha1 "2e43ec4d8e6f628f71a554c327433914000db7ba"
+    sha256 "7c7643003476da4e2b29ebbb0ed1ca28cf7eb21a04b4f474567c1bea5caba089"
     version "1.0.0"
   end
 
   resource "tgautils" do
     url "http://googlesites.inequation.org/TGAUTILS.ZIP?attredirects=0"
-    sha1 "0902c51e7b00ae70a460250f60d6adc41c8095df"
+    sha256 "1c05c376800d75332e544b665354b9e234f97352266b4dea40d5424d8bcb3299"
     version "1.0.0"
   end
 
   resource "openexrimages" do
     url "http://download.savannah.nongnu.org/releases/openexr/openexr-images-1.5.0.tar.gz"
-    sha1 "22bb1a3d37841a88647045353f732ceac652fd3f"
+    sha256 "1b3ab7a4e38c6b0085ad3c08fb5463163c2a516e55606bb1b7749648b83fa0d9"
   end
 
   resource "oiioimages" do
-    url "https://github.com/OpenImageIO/oiio-images/tarball/9bf43561f5"
-    sha1 "8f12a86098120fd10ceb294a0d3aa1c95a0d3f80"
-    version "1.0.0"
+    url "https://github.com/OpenImageIO/oiio-images.git",
+        :revision => "9bf43561f5d0f9d23a7b242fdc5849d6afd52ef5"
   end
 
   def install
@@ -84,11 +77,12 @@ class Openimageio < Formula
       chdir "localpub"
     end
 
-    ENV.append "MY_CMAKE_FLAGS", "-Wno-dev"   # stops a warning.
+    ENV.append "MY_CMAKE_FLAGS", "-Wno-dev" # stops a warning.
     ENV.append "MY_CMAKE_FLAGS", "-DOPENJPEG_INCLUDE_DIR=#{Formula["openjpeg"].opt_include}/openjpeg-1.5"
     ENV.append "MY_CMAKE_FLAGS", "-DFREETYPE_INCLUDE_DIRS=#{Formula["freetype"].opt_include}/freetype2"
     ENV.append "MY_CMAKE_FLAGS", "-DUSE_OPENCV=OFF"
     ENV.append "MY_CMAKE_FLAGS", "-DCMAKE_FIND_FRAMEWORK=LAST"
+    ENV.append "MY_CMAKE_FLAGS", "-DCMAKE_VERBOSE_MAKEFILE=ON"
 
     args = ["USE_TBB=1", "EMBEDPLUGINS=1"]
 
@@ -126,9 +120,9 @@ class Openimageio < Formula
     system "make", "test" if build.with? "tests"
     cd "dist/macosx" do
       (lib/"python2.7").install "lib/python/site-packages"
-      prefix.install  %w[bin include]
-      lib.install    Dir["lib/lib*"]
-      doc.install    "share/doc/openimageio/openimageio.pdf"
+      prefix.install %w[bin include]
+      lib.install Dir["lib/lib*"]
+      doc.install "share/doc/openimageio/openimageio.pdf"
       prefix.install Dir["share/doc/openimageio/*"]
     end
   end
@@ -138,22 +132,3 @@ class Openimageio < Formula
     system bin/"oiiotool", "--info", test_fixtures("test.png")
   end
 end
-__END__
-diff --git a/src/python/CMakeLists.txt b/src/python/CMakeLists.txt
-index ab583d1..038691c 100644
---- a/src/python/CMakeLists.txt
-+++ b/src/python/CMakeLists.txt
-@@ -84,7 +84,12 @@ if (BOOST_CUSTOM OR Boost_FOUND AND PYTHONLIBS_FOUND)
-
-     include_directories (${PYTHON_INCLUDE_PATH} ${Boost_INCLUDE_DIRS})
-     add_library (${target_name} MODULE ${python_srcs})
--    target_link_libraries (${target_name} OpenImageIO ${Boost_LIBRARIES} ${Boost_PYTHON_LIBRARIES} ${PYTHON_LIBRARIES} ${CMAKE_DL_LIBS})
-+    if (APPLE)
-+        target_link_libraries (${target_name} OpenImageIO ${Boost_LIBRARIES} ${Boost_PYTHON_LIBRARIES} ${CMAKE_DL_LIBS})
-+        set_target_properties(${target_name} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-+    else ()
-+        target_link_libraries (${target_name} OpenImageIO ${Boost_LIBRARIES} ${Boost_PYTHON_LIBRARIES} ${PYTHON_LIBRARIES} ${CMAKE_DL_LIBS})
-+    endif ()
-
-     # Exclude the 'lib' prefix from the name
-     if(NOT PYLIB_LIB_PREFIX)

@@ -1,23 +1,24 @@
 class ClustalOmega < Formula
   homepage "http://www.clustal.org/omega/"
-  #tag "bioinformatics"
-  #doi "10.1038/msb.2011.75"
-  url "http://www.clustal.org/omega/clustal-omega-1.2.0.tar.gz"
-  sha1 "3416bdc81328fa955a500aaf6c3a77414c8e0c2b"
+  # doi "10.1038/msb.2011.75"
+  # tag "bioinformatics"
+
+  url "http://www.clustal.org/omega/clustal-omega-1.2.1.tar.gz"
+  sha256 "0ef32727aa25c6ecf732083e668a0f45bc17085c28a5c7b4459f4750419f2b0a"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
+    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha1 "542ab8b7114dcc9ecbe18ff30241636f3ce6119f" => :yosemite
-    sha1 "ef3fb88b983cf5513f78db6973bbb9d47f2b4d61" => :mavericks
-    sha1 "3f39c602cfa65c5e9c886417eca892af52fc4246" => :mountain_lion
+    sha256 "2e1ee794f4b1e2c7875f2bfb053281227a068a9accfcb9d3988b810a84b32bc3" => :yosemite
+    sha256 "1d00c72cb42d76b62a58d9cb760ff8a0f74603934e7ecfb86be85f6f98a75439" => :mavericks
+    sha256 "e0f045938866b33480339d6ecccd8c9af97a9f8e7b1295fe7fcd862a93cb3b54" => :mountain_lion
   end
 
   depends_on "argtable"
 
   def install
-    system "./configure", "--disable-debug", "--disable-dependency-tracking",
-                          "--prefix=#{prefix}"
+    system "./configure", "--prefix=#{prefix}",
+      "--disable-debug", "--disable-dependency-tracking"
     system "make", "install"
   end
 

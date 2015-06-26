@@ -1,8 +1,7 @@
 class GraphTool < Formula
   homepage "http://graph-tool.skewed.de/"
-  url "http://downloads.skewed.de/graph-tool/graph-tool-2.2.35.tar.bz2"
-  sha1 "f75a31dec45843beff18eb6b5ce8eda5a0645277"
-  revision 1
+  url "http://downloads.skewed.de/graph-tool/graph-tool-2.2.42.tar.bz2"
+  sha256 "e975c0836a06d07aff2d4c54472de710566f061a97e9775085a7aa5741ab9888"
 
   head do
     url "https://github.com/count0/graph-tool.git"
@@ -12,7 +11,7 @@ class GraphTool < Formula
   end
 
   option "without-cairo", "Build without cairo support for plotting"
-  option "with-gtk+3", "Build with gtk+3 support for interactive plotting"
+  option "without-gtk+3", "Build without gtk+3 support for interactive plotting"
 
   cxx11 = MacOS.version < :mavericks ? ["c++11"] : []
   with_pythons = build.with?("python3") ? ["with-python3"] : []
@@ -22,7 +21,7 @@ class GraphTool < Formula
   depends_on "cairomm" => cxx11 if build.with? "cairo"
   depends_on "cgal" => cxx11
   depends_on "google-sparsehash" => cxx11 + [:recommended]
-  depends_on "gtk+3" => :optional
+  depends_on "gtk+3" => :recommended
   depends_on :python => :recommended
   depends_on :python3 => :optional
   depends_on "boost-python" => cxx11 + with_pythons
@@ -52,12 +51,12 @@ class GraphTool < Formula
 
     system "./autogen.sh" if build.head?
 
-    config_args = %W(
+    config_args = %W[
       --disable-debug
       --disable-dependency-tracking
       --disable-optimization
       --prefix=#{prefix}
-    )
+    ]
 
     config_args << "--disable-cairo" if build.without? "cairo"
     config_args << "--disable-sparsehash" if build.without? "google-sparsehash"

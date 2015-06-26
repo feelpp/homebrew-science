@@ -3,14 +3,13 @@ class Scalapack < Formula
   url "http://www.netlib.org/scalapack/scalapack-2.0.2.tgz"
   sha1 "ff9532120c2cffa79aef5e4c2f38777c6a1f3e6a"
   head "https://icl.cs.utk.edu/svn/scalapack-dev/scalapack/trunk", :using => :svn
-  revision 1
+  revision 2
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
-    revision 3
-    sha1 "f83a1263334fcec419456b2a21643005788cefb6" => :yosemite
-    sha1 "b39b6f9a883e77617a9ebf6a67e8161e67bdc41b" => :mavericks
-    sha1 "17194e46c1e9e5b0cddb5ecdbca27315d740a7c5" => :mountain_lion
+    root_url "https://homebrew.bintray.com/bottles-science"
+    sha256 "3a78fbd2b569d877708063fda6cefdedd5192bbf45f0417aa9334d041c77907c" => :yosemite
+    sha256 "9fdb93a68b820d1b0ebaeb76dcbabe8de30d419ba2bf5c3a82dc2b5a6261841e" => :mavericks
+    sha256 "19474cdf467f0bf78797d6a20edb59d4bb2ecf12c78cb510a3916c68a2a246d9" => :mountain_lion
   end
 
   option "without-check", "Skip build-time tests (not recommended)"

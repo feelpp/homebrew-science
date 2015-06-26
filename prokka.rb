@@ -1,9 +1,13 @@
 class Prokka < Formula
   homepage "http://www.vicbioinformatics.com/software.prokka.shtml"
+  desc "Prokka: rapid annotation of prokaryotic genomes"
   # doi "10.1093/bioinformatics/btu153"
   # tag "bioinformatics"
+
   url "http://www.vicbioinformatics.com/prokka-1.11.tar.gz"
   sha256 "ee18146c768fe6ac8e6c9e28bb35f686a5b79d5d5362c4b7665f6a33978101ae"
+
+  head "https://github.com/tseemann/prokka.git"
 
   depends_on "Bio::Perl" => :perl
   depends_on "XML::Simple" => :perl
@@ -17,14 +21,18 @@ class Prokka < Formula
   depends_on "parallel"
 
   depends_on "barrnap" => :recommended # fast rRNA searching using NHMMER
+  depends_on "rnammer" => :optional
 
   # These optional dependencies have no formulae.
   # depends_on "minced" => :recommended # find CRISPRs
-  # depends_on "rnammer" => :optional # requires patch to ensure it uses older HMMer 2.x
   # depends_on "signalp" => :optional # for --gram / sig_peptide predictions
 
   def install
     prefix.install Dir["*"]
+  end
+
+  def post_install
+    system "#{bin}/prokka", "--setupdb"
   end
 
   test do
