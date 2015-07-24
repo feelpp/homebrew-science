@@ -16,12 +16,6 @@ class Scotch5 < Formula
 
   keg_only "Conflicts with scotch (6.x)"
 
-  bottle do
-    root_url 'http://feelpp-bottles.u-strasbg.fr/'
-    cellar :any
-    sha1 "81819a2a38a7ac12600a04159d0e2316089d7c4e" => :mavericks
-  end
-
   # bugs in makefile:
   # - libptesmumps must be built before main_esmumps
   # - install should also install the lib*esmumps.a libraries
