@@ -1,18 +1,17 @@
 class Quast < Formula
+  desc "QUAST: Quality Assessment Tool for Genome Assemblies"
   homepage "http://bioinf.spbau.ru/en/quast"
   # doi "10.1093/bioinformatics/btt086"
   # tag "bioinformatics"
 
-  url "https://downloads.sourceforge.net/project/quast/quast-2.3.tar.gz"
-  sha1 "9bf176f852cf1b77f201b15e7d9262ae29cff727"
+  url "https://downloads.sourceforge.net/project/quast/quast-3.0.tar.gz"
+  sha256 "d8f65808007ca989dfb740935dc3a28909ceb2d9d77ac456bfbc54287fdd9ee7"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    revision 1
-    sha1 "d223217a74fb8c58591f820c30008681baef6e26" => :yosemite
-    sha1 "6ae5d0394aa9971a3ab77978f92b10fab2cabbe2" => :mavericks
-    sha1 "d5b9721b4209dc4fe0826068470e4f6cf90097e8" => :mountain_lion
+    sha256 "31424b63c4575c86f8a8738e344f5de2db54dc825c48768ca05eba203f739cb0" => :yosemite
+    sha256 "e7059ac774256316780e30786c01f62848b47f084c235414d22efbdc3c917598" => :mavericks
+    sha256 "01b2f6d165f44f5883c6a149ae5761902b22e7fc5e1c9ad95928899a142968e4" => :mountain_lion
   end
 
   if OS.mac? && MacOS.version <= :mountain_lion

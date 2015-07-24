@@ -1,15 +1,13 @@
 class Fwdpp < Formula
   homepage "https://molpopgen.github.io/fwdpp/"
+  url "https://github.com/molpopgen/fwdpp/archive/0.3.3.tar.gz"
+  sha256 "9b6b4dda5a0625f086ec931bc39745fd4db94dd91ff7da0658f82e95af71b05c"
+  head "https://github.com/molpopgen/fwdpp.git"
   # doi "10.1534/genetics.114.165019"
 
-  url "https://github.com/molpopgen/fwdpp/archive/0.3.1.tar.gz"
-  sha256 "7adfc7a17ba87c1ad53b091078db4830205e79a5bc86e8b924d9c1c75a0e3623"
-  head "https://github.com/molpopgen/fwdpp.git"
-
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "05fba0c74a1d839e83d0085b56f6dbd17a315eaf0d6f6d5e7bd5af4c6dfe1ea4" => :yosemite
-    sha256 "7b2eadb4370421bfa375ee479ebf2b97a7fd4c7130bd46d364c156f47dcd4f23" => :mavericks
+    sha256 "68b01354e294675f1522fcb05a0a5c3798973d8d77899f7861d6c04cbdc2423d" => :yosemite
+    sha256 "ffb35271a5c30ed93f3086c9918a4bf400657b9bc860a29bcbdaae8c2176515c" => :mavericks
   end
 
   option "without-check", "Disable build-time checking (not recommended)"
@@ -27,14 +25,14 @@ class Fwdpp < Formula
     system "make"
     system "make", "check" if build.with? "check"
     system "make", "install"
-    share.install "examples" # install examples
-    share.install "unit"     # install unit tests
+    pkgshare.install "examples" # install examples
+    pkgshare.install "unit"     # install unit tests
   end
 
   test do
     # run unit tests compiled with 'make check'
     if build.with? "check"
-      Dir["#{share}/unit/*"].each { |f| system f if File.file?(f) && File.executable?(f) }
+      Dir["#{pkgshare}/unit/*"].each { |f| system f if File.file?(f) && File.executable?(f) }
     end
   end
 end

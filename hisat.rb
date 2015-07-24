@@ -2,16 +2,16 @@ class Hisat < Formula
   homepage "http://ccb.jhu.edu/software/hisat/"
   # tag "bioinformatics"
   # doi "10.1038/nmeth.3317"
-  url "http://ccb.jhu.edu/software/hisat/downloads/hisat-0.1.5-beta-source.zip"
-  sha256 "0a58d820297fae2f90a783bdb714621a6051fe2bde0a60d518cb3672eeda2210"
-  version "0.1.5b"
+  url "http://ccb.jhu.edu/software/hisat/downloads/hisat-0.1.6-beta-source.zip"
+  sha256 "69fbd79d8f29b221aa72f0db33148d67d44a3e2cfe16dadf0663a58b7741ff9c"
+  version "0.1.6b"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "d9540bb34062a9037d402352f99a61f6cda54732460d3eab39f439a4ea449fdf" => :yosemite
-    sha256 "30639176fdd893df3b6d64761a09de3a44ada9cb038771296651e2277dabf6f8" => :mavericks
-    sha256 "12d5c4dc85b63920c6e0e6b7808336fd7818111e88e940552ec663557e0d4b60" => :mountain_lion
+    sha256 "e34b8f4f30502f56398a2d261bb7da2ff3a597c3ca52a4feb4e460bb99006e8f" => :yosemite
+    sha256 "8d6569d480eaddde24e587df969e177a8fef78430aece34fb20e25429878c5ac" => :mavericks
+    sha256 "27f1b26e3d83bc9ac3275b2b5d80c69205043813efd8677755ec671791d6cb89" => :mountain_lion
   end
 
   def install

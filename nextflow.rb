@@ -4,18 +4,17 @@ class Nextflow < Formula
   # doi "10.6084/m9.figshare.1254958"
   # tag "bioinformatics"
 
-  version "0.14.2"
-  url "http://www.nextflow.io/releases/v0.14.2/nextflow"
-  sha256 "26b7f29c3682173900290b664a8e3e9e0cdb98553317345842e524bd033c2a3d"
+  version "0.14.4"
+  url "http://www.nextflow.io/releases/v0.14.4/nextflow"
+  sha256 "cda0a2bd5777fa042102ce69a07a6543791de39919b79f6220fff561a36da4e4"
 
   head "https://github.com/nextflow-io/nextflow.git"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "a63c9eeb236de4d38bf14b3c5ae84d054c16335c9afeee85274eee914c1c7956" => :yosemite
-    sha256 "0233a03b52b2e2cef07922ad4a3166b0895ac193d48904e9f95662d5ffd1185d" => :mavericks
-    sha256 "f6a838b641fac81bb55df883d01f41985af753ac1a6ba1ddb916732a1c72b2c9" => :mountain_lion
+    sha256 "69015ab04b52896a7cd546f12b8113656620ec02377f4ab2d9e715e8bda135c0" => :yosemite
+    sha256 "cb54b26855345f07ff8ccaffb88b77ca201aa8c8c1c2eca9b63e17434cf8a3ec" => :mavericks
+    sha256 "6802f8fae6ba32a6115110321db49495993d5313861aaf8532b981b421e8f17e" => :mountain_lion
   end
 
   depends_on :java => "1.7+"

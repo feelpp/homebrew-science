@@ -1,15 +1,14 @@
 class Petsc < Formula
+  desc "Scalable (parallel) solution of scientific applications modeled by partial differential equations"
   homepage "http://www.mcs.anl.gov/petsc/index.html"
-  url "http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.5.3.tar.gz"
-  sha1 "4c755b3c122f88e38bb5259c748f772545fcaf21"
+  url "http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.6.0.tar.gz"
+  sha256 "46e44b56f9f163e692c71b35f5d6b9b6746ab3484b7c4879d0f3eb475d98f053"
   head "https://bitbucket.org/petsc/petsc", :using => :git
-  revision 3
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "222b9905333e22863585b9dd9058f2f8ef6be4957b97c011fb349e3ee45ad12f" => :yosemite
-    sha256 "210eda8c4d7fa4da49ab4227e345ec7f0ccfc06c28564ae2f0ba5729cd1b210b" => :mavericks
-    sha256 "a7ff0220bc53623cf31acf13d2e692762770927e148f203126173660f0a9baab" => :mountain_lion
+    sha256 "abded28948a8317abe1211b87c958de5ff4ee5c10e6e25c4a79591f843cebfe9" => :yosemite
+    sha256 "4cc16d34a473f0c6c5e4f0d724cedc2d9c1bd86ddad71b45dde5f29b5d04ed92" => :mavericks
+    sha256 "3e80dcbab8d0fc3fae103aa6cf80daf499afd006cfeb56b467478b105c029067" => :mountain_lion
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
@@ -41,7 +40,7 @@ class Petsc < Formula
   depends_on "fftw"         => ["with-mpi", "with-fortran", :recommended]
   depends_on "openblas"     => :optional
 
-  #TODO: add ML, YAML dependencies when the formulae are available
+  # TODO: add ML, YAML dependencies when the formulae are available
 
   def oprefix(f)
     Formula[f].opt_prefix
@@ -141,7 +140,7 @@ class Petsc < Formula
     prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
     # symlink only files (don't symlink pkgconfig as it won't symlink to opt/lib)
     lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.*"]
-    share.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
+    (share/"petsc").install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
   end
 
   def caveats; <<-EOS

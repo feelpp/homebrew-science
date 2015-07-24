@@ -1,15 +1,16 @@
 class Parmetis < Formula
   homepage "http://glaros.dtc.umn.edu/gkhome/metis/parmetis/overview"
+  desc "MPI-based library for graph/mesh partitioning and computing fill-reducing orderings"
   url "http://glaros.dtc.umn.edu/gkhome/fetch/sw/parmetis/parmetis-4.0.3.tar.gz"
   sha1 "e0df69b037dd43569d4e40076401498ee5aba264"
 
   bottle do
     root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    revision 1
-    sha256 "e9fe981b16ea4e753f20ae1cc129022d1487b2b3b79e21394d677f3b5436ee56" => :yosemite
-    sha256 "b8e894f151784f431058f77cbf1b597f0e1fd9b16932cc20cb814cdc280d971f" => :mavericks
-    sha256 "a8dabf7f98547bc43fdfe8f9e120d12c8a68552b8f61e9c88d6f4ed631b95d44" => :mountain_lion
+    revision 2
+    sha256 "98818f2f53c82461dd816b6b86cd569d05ba1d341c470d4948195397a9b1f7a1" => :yosemite
+    sha256 "adacf5ac72bed2a487598817eaac83f854d47f5d7163bc00f2b070aeb71c3959" => :mavericks
+    sha256 "f5a81fe89fbdddcc211dad3cee285af03cfd7e022f46ac2e00993a87c8e97e5e" => :mountain_lion
   end
 
   # METIS 5.* is required. It comes bundled with ParMETIS.
@@ -27,11 +28,11 @@ class Parmetis < Formula
 
     system "make", "config", "prefix=#{prefix}", "shared=1"
     system "make", "install"
-    share.install "Graphs" # Sample data for test
+    (share/"parmetis").install "Graphs" # Sample data for test
   end
 
   test do
-    system "mpirun", "-np", "4", "#{bin}/ptest", "#{share}/Graphs/rotor.graph"
+    system "mpirun", "-np", "4", "#{bin}/ptest", "#{share}/parmetis/Graphs/rotor.graph"
     ohai "Test results are in ~/Library/Logs/Homebrew/parmetis."
   end
 end

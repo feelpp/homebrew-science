@@ -1,16 +1,15 @@
 class Hypre < Formula
+  desc "A library of high performance preconditioners that features parallel multigrid methods for both structured and unstructured grid problems"
   homepage "http://computation.llnl.gov/casc/hypre/software.html"
-  url "http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.9.0b.tar.gz"
-  mirror "ftp://ftp.mirrorservice.org/sites/distfiles.gentoo.org/distfiles/hypre-2.9.0b.tar.gz"
-  sha1 "aaf8354437be38aa2fbcc944ab64d464a5b39207"
-  revision 2
+  url "http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.10.0b.tar.gz"
+  mirror "ftp://ftp.mirrorservice.org/sites/distfiles.gentoo.org/distfiles/hypre-2.10.0b.tar.gz"
+  sha256 "b55dbdc692afe5a00490d1ea1c38dd908dae244f7bdd7faaf711680059824c11"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "9dae8c7b50e04196ed74f70249b9dba95abcd5305f713c052aa8c882970f9f88" => :yosemite
-    sha256 "734a02e3e099d508241a8b572663dbbaf81b1851732ee4bce8b737d9f9fd39ae" => :mavericks
-    sha256 "03efc47b263fa95b1a69ecc9158f49d2b9cd15848c60d349bb508eb95357400d" => :mountain_lion
+    sha256 "cc15595f5c90c2b3e9feaf7889acfd41a2206be9a967c55fa758ba5ff2ccae76" => :yosemite
+    sha256 "09c544444b5ffddc4f5c8bae99b82e4f58dcb5cc069008a9648f8e7e8f5c02d0" => :mavericks
+    sha256 "7005b1c2c899c3811c413d427e3ab7146dd7670cfcddefc04c80d484d18a5e94" => :mountain_lion
   end
 
   depends_on :fortran => :recommended
@@ -24,6 +23,12 @@ class Hypre < Formula
   option "without-accelerate", "Build without Accelerate framework (use internal BLAS routines)"
   option "with-debug", "Build with debug flags"
   option "with-bigint", "Build with 64-bit indices"
+
+  # bug fix for SEGV
+  patch do
+    url "https://bitbucket.org/petsc/pkg-hypre/commits/566a6568170a4abbfc2488d02de23f76da0473b5/raw/"
+    sha256 "8af48d5612771ef49edd3d9a462df71b864f34abb1ec03c8234591c96c683f7f"
+  end
 
   def install
     cd "src" do
@@ -55,14 +60,6 @@ class Hypre < Formula
                         "--with-lapack=yes",
                         "--with-lapack-libs=lapack clapack f77lapack",
                         "--with-lapack-lib-dirs=/usr/lib"]
-      end
-
-      # lib/Makefile treats the hypre internal BLAS & LAPACK implementations
-      # as dependencies for libHYPRE.a (the hypre library). If building with
-      # an external BLAS library, strip out these dependencies.
-      if build.with?("openblas") || build.with?("accelerate")
-        inreplace "lib/Makefile", /.*BLASFILES.*/, ""
-        inreplace "lib/Makefile", /.*LAPACKFILES.*/, ""
       end
 
       config_args << "--disable-fortran" if build.without? :fortran
@@ -182,7 +179,7 @@ class Hypre < Formula
   def caveats; <<-EOS.undent
       Please register for hypre at:
 
-      http://computation.llnl.gov/casc/hypre/download/hypre-2.9.0b_reg.html
+      http://computation.llnl.gov/casc/hypre/download/hypre-2.10.0b_reg.html
     EOS
   end
 end

@@ -1,15 +1,15 @@
 class Scotch < Formula
+  desc "A software package for graph and mesh/hypergraph partitioning, graph clustering, and sparse matrix ordering"
   homepage "https://gforge.inria.fr/projects/scotch"
-  url "https://gforge.inria.fr/frs/download.php/file/34099/scotch_6.0.4.tar.gz"
-  sha256 "6461cc9f28319a9dbe6cc10e28c0cbe90b4b25e205723c3edcde9a3ff974d6d8"
-  revision 1
+  url "https://gforge.inria.fr/frs/download.php/file/34618/scotch_6.0.4.tar.gz"
+  sha256 "f53f4d71a8345ba15e2dd4e102a35fd83915abf50ea73e1bf6efe1bc2b4220c7"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "1e8625ed27ad1e9326acea04e570e41c7cc42b7373991dd8db7e45fa213a13aa" => :yosemite
-    sha256 "12ab21d4df72976c5aa82c9d5aace2d8c8b2b30b2a92344ee5a74399e5383d54" => :mavericks
-    sha256 "21752692104035f6ce6125a97124d38bc0f161730180bbe3bcd1c6582621886b" => :mountain_lion
+    revision 2
+    sha256 "3f940db384fad223f7c6e56ff0cd3fb7cbc323bfd42592795c5967b818c32c75" => :yosemite
+    sha256 "a32ab37cb122acbdc404fac1cf6fc17e8b28869199d31c5fc4d9a9ed24d26209" => :mavericks
+    sha256 "6f571d191f8721a9cd505cffead941d744642452419ae7de61aaa4e255316f56" => :mountain_lion
   end
 
   option "without-check", "skip build-time tests (not recommended)"
@@ -17,17 +17,18 @@ class Scotch < Formula
   depends_on :mpi => :cc
   depends_on "xz" => :optional # Provides lzma compression.
 
-  patch :DATA
-
   def install
     cd "src" do
-      ln_s "Make.inc/Makefile.inc.i686_mac_darwin8", "Makefile.inc"
+      ln_s "Make.inc/Makefile.inc.i686_mac_darwin10", "Makefile.inc"
+      # default CFLAGS: -O3 -Drestrict=__restrict -DCOMMON_FILE_COMPRESS_GZ -DCOMMON_PTHREAD -DCOMMON_PTHREAD_BARRIER -DCOMMON_RANDOM_FIXED_SEED -DCOMMON_TIMING_OLD -DSCOTCH_PTHREAD -DSCOTCH_RENAME
+      # MPI implementation is not threadsafe, do not use DSCOTCH_PTHREAD
 
       cflags   = %w[-O3 -fPIC -Drestrict=__restrict -DCOMMON_PTHREAD_BARRIER
+                    -DCOMMON_PTHREAD
                     -DSCOTCH_CHECK_AUTO -DCOMMON_RANDOM_FIXED_SEED
                     -DCOMMON_TIMING_OLD -DSCOTCH_RENAME
                     -DCOMMON_FILE_COMPRESS_BZ2 -DCOMMON_FILE_COMPRESS_GZ]
-      ldflags  = %w[-lm -lz -lbz2]
+      ldflags  = %w[-lm -lz -lpthread -lbz2]
 
       cflags  += %w[-DCOMMON_FILE_COMPRESS_LZMA]   if build.with? "xz"
       ldflags += %W[-L#{Formula["xz"].lib} -llzma] if build.with? "xz"
@@ -61,23 +62,3 @@ class Scotch < Formula
     end
   end
 end
-
-__END__
-diff --git a/src/check/test_common_thread.c b/src/check/test_common_thread.c
-index 8327bc7..a1d4243 100644
---- a/src/check/test_common_thread.c
-+++ b/src/check/test_common_thread.c
-@@ -197,11 +197,11 @@ char *              argv[])
-     errorPrint ("main: cannot launch or run threads");
-     return     (1);
-   }
-+
-+  free (thrdtab);
- #else /* ((defined COMMON_PTHREAD) || (defined SCOTCH_PTHREAD)) */
-   printf ("Scotch not compiled with either COMMON_PTHREAD or SCOTCH_PTHREAD\n");
- #endif /* ((defined COMMON_PTHREAD) || (defined SCOTCH_PTHREAD)) */
- 
--  free (thrdtab);
--
-   return (0);
- }

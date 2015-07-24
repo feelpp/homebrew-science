@@ -12,10 +12,10 @@ class R < Formula
   revision 1
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "5b5560410d9d18b310db7c7fe8377389d018598dbf5a7d5fea171bf50683aca2" => :yosemite
-    sha256 "2de02526eef9c22ff06a0995abd8d07cb57c7704b56f591440a84e37c96db056" => :mavericks
-    sha256 "fb2241761bdc6df0348e29049c2398e781c6db7897e5808eab1ccca3bf85a78d" => :mountain_lion
+    revision 1
+    sha256 "56f2d6bdfa536e0b313e7a89bd61c25e074efc8425ed6ad7abe59e3389bf3958" => :yosemite
+    sha256 "69f8c1a18d3077d0c7831de9dd63d1fcbf571d7b9dda9f5901500d0769f50186" => :mavericks
+    sha256 "f7be5f555f2302c33f8763cd8063e37602cf37691fa5df5e489036566f84c2eb" => :mountain_lion
   end
 
   head do
@@ -174,7 +174,8 @@ class R < Formula
         R CMD javareconf JAVA_CPPFLAGS=-I/System/Library/Frameworks/JavaVM.framework/Headers
       If you've installed a version of Java other than the default, you might need to instead use:
         R CMD javareconf JAVA_CPPFLAGS="-I/System/Library/Frameworks/JavaVM.framework/Headers -I/Library/Java/JavaVirtualMachines/jdk<version>.jdk/"
-        (where <version> can be found by running `java -version` or `locate jni.h`)
+      (where <version> can be found by running `java -version`, `/usr/libexec/java_home`, or `locate jni.h`), or:
+        R CMD javareconf JAVA_CPPFLAGS="-I/System/Library/Frameworks/JavaVM.framework/Headers -I$(/usr/libexec/java_home | grep -o '.*jdk')"
       EOS
     end
   end

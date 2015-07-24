@@ -1,36 +1,36 @@
 class Biobloomtools < Formula
+  desc "BioBloom Tools (BBT): Bloom filter for bioinformatics"
   homepage "http://www.bcgsc.ca/platform/bioinfo/software/biobloomtools/"
-  #doi "10.1093/bioinformatics/btu558"
-  #tag "bioinformatics"
+  # doi "10.1093/bioinformatics/btu558"
+  # tag "bioinformatics"
 
-  url "http://www.bcgsc.ca/platform/bioinfo/software/biobloomtools/releases/2.0.6/biobloomtools-2.0.6.tar.gz"
-  sha1 "8eb6fed35104b32bb12a5ee3fdb9d6ca9b752aa1"
+  url "https://github.com/bcgsc/biobloom/releases/download/2.0.12/biobloomtools-2.0.12.tar.gz"
+  sha256 "13053036ca4a23032a7fb201bf22862187e4d8f584c3b1f6440d829210954a3e"
+
+  head do
+    url "https://github.com/bcgsc/biobloom.git"
+    depends_on "autoconf" => :build
+    depends_on "automake" => :build
+  end
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
     cellar :any
-    sha1 "715218ca44ec4a5e572ebaa71a7e5f7348e6ba7c" => :yosemite
-    sha1 "2eb4b97895569fa83ba54dec06d35aaf90552009" => :mavericks
-    sha1 "7d69cd24a383009b85046bf9cb2af86e8f568489" => :mountain_lion
+    sha256 "68c125cd6e5e02b1eb2aa79e40ca6e82c2bb2ed8764f6d11445463fb460032d4" => :yosemite
+    sha256 "fcf60aca3e3326a1a422535190de56d2c8dc1d26af1cd1320f642485db7fe64c" => :mavericks
+    sha256 "0730a556dc8b5cbc99f653ab8eeb4de922875ca3b23113b9103cf42406ec6a43" => :mountain_lion
   end
 
   depends_on "boost" => :build
 
-  fails_with :clang do
-    build 600
-    cause "error: reference to 'shared_ptr' is ambiguous"
-  end
-
   def install
-    # Fix error: 'citycrc.h' file not found
-    inreplace "Common/city.cc", "#ifdef __SSE4_2__", "#if 0"
-
+    system "./autogen.sh" if build.head?
     system "./configure",
       "--disable-debug",
       "--disable-dependency-tracking",
       "--disable-silent-rules",
       "--prefix=#{prefix}"
     system "make", "install"
+    doc.install "README.html", "README.md"
   end
 
   test do
