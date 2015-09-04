@@ -1,17 +1,18 @@
 class Lighter < Formula
+  desc "Fast and memory-efficient sequencing error corrector"
   homepage "https://github.com/mourisl/Lighter"
   # tag 'bioinformatics'
   # doi '10.1186/s13059-014-0509-9'
-  url "https://github.com/mourisl/Lighter/archive/v1.0.5.tar.gz"
-  sha1 "a39e399cedf48ee01d4244b4184355d19dfc438b"
+
+  url "https://github.com/mourisl/Lighter/archive/v1.0.7.tar.gz"
+  sha256 "fde9969f49fa618d12713473b15c79884f91da6017710329e3c9f890f464465f"
   head "https://github.com/mourisl/Lighter.git"
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
     cellar :any
-    sha1 "d643e55d2b6b165eb85da63363a199920e32cace" => :yosemite
-    sha1 "5a54e5e535c1e3f5662c6b009c33c56eb77c3145" => :mavericks
-    sha1 "aa88bf40adcb470a41729e0a30c0c1ba91c62e55" => :mountain_lion
+    sha256 "0cfd10552918cbea28e5e3bf2a8c9d87b220da3eda6c0c7cbcf9764f7494b49c" => :yosemite
+    sha256 "65dc90163a1ad643d49d88f2769cfa65c176b19d5485081819cb2b8c52130996" => :mavericks
+    sha256 "72a4d55edc5b4504d6c72201b5fcf5388c49f2ff3d97ae9c2d9f5e301af252f5" => :mountain_lion
   end
 
   def install

@@ -1,14 +1,14 @@
 class Petsc < Formula
   desc "Scalable (parallel) solution of scientific applications modeled by partial differential equations"
   homepage "http://www.mcs.anl.gov/petsc/index.html"
-  url "http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.6.0.tar.gz"
-  sha256 "46e44b56f9f163e692c71b35f5d6b9b6746ab3484b7c4879d0f3eb475d98f053"
+  url "http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.6.1.tar.gz"
+  sha256 "aeac101565a4ba609c3f3f13ada475720bcd32a44676e3cbfe792da1c9fb32a2"
   head "https://bitbucket.org/petsc/petsc", :using => :git
 
   bottle do
-    sha256 "abded28948a8317abe1211b87c958de5ff4ee5c10e6e25c4a79591f843cebfe9" => :yosemite
-    sha256 "4cc16d34a473f0c6c5e4f0d724cedc2d9c1bd86ddad71b45dde5f29b5d04ed92" => :mavericks
-    sha256 "3e80dcbab8d0fc3fae103aa6cf80daf499afd006cfeb56b467478b105c029067" => :mountain_lion
+    sha256 "ddcd54ea22c618ab4b8569abfb9fe1bc133d51011f179cd2a044e6cbacb62551" => :yosemite
+    sha256 "52042d5bda0f74ff3a314541b2ef6dc4a52266cc60fd49f3f9681f7d76f5d31c" => :mavericks
+    sha256 "43037801d09d9df9d31893426eb6af7624a2fd8633a02174b39a26cf903294c2" => :mountain_lion
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
@@ -23,22 +23,22 @@ class Petsc < Formula
   depends_on :x11 => :optional
   depends_on "cmake" => :build
 
-  depends_on "openssl"
-  depends_on "superlu"      => :recommended
-  depends_on "superlu_dist" => :recommended
+  depends_on "openblas" => :optional
+  openblasdep = (build.with? "openblas") ? ["with-openblas"] : []
 
+  depends_on "superlu"      => [:recommended] + openblasdep
+  depends_on "superlu_dist" => [:recommended] + openblasdep
   depends_on "metis"        => :recommended
   depends_on "parmetis"     => :recommended
-  depends_on "scalapack"    => :recommended
-  depends_on "mumps"        => :recommended # mumps is built with mpi by default
-  depends_on "hypre"        => ["with-mpi", :recommended]
-  depends_on "sundials"     => ["with-mpi", "without-check", :recommended]
+  depends_on "scalapack"    => [:recommended] + openblasdep
+  depends_on "mumps"        => [:recommended] + openblasdep # mumps is built with mpi by default
+  depends_on "hypre"        => ["with-mpi", :recommended] + openblasdep
+  depends_on "sundials"     => ["with-mpi", :recommended] + openblasdep
   depends_on "hdf5"         => ["with-mpi", :recommended]
   depends_on "hwloc"        => :recommended
-  depends_on "suite-sparse" => :recommended
+  depends_on "suite-sparse" => [:recommended] + openblasdep
   depends_on "netcdf"       => ["with-fortran", :recommended]
   depends_on "fftw"         => ["with-mpi", "with-fortran", :recommended]
-  depends_on "openblas"     => :optional
 
   # TODO: add ML, YAML dependencies when the formulae are available
 
@@ -140,7 +140,7 @@ class Petsc < Formula
     prefix.install_symlink "#{prefix}/#{petsc_arch}/conf"
     # symlink only files (don't symlink pkgconfig as it won't symlink to opt/lib)
     lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.*"]
-    (share/"petsc").install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
+    pkgshare.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
   end
 
   def caveats; <<-EOS

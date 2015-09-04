@@ -6,10 +6,11 @@ class Pastix < Formula
   revision 3
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "4dc1de1d66b728154b6157095259c4231b20f450e57d872f7b8252c8a558d55f" => :yosemite
-    sha256 "8ba979033897b56109d1f50a5e5270ff11d3ed756b771498ffd2cfd299724b44" => :mavericks
-    sha256 "c937cf0feae8da2a185ac9e984c917fba3b5cfd0c19f6518d4ca0938ec671efc" => :mountain_lion
+    cellar :any
+    revision 1
+    sha256 "4a8f070338de3d09e69efd4936338b2c3fe6ba9c2b3d051958f40c9c598a11ca" => :yosemite
+    sha256 "a4bc4f60cf4644e2c687ab54e5380c6e92179c37c7832f1722b1dd0f65e14cdf" => :mavericks
+    sha256 "a34ca19641f67812aa92e18b58d77056f104aaa56d4da6542f71fc8fc6fc327d" => :mountain_lion
   end
 
   depends_on "scotch"
@@ -85,21 +86,21 @@ class Pastix < Formula
       system "make", "examples"
       system "./example/bin/simple", "-lap", "100"
       prefix.install "config.in"    # For the record.
-      share.install "example"       # Contains all test programs.
+      pkgshare.install "example"       # Contains all test programs.
       ohai "Simple test result is in ~/Library/Logs/Homebrew/pastix. Please check."
     end
   end
 
   test do
-    Dir.foreach("#{share}/example/bin") do |example|
+    Dir.foreach("#{pkgshare}/example/bin") do |example|
       next if example =~ /^\./ || example =~ /plot_memory_usage/ || example =~ /mem_trace.o/ || example =~ /murge_sequence/
       next if example == "reentrant"  # May fail due to thread handling. See http://goo.gl/SKDGPV
       if example == "murge-product"
-        system "#{share}/example/bin/#{example}", "100", "10", "1"
+        system "#{pkgshare}/example/bin/#{example}", "100", "10", "1"
       elsif example =~ /murge/
-        system "#{share}/example/bin/#{example}", "100", "4"
+        system "#{pkgshare}/example/bin/#{example}", "100", "4"
       else
-        system "#{share}/example/bin/#{example}", "-lap", "100"
+        system "#{pkgshare}/example/bin/#{example}", "-lap", "100"
       end
     end
     ohai "All test output is in ~/Library/Logs/Homebrew/pastix. Please check."

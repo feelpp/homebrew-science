@@ -6,7 +6,6 @@ class Ann < Formula
   sha1 '27ec04d55e244380ade3706a9b71c3d631e2ff1a'
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
     sha256 "1af4c7a1d3aa264cd62565687859432a872b404962cd22f250e5bedf08d8c8d0" => :yosemite
     sha256 "101435719a743112bc700a56abb483a107ed3dfcba12313ec790db72de9c59a9" => :mavericks

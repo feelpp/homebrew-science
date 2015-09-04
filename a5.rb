@@ -1,4 +1,5 @@
 class A5 < Formula
+  desc "Pipeline for de novo assembly of microbial genomes"
   homepage "https://sourceforge.net/projects/ngopt/"
   #doi "10.1371/journal.pone.0042304", "arXiv:1401.5130"
   #tag "bioinformatics"
@@ -12,7 +13,6 @@ class A5 < Formula
   end
 
   bottle do
-    root_url "https://downloads.sf.net/project/machomebrew/Bottles/science"
     cellar :any
     revision 1
     sha1 "65d101be4a3a252c1637f9a718ee49f9107ae869" => :yosemite

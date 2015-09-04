@@ -7,7 +7,6 @@ class Field3d < Formula
   head "https://github.com/imageworks/Field3D.git"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
     sha256 "6bceec6214a549add84d22e8157a77f1837d2d92a091d58f5f3581d65f4f667f" => :yosemite
     sha256 "a2a5910fdfa5fbdec7bed7f36669e34811054135d89d542aa886d4795bf9ee92" => :mavericks
@@ -25,7 +24,7 @@ class Field3d < Formula
     include.install Dir["install/**/**/release/include/*"]
     lib.install Dir["install/**/**/release/lib/*"]
     man1.install "man/f3dinfo.1"
-    (share/"field3d").install "contrib", "test", "apps/sample_code"
+    pkgshare.install "contrib", "test", "apps/sample_code"
   end
 
   test do
@@ -34,7 +33,7 @@ class Field3d < Formula
            "-L#{Formula["boost"].opt_lib}", "-lboost_system",
            "-I#{Formula["hdf5"].opt_include}",
            "-L#{Formula["hdf5"].opt_lib}", "-lhdf5",
-           share/"field3d/sample_code/create_and_write/main.cpp",
+           pkgshare/"sample_code/create_and_write/main.cpp",
            "-o", "test"
     system "./test"
   end

@@ -3,16 +3,14 @@ class Kallisto < Formula
   homepage "https://pachterlab.github.io/kallisto/"
   # tag "bioinformatics"
 
-  url "https://github.com/pachterlab/kallisto/archive/v0.42.2.tar.gz"
-  sha256 "6107fed6089c4c4e8a3f8d16c2539736321c134b518c95600ae93ddd3d699219"
+  url "https://github.com/pachterlab/kallisto/archive/v0.42.2.1.tar.gz"
+  sha256 "f6f915fbfec2f8a45b2301cff528ed89051a2f0b8d2d41b87a65662f9e11a1fb"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    revision 1
-    sha256 "c8b7c6a9684f79cff90ab95d0ab4a1f11517f983e08b2ff8eb01a8c446dce6df" => :yosemite
-    sha256 "df50619cee612d023a1ec8c37b6083d4c20b03a21be3c4257610bf15a4a7f3b0" => :mavericks
-    sha256 "2ddbf8882262dae72a63b99f9b21826cc1b4d21b0473ca70f885f5c505e69e28" => :mountain_lion
+    sha256 "294e8dc293412295d1aa6c926baf7105310deacd00ad344ac07c21e631947ad3" => :yosemite
+    sha256 "807ac792ededafdedb2d6a183da765125a70f60276ef4825e7ceabccd509b074" => :mavericks
+    sha256 "52f682724d030b4ea967698e0f8cb34f28b85a763145e2afb4996018bc6b4d3d" => :mountain_lion
   end
 
   needs :cxx11

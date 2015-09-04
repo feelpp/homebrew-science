@@ -1,15 +1,17 @@
 class Scalapack < Formula
+  desc "library of high-performance linear algebra routines for parallel distributed memory machines"
   homepage "http://www.netlib.org/scalapack/"
   url "http://www.netlib.org/scalapack/scalapack-2.0.2.tgz"
-  sha1 "ff9532120c2cffa79aef5e4c2f38777c6a1f3e6a"
+  sha256 "0c74aeae690fe5ee4db7926f49c5d0bb69ce09eea75beb915e00bba07530395c"
   head "https://icl.cs.utk.edu/svn/scalapack-dev/scalapack/trunk", :using => :svn
-  revision 2
+  revision 3
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "3a78fbd2b569d877708063fda6cefdedd5192bbf45f0417aa9334d041c77907c" => :yosemite
-    sha256 "9fdb93a68b820d1b0ebaeb76dcbabe8de30d419ba2bf5c3a82dc2b5a6261841e" => :mavericks
-    sha256 "19474cdf467f0bf78797d6a20edb59d4bb2ecf12c78cb510a3916c68a2a246d9" => :mountain_lion
+    cellar :any
+    revision 1
+    sha256 "80fd977c7637d131e186dc4a016416df1c00d4736cce881631b242c990adc4bd" => :yosemite
+    sha256 "fb9b8db4347d67cc9f3bd9277a7b7026c1f03453e1f28afbf8af96ea96e4f117" => :mavericks
+    sha256 "e0b122d96b125fa524023dc730564b9a45ddc134b1e025c464a4c8f1a7554dcd" => :mountain_lion
   end
 
   option "without-check", "Skip build-time tests (not recommended)"

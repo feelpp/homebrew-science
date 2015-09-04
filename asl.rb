@@ -1,13 +1,13 @@
 class Asl < Formula
+  desc "The AMPL modeling language solver library"
   homepage "http://www.ampl.com"
-  url "https://github.com/ampl/mp/archive/2.0.1.tar.gz"
-  sha256 "628b5ef035b58184113e721b05b9340c8bce77d22f9261eaa2448ec96d97dd8a"
+  url "https://github.com/ampl/mp/archive/2.0.3.tar.gz"
+  sha256 "4ae38da883cfdf077d57c488b03756d9068b1d5b8552db983f6690246edc71a8"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "f2c4e1a1864add2c2480e9b673e9c5f269054e3ab704cbfe04873b0b34a5b386" => :yosemite
-    sha256 "cafce1cf283108446c6106cec2918ec642cb8d5f1dc5d797294b9bca69233a97" => :mavericks
-    sha256 "0c7734c9e10a0610f29b0ab556fefe8d6e171c37430c097efe621e9c21a74e24" => :mountain_lion
+    sha256 "a62f6f85ed76a2150d887b99c4090b748919becfa4f8a1fbf5f74a20baaba6ae" => :yosemite
+    sha256 "7d54631c85cb0b5e649b7eb49b8f93042e53eb9aad252e0e3a5cda3de7a7a1ed" => :mavericks
+    sha256 "63fc816165d937850a57ffcb0ec75638bdba78350819426842f317c399389348" => :mountain_lion
   end
 
   option "with-matlab", "Build MEX files for use with Matlab"
@@ -16,10 +16,10 @@ class Asl < Formula
   depends_on "cmake" => :build
   depends_on "doxygen" => :optional
 
-  # https://github.com/ampl/mp/issues/55
-  patch do
-    url "https://github.com/ampl/mp/commit/8a777497b9ccac035a5d59cb12e3d9a3ba815256.diff"
-    sha256 "5da9fa46e1509bce744933166891da12c895b8ffd2e6705008377bdb81259b22"
+  # https://github.com/ampl/mp/pull/60
+  patch :p1 do
+    url "https://gist.githubusercontent.com/dpo/dde4bf8030209fcf0569/raw/ed93e2653b51b5da754aabc89e08704421860009/a.diff"
+    sha256 "7a6eb262d48e9c9e869ae72e8dbc64adf2ed819f5b3f6e298cd5fae3784d0e8d"
   end
 
   resource "miniampl" do
@@ -46,14 +46,14 @@ class Asl < Formula
     ln_sf Dir["#{libexec}/include/*"], include
 
     if build.with? "matlab"
-      mkdir_p (share / "asl/matlab")
-      ln_sf Dir["#{libexec}/bin/*.mexmaci64"], (share / "asl/matlab")
+      mkdir_p (pkgshare/"matlab")
+      ln_sf Dir["#{libexec}/bin/*.mexmaci64"], (pkgshare/"matlab")
     end
 
     resource("miniampl").stage do
       system "make", "SHELL=/bin/bash", "CXX=#{ENV["CC"]} -std=c99", "LIBAMPL_DIR=#{prefix}", "LIBS=-L$(LIBAMPL_DIR)/lib -lasl -lm -ldl"
       bin.install "bin/miniampl"
-      (share / "asl/example").install "Makefile", "README.rst", "src", "examples"
+      (pkgshare/"example").install "Makefile", "README.rst", "src", "examples"
     end
   end
 
@@ -63,13 +63,16 @@ class Asl < Formula
       s += <<-EOS.undent
         Matlab interfaces have been installed to
 
-          #{opt_share}/asl/matlab
+          #{opt_pkgshare}/matlab
       EOS
     end
     s
   end
 
   test do
-    system "#{bin}/miniampl", "#{share}/asl/example/examples/wb", "showname=1", "showgrad=1"
+    cp Dir["#{opt_pkgshare}/example/examples/*"], testpath
+    cd testpath do
+      system "#{opt_bin}/miniampl", "wb", "showname=1", "showgrad=1"
+    end
   end
 end

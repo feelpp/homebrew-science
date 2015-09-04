@@ -9,7 +9,6 @@ class Bowtie < Formula
   head "https://github.com/BenLangmead/bowtie.git"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
     sha256 "5a6d33f6249513718c44a77c2cba1ce6b94eb6fffc897b988c6c2944e0c5726b" => :yosemite
     sha256 "6ad165cc8526e5c601de52f75706f1dbc9f028b004751df1de2a49165d221db7" => :mavericks
@@ -20,7 +19,7 @@ class Bowtie < Formula
     system "make", "install", "prefix=#{prefix}"
 
     doc.install "MANUAL", "NEWS", "TUTORIAL"
-    (share/"bowtie").install "scripts", "genomes", "indexes", "reads"
+    pkgshare.install "scripts", "genomes", "indexes", "reads"
 
     inreplace share/"bowtie/scripts/test/simple_tests.pl" do |s|
       s.gsub! "$bowtie = \"\"", "$bowtie = \"#{bin}/bowtie\""

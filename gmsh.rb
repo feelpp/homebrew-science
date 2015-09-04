@@ -7,16 +7,16 @@ end
 class Gmsh < Formula
   desc "Gmsh is a 3D grid generator with a build-in CAD engine."
   homepage "http://geuz.org/gmsh"
-  url "http://geuz.org/gmsh/src/gmsh-2.9.3-source.tgz"
-  sha256 "9fc4b376f53c1b84267d0f10896830acb6e41fff393386768169cba3558eb8c6"
+  url "http://geuz.org/gmsh/src/gmsh-2.10.0-source.tgz"
+  sha256 "10db05a73bf7f05f6663ddb3b76045ce9decb28b36ad2e54547861254829a860"
 
   head "https://geuz.org/svn/gmsh/trunk", :using => GmshSvnStrategy
 
   bottle do
     cellar :any
-    sha256 "28caba1817f10be27219da916bd580b830c281124650f6c82954bc6d05834553" => :yosemite
-    sha256 "60cacdcf840288736120069fdf650dd462d0cd7fcedacefc22f5d06d63fab855" => :mavericks
-    sha256 "a714ae24efefcaacd57a94e7b7a3a795714cff68bad7aedc6eebdce5489df8f1" => :mountain_lion
+    sha256 "25927e31f905c130b86c5946aa1b114807847ffe816eb2673966ae926129113d" => :yosemite
+    sha256 "26ee586aa04648b8b2cb593f3b5cd1a437b962154723366d47d5851c4ca10cdf" => :mavericks
+    sha256 "8092c762e97de606106a636dd78f6946fb0beb73cf8cae8db0c082d3be75a3e0" => :mountain_lion
   end
 
   depends_on :fortran

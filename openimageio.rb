@@ -2,15 +2,15 @@ class Openimageio < Formula
   homepage "http://openimageio.org"
   url "https://github.com/OpenImageIO/oiio/archive/Release-1.5.14.tar.gz"
   sha256 "b9553fe616c94b872b1e17d1a74d450cdcaf1ad512905253e7d02683dfaa9d63"
+  revision 1
 
   head "https://github.com/OpenImageIO/oiio.git"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "434018fb5d454145ca6bcebb756e2feb3a7e1b20990e706dd906fa6c35f40364" => :yosemite
-    sha256 "0065c7db083fc0a6b67dc229473a27437efda04067fbce0be3224153303c80ee" => :mavericks
-    sha256 "4b5a7ac6395cf8c913d44d00f00a4957f452a20c4c95ee4b3975fdf56bb45f85" => :mountain_lion
+    sha256 "e7185968cd34d2f26b0310a2a2dddb3ec5399e22ee5fcbda6602e650125484aa" => :yosemite
+    sha256 "a53476e313fdafa04333b8d0ff080e4082c17198bc521610c65f6ff633fb08ff" => :mavericks
+    sha256 "edfb576f58c6938d25be5d2509419c52dd6ab66942b33123b2026438540057ed" => :mountain_lion
   end
 
   option "with-tests",  "Dowload 95MB of test images and verify Oiio (~2 min)"
@@ -53,7 +53,7 @@ class Openimageio < Formula
   end
 
   resource "tgautils" do
-    url "http://googlesites.inequation.org/TGAUTILS.ZIP?attredirects=0"
+    url "https://raw.githubusercontent.com/DomT4/LibreMirror/57cade6cc3d84fa214624669f8b078e53b191faa/tgautils/TGAUTILS.ZIP"
     sha256 "1c05c376800d75332e544b665354b9e234f97352266b4dea40d5424d8bcb3299"
     version "1.0.0"
   end

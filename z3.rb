@@ -1,35 +1,33 @@
 class Z3 < Formula
-  homepage "http://z3.codeplex.com/"
+  desc "A high-performance theorem prover"
+  homepage "https://github.com/Z3Prover/z3"
   url "https://github.com/Z3Prover/z3/archive/z3-4.4.0.tar.gz"
   sha256 "65b72f9eb0af50949e504b47080fb3fc95f11c435633041d9a534473f3142cba"
   head "https://github.com/Z3Prover/z3.git"
+  revision 1
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "f288000445d47ae31fd3ed128cc560d0b3792bfc528a9f76168d8a1bb766e501" => :yosemite
-    sha256 "494af7b3806ad8d222d7d4f0a15a0fd649f648e40a30e29353afa80948a0df44" => :mavericks
-    sha256 "a9b987921c8e84bb8759e9a408861d791fc0a1ec3698563bb80fd8fead6b03b6" => :mountain_lion
+    sha256 "f498595a49c4bed2ee6c171fb8c07cf7a5e12e75257f48686e629534df4d2cab" => :yosemite
+    sha256 "c5aced93f2345775852e88f6f0a44b6c1accf7321dfeb60e89233922e4c243ab" => :mavericks
+    sha256 "95d2d303a952548d78b97fe9ab020a4ad29a5e1788275e8a0e92534fc4049de3" => :mountain_lion
   end
 
-  depends_on :python
-
   def install
-    package_dir = lib/"python2.7/site-packages"
-    mkdir_p package_dir
-    inreplace "scripts/mk_util.py", /^PYTHON_PACKAGE_DIR=.*/, "PYTHON_PACKAGE_DIR=\"#{package_dir}\""
-
+    inreplace "scripts/mk_util.py", "dist-packages", "site-packages"
     system "python", "scripts/mk_make.py", "--prefix=#{prefix}"
+
     cd "build" do
       system "make"
       system "make", "install"
     end
-    share.install "examples"
+
+    pkgshare.install "examples"
   end
 
   test do
     system ENV.cc, "-I#{include}", "-L#{lib}", "-lz3",
-           share/"examples/c/test_capi.c", "-o", testpath/"test"
+           pkgshare/"examples/c/test_capi.c", "-o", testpath/"test"
     system "./test"
   end
 end

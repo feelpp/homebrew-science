@@ -5,7 +5,6 @@ class Paml < Formula
   version "4.8a"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
     revision 2
     sha256 "37becefadba2dcd90bf6f9bdc7c100d5558e795cd3eb8d038c33bdf6bce366f9" => :yosemite
@@ -19,8 +18,8 @@ class Paml < Formula
       bin.install %w[baseml basemlg chi2 codeml evolver infinitesites mcmctree pamp yn00]
     end
 
-    (share/"paml").install "dat"
-    (share/"paml").install Dir["*.ctl"]
+    pkgshare.install "dat"
+    pkgshare.install Dir["*.ctl"]
     doc.install Dir["doc/*"]
     doc.install "examples"
   end

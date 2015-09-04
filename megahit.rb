@@ -4,16 +4,15 @@ class Megahit < Formula
   # doi "10.1093/bioinformatics/btv033"
   # tag "bioinformatics"
 
-  url "https://github.com/voutcn/megahit/archive/v0.3.3.tar.gz"
-  sha256 "f6c5edb6a42e020e82fa2d670ed803022fae243c9aea19f948d3176aa52e3fce"
+  url "https://github.com/voutcn/megahit/archive/v1.0.1.tar.gz"
+  sha256 "c938a8c64c07b14dbed346eda2d286a129d9b4b57e70ee7503e9d8556c510fc5"
 
   head "https://github.com/voutcn/megahit.git"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
-    sha256 "2c97141462746f7ee016e3701d3dbc8d29fcff0ddcf39005be064e3791a4ea80" => :yosemite
-    sha256 "4b3f125ec9e00ed8a6e68af070c01a4be3b409880ee17be348f84491c1d79485" => :mavericks
-    sha256 "50447828734d6529c3b78dd6c4ace0e00572969161746d89c8fd791f4cb90755" => :mountain_lion
+    sha256 "39bcf4cec53c187adffd5e4105ca19b5726d3715e67427206887e437462cecd6" => :yosemite
+    sha256 "afd1ffa9738d466fee70cdca229f1c4d908eccc76652afe5405c5d172615a5fb" => :mavericks
+    sha256 "e993b4ee192dbddd4b5b29be589b14cc40f70094abc5aa30255d1b239d738d63" => :mountain_lion
   end
 
   fails_with :llvm do
@@ -31,13 +30,13 @@ class Megahit < Formula
     system "make"
     bin.install Dir["megahi*"]
     doc.install "LICENSE", "ChangeLog.md", "README.md"
-    (share/"megahit").install "example"
+    pkgshare.install "example"
   end
 
   test do
     outdir = "megahit.outdir"
-    system "#{bin}/megahit", "--12", "#{share}/megahit/example/readsInterleaved1.fa.gz", "-o", outdir
+    system "#{bin}/megahit", "--12", "#{pkgshare}/example/readsInterleaved1.fa.gz", "-o", outdir
     assert File.exist?("#{outdir}/final.contigs.fa")
-    assert File.read("#{outdir}/opts.txt").include?(outdir)
+    assert_match outdir, File.read("#{outdir}/opts.txt")
   end
 end

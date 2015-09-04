@@ -6,11 +6,11 @@ class Poretools < Formula
   head "https://github.com/arq5x/poretools.git"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "45451e7b15182743417c26ca8a185b3e190bf6737f88bd073b05ecfa2f223ec3" => :yosemite
-    sha256 "0d13e263e393ef97ed3bc06aeaa73c2c27097ae9c75d517a2acc288ecbaf91ad" => :mavericks
-    sha256 "b1ce68410088646e5d23177d6706851c9d1c288dd75c94f8e9b74e680fc3b1e5" => :mountain_lion
+    revision 1
+    sha256 "5b92031f4c12adc7bbf7626c920d3c2843bfba027bfc3803a7b7f38d601380ec" => :yosemite
+    sha256 "e1d821357396329833b2c5ffa93fae5b2a1bfc57396e82dcecc1af94e58c5436" => :mavericks
+    sha256 "f8fc2480505cbb07ccb32cb9d686f6e4f5485523df4c30958392dad19221ba74" => :mountain_lion
   end
 
   depends_on "hdf5"
@@ -64,12 +64,12 @@ class Poretools < Formula
   end
 
   resource "codetools" do
-    url "http://cran.r-project.org/src/contrib/codetools_0.2-11.tar.gz"
+    url "https://cran.r-project.org/src/contrib/Archive/codetools/codetools_0.2-11.tar.gz"
     sha256 "b02e8b17ea9173b73c20e84fbd36c420d5a79bb56a6b9d0d45c22a7d540f54d5"
   end
 
   resource "MASS" do
-    url "http://cran.r-project.org/src/contrib/MASS_7.3-40.tar.gz"
+    url "https://cran.r-project.org/src/contrib/Archive/MASS/MASS_7.3-40.tar.gz"
     sha256 "9e0c937162cb485511ce77c8519a21558370c20f3c6dc34493b895cb355cb516"
   end
 
@@ -102,8 +102,8 @@ class Poretools < Formula
     system "R", "-q", "-e", "install.packages('devtools', lib='" + libexec/"vendor/R/library" + "', repos='http://cran.r-project.org')"
 
     # install r dependencies
-    ENV.prepend "LDFLAGS", "-L" + Formula["openssl"].lib
-    ENV.prepend "CPPFLAGS", "-I" + Formula["openssl"].include
+    ENV.prepend "LDFLAGS", "-L" + Formula["openssl"].opt_lib
+    ENV.prepend "CPPFLAGS", "-I" + Formula["openssl"].opt_include
     resr.each do |rr|
       resource(rr).stage do
         system "R", "-q", "-e", "library(devtools); install(pkg='.', lib='" + libexec/"vendor/R/library" + "')"
@@ -118,7 +118,7 @@ class Poretools < Formula
     libexec.env_script_all_files(libexec+"bin", :PYTHONPATH => ENV["PYTHONPATH"])
     (bin/"poretools").write_env_script(libexec+"bin/poretools", :R_LIBS => ENV["R_LIBS"], :PYTHONPATH => ENV["PYTHONPATH"])
 
-    resource("test").stage { (share/"test_data").install Dir["*"] }
+    resource("test").stage { (pkgshare/"test_data").install Dir["*"] }
   end
 
   test do
@@ -134,6 +134,6 @@ class Poretools < Formula
     N75	741
     EOS
 
-    assert_equal result, shell_output("#{bin}/poretools stats #{share}/test_data/")
+    assert_equal result, shell_output("#{bin}/poretools stats #{pkgshare}/test_data/")
   end
 end

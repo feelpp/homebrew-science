@@ -2,14 +2,14 @@ class SuperluDist < Formula
   desc "A general purpose library for the direct solution of large, sparse, nonsymmetric systems of linear equations on high performance machines."
   homepage "http://crd-legacy.lbl.gov/~xiaoye/SuperLU/"
   url "http://crd-legacy.lbl.gov/~xiaoye/SuperLU/superlu_dist_4.1.tar.gz"
-  sha256 "50793bdd26f4b0a4a9c40e41299db8df219af5a38ffb4f3e4c0f29f9d573f0eb"
+  sha256 "8afb48036e9b3020d268d49d5a3711aaed2f65105747aa6a111ff8f64dcde93e"
 
   bottle do
     cellar :any
-    revision 1
-    sha256 "248d87755fcd723d5a4d00aa61355d61247b527b1b8113249c0f41dc2a6fac22" => :yosemite
-    sha256 "3a8f4d391986bdb8d67e0c6c7299ff3e0df66ca7b0f753e8e565a0db4beacbb6" => :mavericks
-    sha256 "ba1b2ac27ebaa2ce335ff170a8fec66afc7037a33de15ae2e1912ccf95089b19" => :mountain_lion
+    revision 2
+    sha256 "f2db09d54fe786fe60bcdd3e615642509948d820074895a2cde6d8dbbce90367" => :yosemite
+    sha256 "dae72d0217df82f924042deda337b5c78ba0f2e232d68ccce248f51cc67beed5" => :mavericks
+    sha256 "1fcb04ec665ee2f413d55bcbfb1c9baa71e205017125c756f04c516b197e0ec6" => :mountain_lion
   end
 
   depends_on :fortran

@@ -7,7 +7,6 @@ class Weblogo < Formula
   sha256 "2d3e0040c0c1e363c1dfd57f8b585387eb682ed08b2cc2fe2e4cc2a33ac52266"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
     revision 1
     sha256 "267edf2808b1d8dd8248b8c5d0696c703e92478d7c08f799272e3a6c290a2e50" => :yosemite
@@ -24,7 +23,7 @@ class Weblogo < Formula
     inreplace "seqlogo", "/usr/bin/perl -w", "/usr/bin/env perl"
     inreplace "seqlogo", 'use lib "$Bin"', "use warnings; use lib '#{share}/weblogo'"
     bin.install "seqlogo"
-    (share/"weblogo").install "logo.pm", "template.pm"
+    pkgshare.install "logo.pm", "template.pm"
     doc.install %w[README LICENSE Crooks-2004-GR-WebLogo.pdf]
   end
 

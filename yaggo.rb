@@ -1,22 +1,21 @@
 class Yaggo < Formula
   desc "Generate command-line parsers for C++"
   homepage "https://github.com/gmarcais/yaggo"
-  url "https://github.com/gmarcais/yaggo/archive/v1.5.5.tar.gz"
-  sha256 "8aae8024c3d832bf6a93513276a85413a129513d00c4f10c317124414d6a3f50"
+  url "https://github.com/gmarcais/yaggo/archive/v1.5.6.tar.gz"
+  sha256 "05511a3e2691fdd1a45f50d57a3e194c7d941eba0262d16e827543d696f2eb60"
   head "https://github.com/gmarcais/yaggo.git"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
-    sha256 "2b02a318dfc967e09ffca0e08e863a773a4a69bcdcc3330e9855305879e28e5f" => :yosemite
-    sha256 "1bed00bb4046bf1d45d9ce347a4ef3c1cebdff23f1bc8b3e4801577ad8908926" => :mavericks
-    sha256 "72d376f21e01993bd3ee9e9d3c5d9ab8752868a4db5bdac521cf28a75fd97ac2" => :mountain_lion
+    sha256 "adbfa2e8043fd886be69ba88487a1c4fbfd54787f53e9d984513612579490b53" => :yosemite
+    sha256 "51bd80fadc1dc00d86a8072a0dd13e3010d6b27981eeb28c68879ce1f844baee" => :mavericks
+    sha256 "aa0783ba2a6c62f6fdb4d483d957e29419a3d8899eace162270455d3e1ad505b" => :mountain_lion
   end
 
+  depends_on :ruby => ["1.9", :build]
+
   def install
-    bin.mkpath
-    system "make", "DEST=#{bin}"
-    doc.install "README.md"
+    system "make", "install", "prefix=#{prefix}"
   end
 
   test do

@@ -4,7 +4,6 @@ class Bact < Formula
   sha256 "4aa55c30621afd3793bd15471b3c0d77d3b489051cbfb30a9f0640de8928ab40"
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
     cellar :any
     sha256 "8de8fd7cda5405a06d39eacd2615ee3629aeb87952f54539d795e273b1acdfe8" => :yosemite
     sha256 "c778234069cb91598fcf7589cdfd8349bfbc09006087d4400491d1261a1c89b8" => :mavericks
@@ -16,6 +15,6 @@ class Bact < Formula
     system "make", "test"
     bin.install "bact_learn", "bact_classify", "bact_mkmodel"
     doc.install "README", "AUTHORS", "COPYING", "index.html", "bact.css"
-    (share/"bact").install Dir["jp*"], Dir["med.*"]
+    pkgshare.install Dir["jp*"], Dir["med.*"]
   end
 end

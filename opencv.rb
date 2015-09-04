@@ -1,27 +1,14 @@
 class Opencv < Formula
   desc "Open source computer vision library"
   homepage "http://opencv.org/"
+  url "https://github.com/Itseez/opencv/archive/2.4.12.tar.gz"
+  sha256 "8989f946a66fa3fc2764d637b1c866caf28d074ece187f86baba66544054eefc"
   head "https://github.com/Itseez/opencv.git", :branch => "2.4"
-  revision 1
-
-  stable do
-    url "https://github.com/Itseez/opencv/archive/2.4.11.tar.gz"
-    sha256 "b5331ea85a709b0fe871b1ce92e631afcd5ae822423863da6b559dd2cb7845bc"
-
-    # Avoid explicit links to a Python framework
-    # https://github.com/Itseez/opencv/pull/3865
-    patch do
-      url "https://gist.githubusercontent.com/tdsmith/484553cd2d0c19a4baa7/raw/b766154fa6c7ac1be3491b0c6b58b3d66c07f818/opencv_python.diff"
-      sha256 "cfe31c32d5a4ef0e89df684e210360602fb2d295b19f9ca4791731a9e274d776"
-    end
-  end
 
   bottle do
-    root_url "https://homebrew.bintray.com/bottles-science"
-    revision 1
-    sha256 "d21eb0ec17c67f071ab36a35567247a66b5f2b6a3244a811a6bd329bf3081109" => :yosemite
-    sha256 "1735be17e9a31f78fdde4a0899b597ff7ab3a6dd5887dcf605c9e638870a8a86" => :mavericks
-    sha256 "86d8819b3f4bea67a8bcb3df1db4f789638622952d3b582f0a74fc7f21d3ccb6" => :mountain_lion
+    sha256 "c61e0ff1a122459eea44bea04df13592ebbbd67bb3097e07d45217aae85e1947" => :yosemite
+    sha256 "bab6a64b65a2800f0bceefb1d32729b618ddde8dfc1f82ec0e066c1ff68aed54" => :mavericks
+    sha256 "38d298cf40f733c6d6e1b647442a1c355cc478ced24105325b879ab70b3324d0" => :mountain_lion
   end
 
   option "32-bit"
@@ -33,6 +20,7 @@ class Opencv < Formula
   option "with-cuda", "Build with CUDA support"
   option "with-quicktime", "Use QuickTime for Video I/O instead of QTKit"
   option "with-opengl", "Build with OpenGL support"
+  option "with-ximea", "Build with XIMEA support"
   option "without-numpy", "Use a numpy you've installed yourself instead of a Homebrew-packaged numpy"
   option "without-python", "Build without Python support"
 
@@ -98,6 +86,7 @@ class Opencv < Formula
     args << "-DWITH_JASPER="    + arg_switch("jasper")
     args << "-DWITH_QT="        + arg_switch("qt")
     args << "-DWITH_GSTREAMER=" + arg_switch("gstreamer")
+    args << "-DWITH_XIMEA="     + arg_switch("ximea")
 
     if build.with? "python"
       py_prefix = `python-config --prefix`.chomp
