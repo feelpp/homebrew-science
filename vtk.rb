@@ -1,10 +1,17 @@
 class Vtk < Formula
   homepage "http://www.vtk.org"
-  url "http://www.vtk.org/files/release/6.2/VTK-6.2.0.tar.gz"
-  mirror "https://fossies.org/linux/misc/VTK-6.2.0.tar.gz"
-  sha256 "efa3ddfba118f3988ead08bdaf9441d33f23a4245d78511a6ce7f267b4f13277"
+  url "http://www.vtk.org/files/release/6.3/VTK-6.3.0.tar.gz"
+  mirror "https://fossies.org/linux/misc/VTK-6.3.0.tar.gz"
+  sha256 "92a493354c5fa66bea73b5fc014154af5d9f3f6cee8d20a826f4cd5d4b0e8a5e"
 
   head "https://github.com/Kitware/VTK.git"
+
+  bottle do
+    revision 1
+    sha256 "da833deb6c60c9c6d0b62a3474d27a7c0400fdde282e020c49994299c6d42121" => :el_capitan
+    sha256 "697fea5712663f9f00a39a0590f0a31562844c960804095939cfc00e5075299c" => :yosemite
+    sha256 "579ed85810b1fd0bd60939feed20bed4041c2a4ab48d2e55a370c4329dcd997e" => :mavericks
+  end
 
   deprecated_option "examples" => "with-examples"
   deprecated_option "qt-extern" => "with-qt-extern"
@@ -32,10 +39,13 @@ class Vtk < Formula
   depends_on "matplotlib" => :python if build.with? "matplotlib"
 
   # If --with-qt and --with-python, then we automatically use PyQt, too!
-  if build.with?("qt") || build.with?("qt5")
-    if build.with? "python"
+  if build.with? "python"
+    if build.with? "qt"
       depends_on "sip"
       depends_on "pyqt"
+    elsif build.with? "qt5"
+      depends_on "sip"
+      depends_on "pyqt5" => ["with-python", "without-python3"]
     end
   end
 
@@ -98,7 +108,7 @@ class Vtk < Formula
       if build.with? "python"
         args << "-DVTK_WRAP_PYTHON=ON"
         # CMake picks up the system"s python dylib, even if we have a brewed one.
-        args << "-DPYTHON_LIBRARY='#{%x(python-config --prefix).chomp}/lib/libpython2.7.dylib'"
+        args << "-DPYTHON_LIBRARY='#{`python-config --prefix`.chomp}/lib/libpython2.7.dylib'"
         # Set the prefix for the python bindings to the Cellar
         args << "-DVTK_INSTALL_PYTHON_MODULE_DIR='#{lib}/python2.7/site-packages'"
 

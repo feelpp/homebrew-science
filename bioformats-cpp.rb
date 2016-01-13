@@ -1,13 +1,15 @@
 class BioformatsCpp < Formula
   desc "Microscopy file formats including OME-TIFF"
   homepage "http://www.openmicroscopy.org/site/products/bio-formats"
-  url "http://downloads.openmicroscopy.org/bio-formats/5.1.3/artifacts/bioformats-dfsg-5.1.3.zip"
-  sha256 "765137c548d9f4fdc111e22eec4d413effebbee273d8bba7392b59ad1499f41b"
+  url "http://downloads.openmicroscopy.org/bio-formats/5.1.6/artifacts/bioformats-dfsg-5.1.6.zip"
+  sha256 "9d4478828ed3323dccb1ad1ebae4e497c6add1a910a3328a21e3c3baedcfb999"
   head "https://github.com/openmicroscopy/bioformats.git", :branch => "develop", :shallow => false
+  revision 1
 
   bottle do
-    sha256 "08d11e70a0e2a2ae3267523d4a634d86100e148bbdc2b0f527843ae6beacc7f4" => :yosemite
-    sha256 "7bff25763425a418dea9a9ba8378dcf6975a1fd966c9d600f5dc0ebaceef0a1b" => :mavericks
+    sha256 "a98dd700b4d7ddd9d901b188d66e46d0719bba8f344cceb2627857cf57e0c863" => :el_capitan
+    sha256 "c2459c469edb433e058f3642a737b4408791540b645172da1d506b3a6be340cd" => :yosemite
+    sha256 "b83d02adc88ec0b68d6ff35dad1e540e084fc14e1a66671c2abc4ef1582db54a" => :mavericks
   end
 
   option "without-check", "Skip build time tests (not recommended)"

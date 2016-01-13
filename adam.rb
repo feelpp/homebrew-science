@@ -1,18 +1,20 @@
 class Adam < Formula
   desc "Genomics analysis platform with specialized file formats built using Apache Avro, Apache Spark and Parquet"
   homepage "https://github.com/bigdatagenomics/adam"
-  url "https://github.com/bigdatagenomics/adam/releases/download/adam-parent-0.13.0/adam-0.13.0-bin.tar.gz"
-  sha256 "76ef3054695dbeefb91a29936d05595df6090716e09d189feb3307d3efd47cce"
+  url "https://repo1.maven.org/maven2/org/bdgenomics/adam/adam-distribution_2.10/0.18.2/adam-distribution_2.10-0.18.2-bin.tar.gz"
+  sha256 "539e7ff4d99c74331191ebddce48f0926eec8a0f9ca2109bce41fa56994ff846"
 
   bottle do
-    cellar :any
-    sha256 "f6dc4e21f9264f9110504445a33a099076c75052d28551ad520377a8356915e4" => :yosemite
-    sha256 "5bdd0363cdc6d5dd1656a0c576de3e6ccc76f8b81ac74f6d519236d022703988" => :mavericks
-    sha256 "bdcc97aca83ff7a56ac771a038fde3832786d39cb01e4d4fe828a9a6bf4700c2" => :mountain_lion
+    cellar :any_skip_relocation
+    sha256 "8753269b3b654fe4fa830c517e66c1b9bdd5a7d0ef34a01d500e832d7f18027b" => :el_capitan
+    sha256 "9cd5a676b17b44d1b5b0445fb7fca6541032c21d42bef4410a372e5d32594e18" => :yosemite
+    sha256 "c35dd18b5c4eba31c57f2e023a10c364495b0cfc5dc01c85da564e40c30a5f7e" => :mavericks
   end
 
+  depends_on "apache-spark"
+
   head do
-    url "https://github.com/bigdatagenomics/adam.git"
+    url "https://github.com/bigdatagenomics/adam.git", :shallow => false
     depends_on "maven" => :build
   end
 
@@ -23,16 +25,14 @@ class Adam < Formula
       system "mvn", "clean", "install",
                     "-DskipAssembly=True",
                     "-DskipTests=" + (build.with?("check") ? "False" : "True")
-      chmod 0755, "adam-cli/target/appassembler/bin/adam"
-      prefix.install "adam-cli/target/appassembler/repo"
-      bin.install "adam-cli/target/appassembler/bin/adam"
+      libexec.install Dir["adam-cli/target/appassembler/*"]
     else
-      prefix.install "repo"
-      bin.install "bin/adam"
+      libexec.install Dir["*"]
     end
+    bin.write_exec_script Dir["#{libexec}/bin/*"]
   end
 
   test do
-    system "#{bin}/adam", "buildinfo"
+    system "#{bin}/adam-submit", "buildinfo"
   end
 end

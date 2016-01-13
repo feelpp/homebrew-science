@@ -1,13 +1,14 @@
 class Wxmaxima < Formula
-  homepage "http://andrejv.github.io/wxmaxima"
-  url "https://downloads.sourceforge.net/project/wxmaxima/wxMaxima/13.04.2/wxMaxima-13.04.2.tar.gz"
-  sha1 "9508d3badb6c339f34e73e01c5065f679329a17c"
+  desc "Cross platform GUI for Maxima"
+  homepage "https://andrejv.github.io/wxmaxima"
+  url "https://downloads.sourceforge.net/project/wxmaxima/wxMaxima/15.08.2/wxmaxima-15.08.2.tar.gz"
+  sha256 "7ad3f018e42d15d06bee5af10053edb72e441c1d1feee318dc6eb927db6a26c5"
 
   bottle do
     cellar :any
-    sha1 "d110a3c63e434f87f4441952a28d48889cfc6a10" => :yosemite
-    sha1 "3e66edeec9ae6008f34024238857423fbfd04df5" => :mavericks
-    sha1 "29ff6b7afe5e143eb5a2714d0565a3327f82aff2" => :mountain_lion
+    sha256 "a54821d1c686fcf9c703ec8d77ebeba20287a9149a27122a44ce710dbfeeeb79" => :el_capitan
+    sha256 "f7874990a2beda17a4a9988faa63549be59d2cd79f671302cbce280290e68296" => :yosemite
+    sha256 "1d8b3865a225a7b797b28a6d41e5a8004b1e4f6f1c70f1c2d136e1b33c5e7be5" => :mavericks
   end
 
   depends_on "wxmac"

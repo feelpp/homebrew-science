@@ -1,17 +1,17 @@
 class Ssake < Formula
   homepage "http://www.bcgsc.ca/platform/bioinfo/software/ssake"
-  #doi "10.1093/bioinformatics/btl629"
-  #tag "bioinformatics"
+  # doi "10.1093/bioinformatics/btl629"
+  # tag "bioinformatics"
 
   url "http://www.bcgsc.ca/platform/bioinfo/software/ssake/releases/3.8.2/ssake_v3-8-2.tar.gz"
   version "3.8.2"
-  sha1 "a06300a7715578774914c14e7e025c2d9174c39d"
+  sha256 "254740c04ce2dc3afd8a4c3615be56baebb8b98a5e22bad6c3dd166a4dfdcb10"
 
   bottle do
     cellar :any
-    sha1 "5cb173578454d2734be7728649731052736f5314" => :yosemite
-    sha1 "8f120502cadff08b74dff6efe540c3a6f455d26b" => :mavericks
-    sha1 "d8ea940b5e2aacb30509e698f3530688923678fe" => :mountain_lion
+    sha256 "855dbecf9e0d6e3446f13554554dd00e45a97d17169396a19ab944a6a290f871" => :yosemite
+    sha256 "777fe71291d557f325b3c52263a2da67d0ff10e6409f3d98b2ee252b05237bc7" => :mavericks
+    sha256 "7c24da4cb25ced6056f8932266a159b2223f5b2425e0adedef54128dac36fb8a" => :mountain_lion
   end
 
   def install

@@ -1,15 +1,16 @@
 class Fwdpp < Formula
-  desc "fwdpp is a C++ template library for forward-time population genetic simulations"
+  desc "C++ template library for forward-time population genetic simulations"
   homepage "https://molpopgen.github.io/fwdpp/"
-  url "https://github.com/molpopgen/fwdpp/archive/0.3.6.tar.gz"
-  sha256 "9482ec7f6a6c25744cbfbab3753cb80825b8aea6830e5c808e9178beb4b557a9"
+  url "https://github.com/molpopgen/fwdpp/archive/0.4.3.tar.gz"
+  sha256 "916a7f28a2a5b8622bae2680e9d0f5538efff4e33f4be15485d2b0454b9eff68"
   head "https://github.com/molpopgen/fwdpp.git"
   # doi "10.1534/genetics.114.165019"
 
   bottle do
     cellar :any
-    sha256 "ad2b89fa050c4b2d4e7bb0d15e72de524d9f26b5cd34065776e55e03b8e97931" => :yosemite
-    sha256 "7b4ec302576cd878143c006e2e10dd6e16eef5de2118ad332851869726aac8d8" => :mavericks
+    sha256 "5d66b2035b82a1cd1f1e3504218f376c0dc0e0aa53a69aea8df61d374b64b1ec" => :el_capitan
+    sha256 "b95f0e3fdc54d10c7a8a8604274ad45f25d6a75306861270f05e3e34e43370e4" => :yosemite
+    sha256 "9495a3cb5d6b6f3152faad964348b4b2fafef2b0a48d5eaf85190cc7a3fd8b3a" => :mavericks
   end
 
   option "without-check", "Disable build-time checking (not recommended)"

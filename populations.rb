@@ -1,18 +1,16 @@
-require "formula"
-
 class Populations < Formula
   homepage "http://bioinformatics.org/~tryphon/populations/"
-  #tag "bioinformatics"
+  # tag "bioinformatics"
 
   url "https://launchpad.net/~olivier-langella/+archive/ppa/+files/populations_1.2.33-2.tar.gz"
-  sha1 "ff190be19352e2bb66f7decb87aed311b924529c"
+  sha256 "bea8ba96e6ed2b1e193194564475458a5bdcd23e1bb3a9d93f27c9a94797124f"
   version "1.2.33-2"
 
   bottle do
     cellar :any
-    sha1 "d5c96260ab82fe602b674f7d25f6427d53efea82" => :yosemite
-    sha1 "b9ff1df51ef395aeacbabc8e7ba1426655125616" => :mavericks
-    sha1 "9d71c75bdc9d35619adb006ac05737ce3ddb7136" => :mountain_lion
+    sha256 "d2f69b0c356ac9361bb3750a6f76417ed730db2c3b7f18b496fcee72f7a98dbd" => :yosemite
+    sha256 "0c2fae734364600434ebc4f059776372e19b16c2e176876e74b3de0c83e3caaf" => :mavericks
+    sha256 "dd0f5bbb215bf76eb1f3593e7c4ffb885af8fbfddcf71467232941e637be69c5" => :mountain_lion
   end
 
   depends_on "cmake" => :build

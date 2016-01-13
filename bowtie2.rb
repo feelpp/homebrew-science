@@ -1,18 +1,20 @@
 class Bowtie2 < Formula
-  desc "A fast and sensitive gapped read aligner"
-  homepage "http://bowtie-bio.sourceforge.net/bowtie2/index.shtml"
+  desc "Fast and sensitive gapped read aligner"
+  homepage "http://bowtie-bio.sf.net/bowtie2"
   # doi "10.1038/nmeth.1923"
   # tag "bioinformatics"
-  head "https://github.com/BenLangmead/bowtie2.git"
+
   url "https://github.com/BenLangmead/bowtie2/archive/v2.2.6.tar.gz"
-  sha256 "fb4d09a96700cc929e8191659ee8509bb2f19816235322d1f012338d4a177358"
+  sha256 "06d584040d9ce457873c59e4a5889aafe1a5f74ada207793335765d7abdf4eeb"
+
+  head "https://github.com/BenLangmead/bowtie2.git"
 
   bottle do
     cellar :any
-    revision 2
-    sha256 "37b74fb989023ccec2344ecde15892e511d3c28d5819b439f4f6acc2dc39e458" => :yosemite
-    sha256 "46407326318fda1e49ee283b8a243b342ce446cf85052ce14630d3f59b88eced" => :mavericks
-    sha256 "5fbb47b87602baf9b14897fc0c36e57462dc60ad962963bcb6f8631c4dc823a6" => :mountain_lion
+    revision 3
+    sha256 "54cb5f64f7bb31735197f87f256831bd896fecccf160ce215ede93f729fe45c1" => :el_capitan
+    sha256 "3e7bc98fbe7b8a6987f85b8006977fa6d1a8a34b442ab3a49371e303d0798055" => :yosemite
+    sha256 "358d4b70caddb0feec272674c5f290bf082165fd785c5f7e203ef1fffa70f730" => :mavericks
   end
 
   option "without-tbb", "Build without using Intel Thread Building Blocks (TBB)"

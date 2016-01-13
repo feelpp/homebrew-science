@@ -1,16 +1,17 @@
 class Flint < Formula
+  desc "C library for number theory"
   homepage "http://flintlib.org"
-  #doi "10.1007/978-3-642-15582-6_18"
-  #tag "math"
-  url "http://flintlib.org/flint-2.4.5.tar.gz"
-  mirror "https://mirrors.kernel.org/debian/pool/main/f/flint/flint_2.4.5.orig.tar.gz"
-  sha256 "e489354df00f0d84976ccdd0477028693977c87ccd14f3924a89f848bb0e01e3"
+  # doi "10.1007/978-3-642-15582-6_18"
+  # tag "math"
+  url "http://flintlib.org/flint-2.5.2.tar.gz"
+  sha256 "cbf1fe0034533c53c5c41761017065f85207a1b770483e98b2392315f6575e87"
   head "https://github.com/wbhart/flint2.git", :branch => "trunk"
 
   bottle do
-    sha256 "791a7d2fc59c971a8201a3b81b7a5d4315165b58ba9c2b5b3807111d9e9896ad" => :yosemite
-    sha256 "499a90a4ab6d7783fcf43fa35428f90b5923c7a28722474231736668d9b1f26a" => :mavericks
-    sha256 "e82ce164d3161c934971f674a5459ee9a354baf7b4c4d4cca7f2bd5006a626d0" => :mountain_lion
+    cellar :any
+    sha256 "7e8fa93f1f42993b5f435beecf72d3e5e5823a8d36690ef064648af3350c359c" => :el_capitan
+    sha256 "89f67c073a026844c203461dd45bc31bea044f68ce839ec942a5409e29f75084" => :yosemite
+    sha256 "aa79fae7ae0f8b0c0adf9c3dbd1f2b4bf83d8d8904cdf921416605ed25ee1eb4" => :mavericks
   end
 
   depends_on "gmp"

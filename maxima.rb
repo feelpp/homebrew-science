@@ -1,12 +1,13 @@
 class Maxima < Formula
+  desc "Computer algebra system"
   homepage "http://maxima.sourceforge.net/"
-  url "https://downloads.sourceforge.net/project/maxima/Maxima-source/5.36.1-source/maxima-5.36.1.tar.gz"
-  sha1 "7ab4136e59906f5230fb72ffd2582f4d4bd13b0c"
+  url "https://downloads.sourceforge.net/project/maxima/Maxima-source/5.37.2-source/maxima-5.37.2.tar.gz"
+  sha256 "b6bc38264405f092817f863d3a09e25027c0d3eb6c61e00db8c232ea2a41aa6b"
 
   bottle do
-    sha256 "b4de12a5030ca617f54b3b521594bf41d9189f5ad2f9a2a59b92da65b89753ed" => :yosemite
-    sha256 "cac81a7194531c4c71d31e2a7e2d8f58079cf33789c468ffeacda93652f975be" => :mavericks
-    sha256 "dc3300cce67db65b6c2f4204e2841b72d8106b5a931ccdf92c56b06029a78a5f" => :mountain_lion
+    sha256 "d88c8f10575c5fe31b5d817b664931ada2a8f5f9abe2c6027328aece3b0c17e0" => :el_capitan
+    sha256 "b66a746086efe814c3e9ef5603ab9773e6853865845076fde980ab9adaef729c" => :yosemite
+    sha256 "56463b0c077788ebc0f2e11686cce88f68760d419840689ef8e960a50973c1c0" => :mavericks
   end
 
   depends_on "sbcl" => :build

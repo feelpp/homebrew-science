@@ -1,19 +1,20 @@
 class Hypre < Formula
   desc "A library of high performance preconditioners that features parallel multigrid methods for both structured and unstructured grid problems"
   homepage "http://computation.llnl.gov/casc/hypre/software.html"
-  url "http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.10.0b.tar.gz"
-  mirror "ftp://ftp.mirrorservice.org/sites/distfiles.gentoo.org/distfiles/hypre-2.10.0b.tar.gz"
-  sha256 "b55dbdc692afe5a00490d1ea1c38dd908dae244f7bdd7faaf711680059824c11"
+  url "http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.10.0b-p2.tar.gz"
+  mirror "ftp://ftp.mirrorservice.org/sites/distfiles.gentoo.org/distfiles/hypre-2.10.0b-p2.tar.gz"
+  sha256 "76414e693e5381e352e759c851c8cd5969dba7001b1dc153fe0f1ff60a5bb168"
+  version "2.10.0b-p2"
 
   bottle do
-    cellar :any
-    sha256 "cc15595f5c90c2b3e9feaf7889acfd41a2206be9a967c55fa758ba5ff2ccae76" => :yosemite
-    sha256 "09c544444b5ffddc4f5c8bae99b82e4f58dcb5cc069008a9648f8e7e8f5c02d0" => :mavericks
-    sha256 "7005b1c2c899c3811c413d427e3ab7146dd7670cfcddefc04c80d484d18a5e94" => :mountain_lion
+    cellar :any_skip_relocation
+    sha256 "8200e4c7300e5fc57d6ccc814d20ec6447bca6fb083b16aba796a65dacb5d0dd" => :el_capitan
+    sha256 "a3d851b0a08273eab33bc1be75e9a5150c165c6ee772e7906050fa03922a4ffc" => :yosemite
+    sha256 "dce11f3704a2bc6271476eb82947da24fc2dfa82ffadb21af5fa788f61c4312a" => :mavericks
   end
 
   depends_on :fortran => :recommended
-  depends_on :mpi => [:cc, :cxx, :f90, :f77, :optional]
+  depends_on :mpi => [:cc, :cxx, :f90, :f77, :recommended]
   depends_on "openblas" => :optional
 
   option "without-check", "Skip build-time tests (not recommended)"
@@ -23,12 +24,6 @@ class Hypre < Formula
   option "without-accelerate", "Build without Accelerate framework (use internal BLAS routines)"
   option "with-debug", "Build with debug flags"
   option "with-bigint", "Build with 64-bit indices"
-
-  # bug fix for SEGV
-  patch do
-    url "https://bitbucket.org/petsc/pkg-hypre/commits/566a6568170a4abbfc2488d02de23f76da0473b5/raw/"
-    sha256 "8af48d5612771ef49edd3d9a462df71b864f34abb1ec03c8234591c96c683f7f"
-  end
 
   def install
     cd "src" do

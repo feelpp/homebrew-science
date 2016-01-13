@@ -1,12 +1,15 @@
 class Dealii < Formula
+  desc "open source finite element library"
   homepage "http://www.dealii.org"
-  url "https://github.com/dealii/dealii/releases/download/v8.2.1/dealii-8.2.1.tar.gz"
-  sha256 "d75674e45fe63cd9fa294460fe45228904d51a68f744dbb99cd7b60720f3b2a0"
+  url "https://github.com/dealii/dealii/releases/download/v8.3.0/dealii-8.3.0.tar.gz"
+  sha256 "4ddf72632eb501e1c814e299f32fc04fd680d6fda9daff58be4209e400e41779"
+  revision 2
 
   bottle do
-    sha256 "ca9f1bbe60c229cfcbd34beda08ff279802939d9fbaedf7cb33eead2987c77a1" => :yosemite
-    sha256 "1e5965b467f34334e7119d07fe0a38022a11ed957e7d921939bd9cc7d5181da5" => :mavericks
-    sha256 "2bc7686e6fcf0ebff89344b734f40a995d903364e1a363c5cf201647f8d1b077" => :mountain_lion
+    cellar :any
+    sha256 "1381bbf265273b5babd7b1a278bfb4aaee293d1ddc5b7ccb9a1d0efc8b48fd4a" => :el_capitan
+    sha256 "10153f9e19db7d3da01ea39f55605055f1ce4d60c7b8714c08fdb5dd498f8542" => :yosemite
+    sha256 "53d96a5b0bffeefee058b437bea2b3d25914bfc2b72b6aa3bca32a55b08af6d7" => :mavericks
   end
 
   head do
@@ -24,31 +27,39 @@ class Dealii < Formula
 
   depends_on "arpack"       => [:recommended] + mpidep + openblasdep
   depends_on "boost"        => :recommended
+  #-depends_on "doxygen"      => :optional # installation error: CMake Error at doc/doxygen/cmake_install.cmake:31 (file)
   depends_on "hdf5"         => [:recommended] + mpidep
   depends_on "metis"        => :recommended
-  depends_on "mumps"        => [:recommended] + openblasdep
-  depends_on "muparser"     => :recommended
+  depends_on "muparser"     => :recommended if MacOS.version != :mountain_lion # Undefined symbols for architecture x86_64
   depends_on "netcdf"       => [:recommended, "with-fortran", "with-cxx-compat"]
   depends_on "opencascade"  => :recommended
-  depends_on "petsc"        => [:recommended] + openblasdep
   depends_on "p4est"        => [:recommended] + openblasdep if build.with? "mpi"
+  depends_on "parmetis"     => :recommended if build.with? "mpi"
+  depends_on "petsc"        => [:recommended] + openblasdep
   depends_on "slepc"        => :recommended
-  # TODO: We won't have bottles if we make Trilinos :recommended because the bot times out.
-  depends_on "trilinos"     => [:optional] + openblasdep
+  depends_on "suite-sparse" => [:recommended] + openblasdep
+  depends_on "tbb"          => :recommended
+  depends_on "trilinos"     => [:recommended] + openblasdep
 
+  needs :cxx11
   def install
+    ENV.cxx11
     args = %W[
       -DCMAKE_BUILD_TYPE=DebugRelease
       -DCMAKE_INSTALL_PREFIX=#{prefix}
       -DCMAKE_FIND_FRAMEWORK=LAST
       -Wno-dev
       -DDEAL_II_COMPONENT_COMPAT_FILES=OFF
+      -DDEAL_II_COMPONENT_EXAMPLES=ON
+      -DDEAL_II_COMPONENT_MESH_CONVERTER=ON
     ]
     # constrain Cmake to look for libraries in homebrew's prefix
     args << "-DCMAKE_PREFIX_PATH=#{HOMEBREW_PREFIX}"
 
+    args << "-DDEAL_II_COMPONENT_DOCUMENTATION=ON" if build.with? "doxygen"
+
     if build.with? "openblas"
-      ext = OS.mac? ? "dyld" : "so"
+      ext = OS.mac? ? "dylib" : "so"
       args << "-DLAPACK_FOUND=true"
       args << "-DLAPACK_INCLUDE_DIRS=#{Formula["openblas"].opt_include}"
       args << "-DLAPACK_LIBRARIES=#{Formula["openblas"].opt_lib}/libopenblas.#{ext}"
@@ -61,15 +72,18 @@ class Dealii < Formula
       args << "-DCMAKE_Fortran_COMPILER=mpif90"
     end
 
-    args << "-DHDF5_DIR=#{Formula["hdf5"].opt_prefix}" if build.with? "hdf5"
-    args << "-DMUMPS_DIR=#{Formula["mumps"].opt_prefix}" if build.with? "mumps"
-    args << "-DMETIS_DIR=#{Formula["metis"].opt_prefix}" if build.with? "metis"
     args << "-DARPACK_DIR=#{Formula["arpack"].opt_prefix}" if build.with? "arpack"
-    args << "-DP4EST_DIR=#{Formula["p4est"].opt_prefix}" if build.with? "p4est"
-    args << "-DOPENCASCADE_DIR=#{Formula["opencascade"].opt_prefix}" if build.with? "opencascade"
+    args << "-DBOOST_DIR=#{Formula["boost"].opt_prefix}" if build.with? "boost"
+    args << "-DHDF5_DIR=#{Formula["hdf5"].opt_prefix}" if build.with? "hdf5"
+    args << "-DMETIS_DIR=#{Formula["metis"].opt_prefix}" if build.with? "metis"
+    args << "-DMUPARSER_DIR=#{Formula["muparser"].opt_prefix}" if build.with? "muparser"
     args << "-DNETCDF_DIR=#{Formula["netcdf"].opt_prefix}" if build.with? "netcdf"
+    args << "-DOPENCASCADE_DIR=#{Formula["opencascade"].opt_prefix}" if build.with? "opencascade"
+    args << "-DP4EST_DIR=#{Formula["p4est"].opt_prefix}" if build.with? "p4est"
     args << "-DPETSC_DIR=#{Formula["petsc"].opt_prefix}" if build.with? "petsc"
     args << "-DSLEPC_DIR=#{Formula["slepc"].opt_prefix}" if build.with? "slepc"
+    args << "-DUMFPACK_DIR=#{Formula["suite-sparse"].opt_prefix}" if build.with? "suite-sparse"
+    args << "-DTBB_DIR=#{Formula["tbb"].opt_prefix}" if build.with? "tbb"
     args << "-DTRILINOS_DIR=#{Formula["trilinos"].opt_prefix}" if build.with? "trilinos"
 
     mkdir "build" do
@@ -86,6 +100,61 @@ class Dealii < Formula
         system "ctest", "-j", Hardware::CPU.cores
       end
       system "make", "install"
+    end
+  end
+
+  test do
+    # take bare-bones step-3
+    ohai "running step-3:"
+    cp_r prefix/"examples/step-3", testpath
+    Dir.chdir("step-3") do
+      system "cmake", "."
+      system "make", "release"
+      system "make", "run"
+    end
+    # take step-40 which can use both PETSc and Trilinos
+    cp_r prefix/"examples/step-40", testpath
+    if (build.with? "petsc") && (build.with? "trilinos")
+      ohai "running step-40:"
+      Dir.chdir("step-40") do
+        system "cmake", "."
+        system "make", "release"
+        if build.with? "mpi"
+          system "mpirun", "-np", Hardware::CPU.cores, "step-40"
+        else
+          system "make", "run"
+        end
+        # change to Trilinos
+        inreplace "step-40.cc" do |s|
+          s.gsub! "#define USE_PETSC_LA", "//#define USE_PETSC_LA" if s.include? "#define USE_PETSC_LA"
+        end
+        system "make", "release"
+        if build.with? "mpi"
+          system "mpirun", "-np", Hardware::CPU.cores, "step-40"
+        else
+          system "make", "run"
+        end
+      end
+    end
+    # take step-36 which uses SLEPc
+    if build.with? "slepc"
+      ohai "running step-36:"
+      cp_r prefix/"examples/step-36", testpath
+      Dir.chdir("step-36") do
+        system "cmake", "."
+        system "make", "release"
+        system "make", "run"
+      end
+    end
+    # take step-54 to check opencascade
+    if build.with? "opencascade"
+      ohai "running step-54:"
+      cp_r prefix/"examples/step-54", testpath
+      Dir.chdir("step-54") do
+        system "cmake", "."
+        system "make", "release"
+        system "make", "run"
+      end
     end
   end
 end

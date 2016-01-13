@@ -7,15 +7,14 @@ end
 class R < Formula
   desc "Software environment for statistical computing"
   homepage "http://www.r-project.org/"
-  url "http://cran.rstudio.com/src/base/R-3/R-3.2.2.tar.gz"
-  mirror "http://cran.r-project.org/src/base/R-3/R-3.2.2.tar.gz"
-  sha256 "9c9152e74134b68b0f3a1c7083764adc1cb56fd8336bec003fd0ca550cd2461d"
-  revision 1
+  url "http://cran.rstudio.com/src/base/R-3/R-3.2.3.tar.gz"
+  mirror "http://cran.r-project.org/src/base/R-3/R-3.2.3.tar.gz"
+  sha256 "b93b7d878138279234160f007cb9b7f81b8a72c012a15566e9ec5395cfd9b6c1"
 
   bottle do
-    sha256 "668d4389db9ccdd8574157fc9a6af6b2f1a48761f8bfb376855e8eae1106f842" => :yosemite
-    sha256 "d3b86b6d25480f8fb07b06681ee980754c6215cf657b85c797779944657e86b6" => :mavericks
-    sha256 "5827361dc017b0611e7db2b886f73226bde4f0946c7a3940381e0b4bb6cc942c" => :mountain_lion
+    sha256 "5e77ebc09a78586d6b5109204280543de40dc698e7d09ae222ff1871b8345526" => :el_capitan
+    sha256 "cc6f0e38e7f572883c650b35a8992e0083ce6c25c6e87d14e3dfbfbbea0b3e2e" => :yosemite
+    sha256 "d048074b9f5c7750142889d76cdea04245fe6e295e5a50dd98a3743cbb71fdeb" => :mavericks
   end
 
   head do
@@ -138,6 +137,12 @@ class R < Formula
         inreplace r_home/"etc/Makeconf", Formula["gcc"].prefix, Formula["gcc"].opt_prefix
       end
 
+      # make Homebrew packages discoverable for R CMD INSTALL
+      inreplace r_home/"etc/Makeconf" do |s|
+        s.gsub! /CPPFLAGS =.*/, "\\0 -I#{HOMEBREW_PREFIX}/include"
+        s.gsub! /LDFLAGS =.*/, "\\0 -L#{HOMEBREW_PREFIX}/lib"
+      end
+
       bash_completion.install resource("completion")
 
       prefix.install "make-check.log" if build.with? "check"
@@ -162,13 +167,6 @@ class R < Formula
     ln_s site_library, cellar_site_library
   end
 
-  test do
-    if build.without? "librmath-only"
-      system bin/"Rscript", "-e", "print(1+1)"
-      system bin/"Rscript", "-e", "quit('no', capabilities('cairo')[['cairo']] != TRUE)" if OS.mac?
-    end
-  end
-
   def caveats
     if build.without? "librmath-only" then <<-EOS.undent
       To enable rJava support, run the following command:
@@ -178,6 +176,13 @@ class R < Formula
       (where <version> can be found by running `java -version`, `/usr/libexec/java_home`, or `locate jni.h`), or:
         R CMD javareconf JAVA_CPPFLAGS="-I/System/Library/Frameworks/JavaVM.framework/Headers -I$(/usr/libexec/java_home | grep -o '.*jdk')"
       EOS
+    end
+  end
+
+  test do
+    if build.without? "librmath-only"
+      system bin/"Rscript", "-e", "print(1+1)"
+      system bin/"Rscript", "-e", "quit('no', capabilities('cairo')[['cairo']] != TRUE)" if OS.mac?
     end
   end
 

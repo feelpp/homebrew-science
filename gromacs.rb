@@ -1,20 +1,21 @@
 class Gromacs < Formula
+  desc "Versatile package for molecular dynamics calculations"
   homepage "http://www.gromacs.org/"
-  desc "GROMACS is a versatile package for performing molecular dynamics calculations, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles, primarily proteins, lipids, and nucleic acids."
-  url "ftp://ftp.gromacs.org/pub/gromacs/gromacs-5.0.6.tar.gz"
-  mirror "https://fossies.org/linux/privat/gromacs-5.0.6.tar.gz"
-  sha256 "e07e950c4cd6cb84b83b145b70a15c25338ad6a7d7d1a0a83cdbd51cad954952"
+  url "ftp://ftp.gromacs.org/pub/gromacs/gromacs-5.1.1.tar.gz"
+  mirror "https://fossies.org/linux/privat/gromacs-5.1.1.tar.gz"
+  sha256 "9316fd0be320e2dd8c048f905df5be115e1b230c4ca4f3a7ef5892a1fc0bc212"
 
   bottle do
-    sha256 "a3ad3a83daed226c2ab65bd96a92d40835eba9216845aac80ba620c616423ce9" => :yosemite
-    sha256 "3be648a5e2a5b005b4425e435332545c6da278b267811240892e61e6e5c9e4fa" => :mavericks
-    sha256 "fcf55dd607545c0bf40589d63dc7f5113a31679c98793c3201b00a2d9e7d7cc9" => :mountain_lion
+    sha256 "8a7b09bbb64edff8c203b6db0240c048f209e0c44053c9d25a36a45dea3cc98a" => :el_capitan
+    sha256 "aa22e73e1eb9a00c135979a3841820e569efbb2e235ef520a9370e1cc59152da" => :yosemite
+    sha256 "2371754e9219570eddae802ecdac677777ba8d79dd8072030845a649c7c20d58" => :mavericks
   end
 
   deprecated_option "with-x" => "with-x11"
   deprecated_option "enable-mpi" => "with-mpi"
+  deprecated_option "enable-double" => "with-double"
 
-  option "enable-double","Enables double precision"
+  option "with-double", "Enables double precision"
   option "without-check", "Skip build-time tests (not recommended)"
 
   depends_on "cmake" => :build
@@ -48,9 +49,13 @@ class Gromacs < Formula
     zsh_completion.install "build/scripts/GMXRC.zsh" => "_gromacs"
   end
 
-  def caveats;  <<-EOS.undent
+  def caveats; <<-EOS.undent
     GMXRC and other scripts installed to:
       #{HOMEBREW_PREFIX}/share/gromacs
     EOS
+  end
+
+  test do
+    system "gmx", "help"
   end
 end

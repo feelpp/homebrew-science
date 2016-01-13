@@ -4,15 +4,15 @@ class Seqtk < Formula
 
   url "https://github.com/lh3/seqtk/archive/5b8ebb23e9a81466c901a46d089f29c4a1cecfa5.tar.gz"
   version "77"
-  sha1 "9c50cc5aceca0450a0cf9cf854c2bad7ebde5a1d"
+  sha256 "89c8da1b81f01919c45d9e375a837d6df879a602eed25d464c5ec89ae03e7fe3"
 
   head "https://github.com/lh3/seqtk.git"
 
   bottle do
     cellar :any
-    sha1 "8c2975651cea0d3af8f4b611719376497e3d0d8a" => :yosemite
-    sha1 "d54e3028681e6e2d8918f7639ae7542e9ca0256a" => :mavericks
-    sha1 "627d5b9a787b2d167d328b29df668935078c50f6" => :mountain_lion
+    sha256 "a0a7413764b47a974bed1dd7421aae2955a20be5472ca8eb50115e851abed8ba" => :yosemite
+    sha256 "df87383935ec546aff0f7d4583994f0cf17f308eaf238f3c4ac3fa6d76ca824f" => :mavericks
+    sha256 "4b1189e67b37d36feaf8e58cc6002012db347cd594895be0bcb84b99cfd322be" => :mountain_lion
   end
 
   def install

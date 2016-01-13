@@ -2,13 +2,13 @@ class Nauty < Formula
   homepage "http://cs.anu.edu.au/~bdm/nauty/"
   url "http://cs.anu.edu.au/~bdm/nauty/nauty25r9.tar.gz"
   version "25r9"
-  sha1 "a533cfd764bf56b35e117c46cb85b0142833e8b2"
+  sha256 "602d0e2e5ab1bdc84ab69f75ebc065833501bd2875cb07b1bb4274e3dd632825"
 
   bottle do
     cellar :any
-    sha1 "56737485de432d2eede7000386b308ebb767e14b" => :yosemite
-    sha1 "570ab91fca5c0ac09f601892796b9720c0ddddc7" => :mavericks
-    sha1 "1f103e310878f0241dbd70b67f921cfd2dede546" => :mountain_lion
+    sha256 "d144e9debed572d69471b303ce1dc8b08ca56a127e278fb51a747a6934bd0d51" => :yosemite
+    sha256 "990534538b4b736801e1fb1775216124492c184b623bdcc6803e0e25b3e8bce6" => :mavericks
+    sha256 "edeee6cb888c572c95ff3e206d1f3909fcd132f486f2d0cb86575ab9f699c2eb" => :mountain_lion
   end
 
   deprecated_option "run-tests" => "with-checks"

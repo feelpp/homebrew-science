@@ -3,12 +3,13 @@ class Pymol < Formula
   url "https://downloads.sourceforge.net/project/pymol/pymol/1.7/pymol-v1.7.6.0.tar.bz2"
   sha256 "cf142732b5206ea65ebcc0cc162f9d3c88ecacc701ac41d1a5e9b38972700395"
   head "https://svn.code.sf.net/p/pymol/code/trunk/pymol"
+  revision 1
 
   bottle do
     cellar :any
-    sha256 "f9508e972a15a881b346222545ad9a63f1ba838066fe72ca57ddf366965c80fa" => :yosemite
-    sha256 "e9813a889011afcdfd61ecaf5b581e5408461b6d14028e646406bf706270d7ae" => :mavericks
-    sha256 "d0348d18fdbb87c697ef2d68ab6849421bef34406181048b2011cb0bad1787b8" => :mountain_lion
+    sha256 "9c1ae684e673d636446970481a31fa05bd96825a1d664e27a4d6d98db34cde2c" => :el_capitan
+    sha256 "cd014118fe4d736310b39b74eaa2fda608f979349d3ff00f74f4257ddbf941c9" => :yosemite
+    sha256 "bdc51e81a52e459f362e2a587f9ae404b09a60f8a52dc1dcf46716a2801c7545" => :mavericks
   end
 
   depends_on "glew"

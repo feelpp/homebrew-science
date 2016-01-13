@@ -1,14 +1,15 @@
 class Circlator < Formula
   desc "A tool to circularize genome assemblies"
   homepage "https://github.com/sanger-pathogens/circlator"
-  url "https://github.com/sanger-pathogens/circlator/archive/v0.14.2.tar.gz"
-  sha256 "fa8a6568a731ef5a996ffa024d03cfd85dfcddf624a5109e47a0bf2059bd0a9d"
+  url "https://github.com/sanger-pathogens/circlator/archive/v0.16.0.tar.gz"
+  sha256 "c5331e1a687dacedd134356177671228e592c772df3306d6e037e55bd62d84df"
   head "https://github.com/sanger-pathogens/circlator.git"
+
   bottle do
-    cellar :any
-    sha256 "0393b4bd5ad13107054c649960dab77e4e2c76078706472c25919b15fd7623a3" => :yosemite
-    sha256 "20a8f52d0ca68debca47f73e017ea9adce287c032162b17bdc778718c7ab7415" => :mavericks
-    sha256 "15f514448d737cfad7037eee1124139fd9e9026fabae4362d939462ffe82de03" => :mountain_lion
+    cellar :any_skip_relocation
+    sha256 "d292c6d6bb730ac1574d9ce5bd4eb35cb1a7f785a87e191bb758a832649db1d6" => :el_capitan
+    sha256 "61e8c3a5489bd09c7012c2fe325aa557445ef78c1ae27c8a31d2d478b71db209" => :yosemite
+    sha256 "7765ab7ce30088c19218285eaf2ad68152a3a4a22c0c059b1ec4c078649e99d3" => :mavericks
   end
 
   # tag "bioinformatics"
@@ -28,13 +29,13 @@ class Circlator < Formula
   end
 
   resource "pyfastaq" do
-    url "https://pypi.python.org/packages/source/p/pyfastaq/pyfastaq-3.5.0.tar.gz"
-    sha256 "599b28db5a05072335eacd3cea458aff511239e34a9559aaf2e7fe94cce785a9"
+    url "https://pypi.python.org/packages/source/p/pyfastaq/pyfastaq-3.6.0.tar.gz"
+    sha256 "3a052466f89db1e1ac6cfb475117fdf8466ed319b62aabf9531e38f569b51588"
   end
 
   resource "bio_assembly_refinement" do
-    url "https://pypi.python.org/packages/source/b/bio_assembly_refinement/bio_assembly_refinement-0.3.2.tar.gz"
-    sha256 "3b9dfe97afff1dcc8294ec8a6dc7aed1af77ea697dc1545247907678e800c610"
+    url "https://pypi.python.org/packages/source/b/bio_assembly_refinement/bio_assembly_refinement-0.3.3.tar.gz"
+    sha256 "3547d54b357702d659d244ed6493b6553eb2e72dcf79e88cdae2c595b933bf91"
   end
 
   def install

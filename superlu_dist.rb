@@ -1,15 +1,14 @@
 class SuperluDist < Formula
   desc "A general purpose library for the direct solution of large, sparse, nonsymmetric systems of linear equations on high performance machines."
   homepage "http://crd-legacy.lbl.gov/~xiaoye/SuperLU/"
-  url "http://crd-legacy.lbl.gov/~xiaoye/SuperLU/superlu_dist_4.1.tar.gz"
-  sha256 "8afb48036e9b3020d268d49d5a3711aaed2f65105747aa6a111ff8f64dcde93e"
+  url "http://crd-legacy.lbl.gov/~xiaoye/SuperLU/superlu_dist_4.2.tar.gz"
+  sha256 "9ef541cac5c2ad635ec2965e6a9a3e616efea583e8a953c12bfe11c2f15eec54"
 
   bottle do
     cellar :any
-    revision 2
-    sha256 "f2db09d54fe786fe60bcdd3e615642509948d820074895a2cde6d8dbbce90367" => :yosemite
-    sha256 "dae72d0217df82f924042deda337b5c78ba0f2e232d68ccce248f51cc67beed5" => :mavericks
-    sha256 "1fcb04ec665ee2f413d55bcbfb1c9baa71e205017125c756f04c516b197e0ec6" => :mountain_lion
+    sha256 "ddf3997eb8bc2c6ad1b219044a288483ec58458ccc61dd1f5251f07c850c657d" => :el_capitan
+    sha256 "76c2527083fa6faa4279aa4d8a0b81fc439d45db6849655840c640e6cf9519dd" => :yosemite
+    sha256 "d9cdc445ebe4654d35d9834a6996a2ccf80dbb8894b589e2adcda17249549ebc" => :mavericks
   end
 
   depends_on :fortran
@@ -21,7 +20,7 @@ class SuperluDist < Formula
   # fix duplicate symbols [mc64dd_,mc64ed_,mc64fd_] when linking with superlu
   patch do
     url "https://bitbucket.org/petsc/pkg-superlu_dist/commits/2faf8669a2ba20250ffe2d8a1b63d4f8ef8c5b74/raw/"
-    sha256 "09dcd7de83ef9d2590465742df76753cb7c61bfe8e7819c02613d9bcf20ed255"
+    sha256 "67e2966e1a9b4e3471374d1e720946c2ef34403d00e796767b51718e4d50604f"
   end
 
   def install
@@ -56,7 +55,7 @@ class SuperluDist < Formula
     cd "EXAMPLE" do
       system "make"
     end
-    prefix.install "make.inc"  # Record make.inc used
+    prefix.install "make.inc" # Record make.inc used
     lib.install Dir["lib/*"]
     (include / "superlu_dist").install Dir["SRC/*.h"]
     doc.install Dir["Doc/*"]

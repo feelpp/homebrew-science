@@ -1,13 +1,13 @@
 class Paraview < Formula
   homepage "http://paraview.org"
   url "http://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v4.2&type=source&os=all&downloadFile=ParaView-v4.2.0-source.tar.gz"
-  sha1 "a440ba9912549bdd23a949e22add41696715dd32"
+  sha256 "ac26cc5fe5ce82d27531727a01242353d40984826eaa580edea0791887a07b6b"
   head "git://paraview.org/ParaView.git"
 
   bottle do
-    sha1 "87c7c0288b7be02298e6b329d5257f622fc60409" => :yosemite
-    sha1 "eb0303a16ec842435c693339129c8b8b2c468324" => :mavericks
-    sha1 "77fa19bc95a425f2812b7fb14ba929c75b7a4bd2" => :mountain_lion
+    sha256 "f3c77c1007faebe1294e72f6e431b654916ccfaa632411080932e827e5efa2bf" => :yosemite
+    sha256 "ca240a0ce1d30fb2cfea1406e687b79c427b774c4a2d8539c0a4712754a03280" => :mavericks
+    sha256 "1a8b184f3cfa7adf51c1cb43a8cf5a6b7297cca7da3741afa0b2074e204a744a" => :mountain_lion
   end
 
   depends_on "cmake" => :build
@@ -56,7 +56,7 @@ class Paraview < Formula
       if build.with? "python"
         args << "-DPARAVIEW_ENABLE_PYTHON:BOOL=ON"
         # CMake picks up the system"s python dylib, even if we have a brewed one.
-        args << "-DPYTHON_LIBRARY='#{%x(python-config --prefix).chomp}/lib/libpython2.7.dylib'"
+        args << "-DPYTHON_LIBRARY='#{`python-config --prefix`.chomp}/lib/libpython2.7.dylib'"
       else
         args << "-DPARAVIEW_ENABLE_PYTHON:BOOL=OFF"
       end

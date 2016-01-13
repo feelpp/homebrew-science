@@ -1,13 +1,13 @@
 class Vips < Formula
   homepage "http://www.vips.ecs.soton.ac.uk/"
-  url "http://www.vips.ecs.soton.ac.uk/supported/8.0/vips-8.0.2.tar.gz"
-  sha256 "1e6d102b425685467f58003f9d41cd097b772cdf50b4d7995f73751dce86fa3a"
+  url "http://www.vips.ecs.soton.ac.uk/supported/8.1/vips-8.1.1.tar.gz"
+  sha256 "7d53c9b1e2ecd87ab9a7ccc9abad8b3a4f2575115b8a2066a15b0c24f17d9a04"
+  revision 1
 
   bottle do
-    revision 1
-    sha256 "48352eb8154fb4ebe9f107fd894658a53816adfb6f0f7593836a10a1193d737e" => :yosemite
-    sha256 "75c929255d36eed9403db0c15d4c6ae54ebdfaf64237cf0329140643879b1cfb" => :mavericks
-    sha256 "0038d628b9ef4b00d7ba96f3f65ebb42df399c347b1d89da395fa9485ae4ad5f" => :mountain_lion
+    sha256 "71344ad99359a5fa08d8f0230df85c0089d1732fcc8a84b70bc0345f6e53d3d9" => :el_capitan
+    sha256 "0300cfce101d68042cfbb7fa492353715cb160545678095352a1dae229c735d4" => :yosemite
+    sha256 "6ea26197d9105585532f7cead5b5490b7d5a2126af6272b86d6c019210459169" => :mavericks
   end
 
   option "without-check", "Disable build time checks (not recommended)"
@@ -38,6 +38,7 @@ class Vips < Formula
   depends_on "webp" => :optional
   depends_on "python3" => :optional
   depends_on "libmatio" => :optional
+  depends_on "mozjpeg" => :optional
 
   def install
     args = %W[

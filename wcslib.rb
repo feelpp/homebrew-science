@@ -1,13 +1,13 @@
 class Wcslib < Formula
   homepage "http://www.atnf.csiro.au/people/mcalabre/WCS/"
-  url "ftp://ftp.atnf.csiro.au/pub/software/wcslib/wcslib-5.7.tar.bz2"
-  sha256 "a0822088ddd128618b5fbbbc1787f5a80568da4f4f53ce76545c9cf1f4140632"
+  url "ftp://ftp.atnf.csiro.au/pub/software/wcslib/wcslib-5.12.tar.bz2"
+  sha256 "50ff182920541bea156e7f53588cdfba1754b1bdcd0bc64a136a5d124af98de4"
 
   bottle do
     cellar :any
-    sha256 "b041274c39a79f7043f883ccc5e914e8bb66c35084a4cd17fa8b528faa205880" => :yosemite
-    sha256 "c8595299a62857f9ef20221d664e71093bc88ab8334c331075e67226f8717933" => :mavericks
-    sha256 "7d2ed55eef5dbc5504b5eba8a2a986ae3b32182ba9c4baff8d75ee797ec5f51f" => :mountain_lion
+    sha256 "7dc901639118d93a9fe6d33f0c132375d3d0d7fb9e5776c87c2b8d0c189d63a1" => :el_capitan
+    sha256 "b9b4f97cbd008cbfdadf1b31206db564c491812589d865e1da8d4784e85638f4" => :yosemite
+    sha256 "d2a5758f92c0fc1e703fd97b4394e3381e8514204a31c989d902a3e02fce8d8f" => :mavericks
   end
 
   option "with-pgsbox", "Build PGSBOX, a general curvilinear axis drawing routine for PGPLOT"
@@ -17,7 +17,7 @@ class Wcslib < Formula
   depends_on "cfitsio"
   depends_on "homebrew/x11/pgplot" if build.with? "pgsbox"
   depends_on :x11 if build.with? "pgsbox"
-  depends_on :fortran if build.with? "fortran" or build.with? "pgsbox"
+  depends_on :fortran if build.with?("fortran") || build.with?("pgsbox")
 
   def install
     args = ["--disable-debug",

@@ -1,16 +1,16 @@
 class Corset < Formula
   homepage "https://code.google.com/p/corset-project/"
-  #doi "10.1186/s13059-014-0410-6"
-  #tag "bioinformatics"
+  # doi "10.1186/s13059-014-0410-6"
+  # tag "bioinformatics"
 
   url "https://googledrive.com/host/0B1FwZagazjpcc0JLZWllcFlwUXc/corset-1.04.tar.gz"
-  sha1 "730322d7b8c229a01edf7b0c0ad4acc11a014959"
+  sha256 "8dff57be7aab5943e78706cd0c5106e6b776c596d3a7a6a0a8565f6fe1752cfe"
 
   bottle do
     cellar :any
-    sha1 "595de71a818accd8ba9ea1733919a2c1accb7f2a" => :yosemite
-    sha1 "febb53baec4b65caed6bea4f73775207f390b0fe" => :mavericks
-    sha1 "2e37f1e46e0c0e1e37b7180487759cfe2f719870" => :mountain_lion
+    sha256 "977bc8dd872fedd86bc869f09d1d7262db98a424a239678e54f0744d058dfe0b" => :yosemite
+    sha256 "70ee1716feec3c4510959d64c3a57f7a1b66c520cebeaa9b1af3c6ee91d94ae2" => :mavericks
+    sha256 "0d9c81f718dc245992994db69d1584cac1f75827ee1c48b96fb06b79660e58e5" => :mountain_lion
   end
 
   depends_on "samtools"

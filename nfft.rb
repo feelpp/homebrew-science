@@ -1,13 +1,13 @@
 class Nfft < Formula
   homepage "http://www-user.tu-chemnitz.de/~potts/nfft"
   url "http://www-user.tu-chemnitz.de/~potts/nfft/download/nfft-3.2.3.tar.gz"
-  sha1 "9338cb0afbd5f4ddaf2bc5f9be5329ad61dc2ded"
+  sha256 "5c920f4be63230083756f36ad78bbdd083c4c2298ec361741dc74243c4d67818"
 
   bottle do
     cellar :any
-    sha1 "b784629c946fc3d4478ae58cd731a26805226a00" => :yosemite
-    sha1 "e5803723bb732944c9b3806f4cebb58a8a8d6244" => :mavericks
-    sha1 "59a64fa0b99b9dfe8f368a35dc77dde51df0abfb" => :mountain_lion
+    sha256 "974d157ac1307b48aa95fd4fcf15b737c0eac42409fd35a4b7faf5b383d9b5ef" => :yosemite
+    sha256 "31491ef2ea68c1a516b33ed28ee65bb03f1ad3976f58f69f5b1fbe69054949c5" => :mavericks
+    sha256 "0636617b35ad4b61cdfe51f50db319f4247ee0482b36a6ddbb8f9d09f387f6f4" => :mountain_lion
   end
 
   depends_on "fftw"

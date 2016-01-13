@@ -1,13 +1,14 @@
 class Hdf5 < Formula
+  desc "File format designed to store large amounts of data"
   homepage "http://www.hdfgroup.org/HDF5"
-  url "http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.14/src/hdf5-1.8.14.tar.bz2"
-  sha1 "3c48bcb0d5fb21a3aa425ed035c08d8da3d5483a"
+  url "https://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.16/src/hdf5-1.8.16.tar.bz2"
+  sha256 "13aaae5ba10b70749ee1718816a4b4bfead897c2fcb72c24176e759aec4598c6"
+  revision 1
 
   bottle do
-    revision 2
-    sha256 "167816e82ce219b054419289c29debb70638ae25d8013c53485d1e31868e3905" => :yosemite
-    sha256 "54de74a2a43c4802ab5c94f406655af72058f707366799611a5d7dfb8194952e" => :mavericks
-    sha256 "bcbe32e875373859b9871cf33c2c0f152d7fcad052fd83d9a2f533e19eb04a8e" => :mountain_lion
+    sha256 "3ef70c3ba3d08e2e14f055d9fb3af6368a8cb3d9a825634fb30b83c66d648b1b" => :el_capitan
+    sha256 "1fe2487ac2e3160509cd10c26437c278b9be713fd318a49982aa38d167cb65a7" => :yosemite
+    sha256 "c09c07bff0b22f1838b51f2eb0e70ccf04be903f6b3821fc7d26403f161f4cc5" => :mavericks
   end
 
   deprecated_option "enable-fortran" => "with-fortran"
@@ -22,6 +23,7 @@ class Hdf5 < Formula
   option "with-fortran2003", "Compile Fortran 2003 bindings (requires --with-fortran)"
   option "with-mpi", "Compile with parallel support (unsupported with thread-safety)"
   option "without-cxx", "Disable the C++ interface"
+  option "with-unsupported", "Allow unsupported combinations of configure options"
   option :cxx11
 
   depends_on :fortran => :optional
@@ -38,14 +40,13 @@ class Hdf5 < Formula
       --disable-dependency-tracking
       --with-zlib=/usr
       --with-szlib=#{Formula["szip"].opt_prefix}
-      --enable-filters=all
       --enable-static=yes
       --enable-shared=yes
-      --enable-unsupported
     ]
+    args << "--enable-unsupported" if build.with? "unsupported"
     args << "--enable-threadsafe" << "--with-pthread=/usr" if build.with? "threadsafe"
 
-    if build.with? "cxx"
+    if build.with?("cxx") && build.without?("mpi")
       args << "--enable-cxx"
     else
       args << "--disable-cxx"
@@ -72,16 +73,16 @@ class Hdf5 < Formula
   end
 
   test do
-    (testpath/"test.cpp").write <<-EOS.undent
+    (testpath/"test.c").write <<-EOS.undent
       #include <stdio.h>
-      #include "H5public.h"
+      #include "hdf5.h"
       int main()
       {
         printf(\"%d.%d.%d\\n\",H5_VERS_MAJOR,H5_VERS_MINOR,H5_VERS_RELEASE);
         return 0;
       }
     EOS
-    system "h5cc", "test.cpp"
-    assert `./a.out`.include?(version)
+    system "h5cc", "test.c"
+    assert_match(/#{version}/, shell_output("./a.out"))
   end
 end

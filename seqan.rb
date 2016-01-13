@@ -4,18 +4,18 @@ class Seqan < Formula
   # tag "bioinformatics"
 
   url "http://packages.seqan.de/seqan-library/seqan-library-1.4.2.tar.bz2"
-  sha1 "2413d558c2665ae813bb0a2ab3aa57e07cc00675"
+  sha256 "77fb437c6f17d41ec41ce0a3bcc3533f91a3482ca63a3a55400e14cb73e64317"
 
   bottle do
     cellar :any
-    sha1 "26f7482ddf437875f0254d75887e0a088c545c4f" => :yosemite
-    sha1 "bfcd857c0b28f56770ea87b9cbada300c944787c" => :mavericks
-    sha1 "d2df35b6b75cac64ab4b9fcb772a477d16c52c75" => :mountain_lion
+    sha256 "8a50bc2fa2e67c89d5c2c814704f220f872f982c8a9f4a7a04d87c7d5e2d2d98" => :yosemite
+    sha256 "9a9685648e15afb2b68faf5227d7891e3c5c190fe18cdfe7f3f10991e98e5a71" => :mavericks
+    sha256 "a2d63a2ba6e9eb3a541fd6714bc504a810be5e134220d6444b1c6bd1fce39c1b" => :mountain_lion
   end
 
   devel do
     url "http://packages.seqan.de/seqan-library/seqan-library-2.0.0.tar.bz2"
-    sha1 "872335665632ca63d115ac3042b4f1d28ab0d872"
+    sha256 "c9827a5617b35d8b5f5d10701f3ff064f2e89535ebbe3318758a2db99d15e8b8"
   end
 
   head "http://svn.seqan.de/seqan/trunk/core"

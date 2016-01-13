@@ -4,12 +4,13 @@ class SuiteSparse421 < Formula
   url "http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-4.2.1.tar.gz"
   mirror "http://pkgs.fedoraproject.org/repo/pkgs/suitesparse/SuiteSparse-4.2.1.tar.gz/4628df9eeae10ae5f0c486f1ac982fce/SuiteSparse-4.2.1.tar.gz"
   sha256 "e8023850bc30742e20a3623fabda02421cb5774b980e3e7c9c6d9e7e864946bd"
+  revision 1
 
   bottle do
     cellar :any
-    sha256 "5d2ae0ae1c9c34d61ab513d40fef24d2741a88eb58dd77b5d02eb9008b3a1844" => :yosemite
-    sha256 "9fae6dac5f6d01333e4218e25412f62c9eaa71c337181fb147c96b0cacdef457" => :mavericks
-    sha256 "0b1b7d6aafffc1103c59d7d78479a6f2dfb786b9da056167b769a58629f9427e" => :mountain_lion
+    sha256 "0a3161534facbbe983a82e5d1d5c246e06abdeba153d2c8bb4bf5265e4b3528c" => :yosemite
+    sha256 "bb62f97c26892267ef411d081ef3a7b4ccf31f4ff82ede5712a2a9359cace7b3" => :mavericks
+    sha256 "43f069d32e49d049989cd4a3abeaff24e2bea5280536261663f0362555990910" => :mountain_lion
   end
 
   option "with-matlab", "Install Matlab interfaces and tools"
@@ -33,7 +34,13 @@ class SuiteSparse421 < Formula
     mv "SuiteSparse_config/SuiteSparse_config_Mac.mk",
        "SuiteSparse_config/SuiteSparse_config.mk"
 
-    make_args = ["INSTALL_LIB=#{lib}", "INSTALL_INCLUDE=#{include}"]
+    cflags = "#{ENV.cflags}"
+    cflags += " -I#{Formula["tbb"].opt_include}" if build.with? "tbb"
+
+    make_args = ["CFLAGS=#{cflags}",
+                 "INSTALL_LIB=#{lib}",
+                 "INSTALL_INCLUDE=#{include}",
+                ]
     if build.with? "openblas"
       make_args << "BLAS=-L#{Formula["openblas"].opt_lib} -lopenblas"
     elsif OS.mac?
@@ -52,7 +59,7 @@ class SuiteSparse421 < Formula
     # -DNTIMER is needed to avoid undefined reference to SuiteSparse_time
     make_args << "CF=-fPIC -O3 -fno-common -fexceptions -DNTIMER $(CFLAGS)" unless OS.mac?
 
-    system "make", "default", *make_args  # Also build demos.
+    system "make", "default", *make_args # Also build demos.
     lib.mkpath
     include.mkpath
     system "make", "install", *make_args

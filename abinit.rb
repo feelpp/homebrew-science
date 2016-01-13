@@ -2,12 +2,13 @@ class Abinit < Formula
   homepage "http://www.abinit.org"
   url "http://ftp.abinit.org/abinit-7.10.4.tar.gz"
   sha256 "ebd0a3abd01db4374beda092d1f16c9e00d327712b1ed389bb32e1c80f37c6ef"
-  revision 1
+  revision 2
 
   bottle do
-    sha256 "404d04486c0f452e622902749c65f0ac594ce2b79eb538d812867d9c31e36233" => :yosemite
-    sha256 "062883bd8b8715966e789142562ba7b0dcb4d31ec8466b3cc71f9559f7826a18" => :mavericks
-    sha256 "4c7548716959b70c9b83ed3bc437c6dd7544b78fa9ff4827a7be78d84592be30" => :mountain_lion
+    cellar :any
+    sha256 "8a2038a8b58b020cb5c7cdbcda7217477a2f4cda4601166aaf83323a9ba1abb7" => :el_capitan
+    sha256 "f8aefef831a3a767e697fdb0cd50db3ec28378de8a2e046a0e1fdeafb87f5752" => :yosemite
+    sha256 "fd11b9954e0b54b71bf2df8422eabad0089753cb9440adcd3aecb362a20ac189" => :mavericks
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
@@ -48,14 +49,14 @@ class Abinit < Formula
 
     if build.with? "scalapack"
       args << "--with-linalg-flavor=custom+scalapack"
-      args << "--with-linalg-libs=-L#{Formula["veclibfort"].opt_lib} -lveclibfort -L#{Formula["scalapack"].opt_lib} -lscalapack"
+      args << "--with-linalg-libs=-L#{Formula["veclibfort"].opt_lib} -lvecLibFort -L#{Formula["scalapack"].opt_lib} -lscalapack"
     else
       args << "--with-linalg-flavor=custom"
-      args << "--with-linalg-libs=-L#{Formula["veclibfort"].opt_lib} -lveclibfort"
+      args << "--with-linalg-libs=-L#{Formula["veclibfort"].opt_lib} -lvecLibFort"
     end
 
     if build.with? "etsf_io"
-      fail "Building with etsf_io support requires netcdf" if build.without? "netcdf"
+      raise "Building with etsf_io support requires netcdf" if build.without? "netcdf"
       trio_flavor = "netcdf+etsf_io"
       args << "--with-etsf-io-incs=-I#{Formula["etsf_io"].opt_include}"
       args << "--with-etsf-io-libs=-L#{Formula["etsf_io"].opt_lib} -letsf_io_low_level -letsf_io_utils -letsf_io"

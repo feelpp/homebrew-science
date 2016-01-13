@@ -1,13 +1,15 @@
 class Alpscore < Formula
+  desc "Applications and Libraries for Physics Simulations"
   homepage "http://alpscore.org"
-  url "https://github.com/ALPSCore/ALPSCore/archive/v0.4.5.tar.gz"
-  sha256 "b043f5043f6fdca5efd8e1fc2ba0d893da0fd04bff8adaa213c797b44d68e72e"
+  url "https://github.com/ALPSCore/ALPSCore/archive/v0.5.1.tar.gz"
+  sha256 "a99b34cf7b5c2d48ea7d888e229b296908adea7ed5118bf1b28888f42295f385"
   head "https://github.com/ALPSCore/ALPSCore.git"
 
   bottle do
-    sha256 "dff1ed0ffee80e639a15257abb4b6618a33f219d4420c356d2422908730b5133" => :yosemite
-    sha256 "7868af8f9808fefb7d3a2a4b04aafe59dd1550a0dcd71879443607bc0284e660" => :mavericks
-    sha256 "cdb246670465d0780a554d8e0bf51b70ddccea35387cc8d5bb1efc90cf5a09d5" => :mountain_lion
+    cellar :any
+    sha256 "06c6577d69e33fd0c724219a8b0d2a035e807839c2cc32158152d2ad411fbb01" => :el_capitan
+    sha256 "412ad3f5b19f9770a4fb68d1e9236a0a110197594567b843108e5fbe739bedd1" => :yosemite
+    sha256 "18f7f7b892857994a42b088187bffe452f292c633d4e08a6cd5636531c27c935" => :mavericks
   end
 
   option :cxx11
@@ -15,7 +17,7 @@ class Alpscore < Formula
   option "with-doc",    "Build documentation"
   option "with-static", "Build static instead of shared libraries"
 
-  depends_on "cmake"   => :build
+  depends_on "cmake" => :build
   depends_on :mpi => [:cc, :cxx, :recommended]
 
   boost_options = []
@@ -26,6 +28,7 @@ class Alpscore < Formula
   depends_on "hdf5" => ((build.cxx11?) ? ["c++11"] : [])
 
   def install
+    ENV.cxx11 if build.cxx11?
     args = std_cmake_args
     args.delete "-DCMAKE_BUILD_TYPE=None"
     args << "-DCMAKE_BUILD_TYPE=Release"

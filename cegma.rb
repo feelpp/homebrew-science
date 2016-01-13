@@ -1,18 +1,16 @@
-require "formula"
-
 class Cegma < Formula
   homepage "http://korflab.ucdavis.edu/datasets/cegma/"
-  #doi "10.1093/bioinformatics/btm071"
-  #tag "bioinformatics"
+  # doi "10.1093/bioinformatics/btm071"
+  # tag "bioinformatics"
 
   url "http://korflab.ucdavis.edu/datasets/cegma/cegma_v2.4.010312.tar.gz"
-  sha1 "4c046fe0376d69f6969a32af3481c60088306b9b"
+  sha256 "86bef227a6782dfcbbf8a3cfe354b358e2245096b41491604c47569b83862469"
 
   bottle do
     cellar :any
-    sha1 "05109e3eb93ebe55011ffa94350082a4b7894e8c" => :yosemite
-    sha1 "eee84e57db04c733be24fe0e910828fc861b60c4" => :mavericks
-    sha1 "0db56c758491ba137490d0d45afcd82a3e17602e" => :mountain_lion
+    sha256 "0c1431e39f96a6a1f4cd087ba7b26a23abbbf0555012fb76315203d9b49ed848" => :yosemite
+    sha256 "b7d51836f95651b7a4a03a64783380fa0270fb0f6bdf031f42c0d5079ef42077" => :mavericks
+    sha256 "6d0645051b1c7fa543c324bb948ee4cbff3d5300c42d35db16945dc49cfcafde" => :mountain_lion
   end
 
   depends_on "blast"

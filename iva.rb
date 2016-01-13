@@ -4,11 +4,13 @@ class Iva < Formula
   url "https://github.com/sanger-pathogens/iva/archive/v1.0.0.tar.gz"
   sha256 "c2054b7e922accf03e038d5f128b1e2f96c6cabc92c8a67a3b01e0412c29b7d3"
   head "https://github.com/sanger-pathogens/iva.git"
+  revision 1
+
   bottle do
-    cellar :any
-    sha256 "b195e144b9eabea298815c3c5e220db78040e42e16e91caeedc824e0f6b4fa69" => :yosemite
-    sha256 "5bdfa78f91d580095f3f94a6986f93f3abbbbaa3667885de88932adbf2564acb" => :mavericks
-    sha256 "e919339bd100d9eb9ca456896f2fe81d2db46a5d88d71ac80bfcf7c49157db4e" => :mountain_lion
+    cellar :any_skip_relocation
+    sha256 "486eec6468c9c8fd9d18e7c742401dff0fba1b33dfa5142dfb806d966d2662c8" => :yosemite
+    sha256 "7a8c29b61694656a4869163482ad224aac719d4a2799a605ee6b722c89a4a6da" => :mavericks
+    sha256 "8b5487cb63eaf6c241c07a139a0e3721e70e6e1ba13241557f92e86573f19f2a" => :mountain_lion
   end
 
   # tag "bioinformatics"

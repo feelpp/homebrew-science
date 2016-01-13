@@ -1,14 +1,15 @@
 class Insighttoolkit < Formula
   desc "ITK is a toolkit for performing registration and segmentation"
   homepage "http://www.itk.org"
-  url "https://downloads.sourceforge.net/project/itk/itk/4.8/InsightToolkit-4.8.0.tar.gz"
-  sha256 "8de5081f81707faf0cddd42f7eeea9498ce790672eb382a0d72b153623dca08a"
+  url "https://downloads.sourceforge.net/project/itk/itk/4.8/InsightToolkit-4.8.2.tar.gz"
+  sha256 "d8d5e3aea700588c60b01418c440b2d95b517ea18dd4c834c5164354e53596af"
   head "git://itk.org/ITK.git"
+  revision 1
 
   bottle do
-    sha256 "4395012e9362f42884f8e26dc57d769fb618da03fa358ab37cef0b9b91bbf17f" => :yosemite
-    sha256 "e0ee511f1c24f638d9acfd1420c2f55c9a13491022bfede24ed33857bdd596b6" => :mavericks
-    sha256 "74e2efe52e51b10f6a2fd8be35cf7e065c11d7a971462dfa15bc7676b507ac20" => :mountain_lion
+    sha256 "753004df98cde4ee7706d826491214b605e7957bd994ed6876285a3d92304311" => :el_capitan
+    sha256 "deea79ac34044ccbcbd304bcc741a9f4f515e45bb8299dc50908102e3c88ce23" => :yosemite
+    sha256 "543417219a280ebe94429ef8eef6d96a6fa1fd967be06baab776aab44929caf5" => :mavericks
   end
 
   option :cxx11
@@ -18,6 +19,7 @@ class Insighttoolkit < Formula
   depends_on "vtk" => [:build] + cxx11dep
   depends_on "opencv" => [:optional] + cxx11dep
   depends_on :python => :optional
+  depends_on :python3 => :optional
   depends_on "fftw" => :recommended
   depends_on "hdf5" => [:recommended] + cxx11dep
   depends_on "jpeg" => :recommended
@@ -42,9 +44,7 @@ class Insighttoolkit < Formula
       -DITK_USE_SYSTEM_ZLIB=ON
       -DCMAKE_INSTALL_RPATH:STRING=#{lib}
       -DCMAKE_INSTALL_NAME_DIR:STRING=#{lib}
-      -DModule_ITKLevelSetsv4Visualization=ON
       -DModule_SCIFIO=ON
-      -DModule_ITKReview=ON
     ]
     args << ".."
     args << "-DBUILD_EXAMPLES=" + ((build.include? "examples") ? "ON" : "OFF")
@@ -59,18 +59,30 @@ class Insighttoolkit < Formula
     args << "-DITK_USE_SYSTEM_GDCM=ON" if build.with? "gdcm"
     args << "-DITK_LEGACY_REMOVE=ON" if build.include? "remove-legacy"
 
+    # These 3 modules are not supported with python3. Set them to OFF in this case.
+    args << "-DModule_ITKLevelSetsv4Visualization=" + ((build.with? "python3") ? "OFF" : "ON")
+    args << "-DModule_ITKReview=" + ((build.with? "python3") ? "OFF" : "ON")
+    args << "-DModule_ITKVtkGlue=" + ((build.with? "python3") ? "OFF" : "ON")
+
     args << "-DVCL_INCLUDE_CXX_0X=ON" if build.cxx11?
     ENV.cxx11 if build.cxx11?
 
     mkdir "itk-build" do
-      if build.with? "python"
-        args += %W[
-          -DITK_WRAP_PYTHON=ON
-          -DModule_ITKVtkGlue=ON
-        ]
+      if build.with?("python") || build.with?("python3")
+
+        args << "-DITK_WRAP_PYTHON=ON"
+
         # CMake picks up the system's python dylib, even if we have a brewed one.
-        args << "-DPYTHON_LIBRARY='#{%x(python-config --prefix).chomp}/lib/libpython2.7.dylib'"
-        args << "-DPYTHON_INCLUDE_DIR='#{%x(python-config --prefix).chomp}/include/python2.7'"
+        if build.with? "python"
+          args << "-DPYTHON_LIBRARY='#{`python-config --prefix`.chomp}/lib/libpython2.7.dylib'"
+          args << "-DPYTHON_INCLUDE_DIR='#{`python-config --prefix`.chomp}/include/python2.7'"
+        elsif build.with? "python3"
+          ENV["PYTHONPATH"] = lib/"python3.5/site-packages"
+          args << "-DPYTHON_EXECUTABLE='#{`python3-config --prefix`.chomp}/bin/python3'"
+          args << "-DPYTHON_LIBRARY='#{`python3-config --prefix`.chomp}/lib/libpython3.5.dylib'"
+          args << "-DPYTHON_INCLUDE_DIR='#{`python3-config --prefix`.chomp}/include/python3.5m'"
+        end
+
       end
       system "cmake", *args
       system "make", "install"

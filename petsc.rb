@@ -1,19 +1,20 @@
 class Petsc < Formula
   desc "Scalable (parallel) solution of scientific applications modeled by partial differential equations"
   homepage "http://www.mcs.anl.gov/petsc/index.html"
-  url "http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.6.1.tar.gz"
-  sha256 "aeac101565a4ba609c3f3f13ada475720bcd32a44676e3cbfe792da1c9fb32a2"
+  url "http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.6.3.tar.gz"
+  sha256 "2458956c876496f3c8160591324459be7c11f2e1ce09ad98347394c67a46d858"
   head "https://bitbucket.org/petsc/petsc", :using => :git
 
   bottle do
-    sha256 "ddcd54ea22c618ab4b8569abfb9fe1bc133d51011f179cd2a044e6cbacb62551" => :yosemite
-    sha256 "52042d5bda0f74ff3a314541b2ef6dc4a52266cc60fd49f3f9681f7d76f5d31c" => :mavericks
-    sha256 "43037801d09d9df9d31893426eb6af7624a2fd8633a02174b39a26cf903294c2" => :mountain_lion
+    sha256 "06188eddb5ac9af258ea53f71fc9c32a0bad71d8623f9927b3f536a8e17e8d89" => :el_capitan
+    sha256 "80073a95f6cc90cbaa6c6119eb4729f25fb8108e4720f65dea29cf4b60e4c1d5" => :yosemite
+    sha256 "20250b96b6e86c51058a12f8ccd345aaa120e7345f3042fd370ddba4779e854e" => :mavericks
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
   option "with-complex", "Link complex version of PETSc by default."
   option "with-debug", "Build debug version"
+  option "with-ml", "Download and build ML (will not symlink if Trilinos is installed)"
 
   deprecated_option "complex" => "with-complex"
   deprecated_option "debug"   => "with-debug"
@@ -26,21 +27,21 @@ class Petsc < Formula
   depends_on "openblas" => :optional
   openblasdep = (build.with? "openblas") ? ["with-openblas"] : []
 
-  depends_on "superlu"      => [:recommended] + openblasdep
+  depends_on "superlu43"    => [:recommended] + openblasdep
   depends_on "superlu_dist" => [:recommended] + openblasdep
   depends_on "metis"        => :recommended
   depends_on "parmetis"     => :recommended
   depends_on "scalapack"    => [:recommended] + openblasdep
   depends_on "mumps"        => [:recommended] + openblasdep # mumps is built with mpi by default
-  depends_on "hypre"        => ["with-mpi", :recommended] + openblasdep
-  depends_on "sundials"     => ["with-mpi", :recommended] + openblasdep
+  depends_on "hypre"        => [:recommended] + openblasdep
+  depends_on "sundials"     => [:recommended] + openblasdep
   depends_on "hdf5"         => ["with-mpi", :recommended]
   depends_on "hwloc"        => :recommended
   depends_on "suite-sparse" => [:recommended] + openblasdep
   depends_on "netcdf"       => ["with-fortran", :recommended]
   depends_on "fftw"         => ["with-mpi", "with-fortran", :recommended]
 
-  # TODO: add ML, YAML dependencies when the formulae are available
+  # TODO: YAML dependencies when the formulae are available
 
   def oprefix(f)
     Formula[f].opt_prefix
@@ -57,11 +58,14 @@ class Petsc < Formula
     ENV.delete "CXX"
     ENV.delete "F77"
     ENV.delete "FC"
+    # PETSc is not threadsafe, disable pthread/openmp (see http://www.mcs.anl.gov/petsc/miscellaneous/petscthreads.html)
     args = %W[CC=#{ENV["MPICC"]}
               CXX=#{ENV["MPICXX"]}
               F77=#{ENV["MPIF77"]}
               FC=#{ENV["MPIFC"]}
               --with-shared-libraries=1
+              --with-pthread=0
+              --with-openmp=0
            ]
     args << ("--with-debugging=" + ((build.with? "debug") ? "1" : "0"))
 
@@ -74,10 +78,10 @@ class Petsc < Formula
       args << "--with-superlu_dist-lib=-L#{slud.opt_lib} -lsuperlu_dist"
     end
 
-    if build.with? "superlu"
-      slu = Formula["superlu"]
-      args << "--with-superlu-include=#{slu.opt_include}/superlu"
-      args << "--with-superlu-lib=-L#{slu.opt_lib} -lsuperlu"
+    if build.with? "superlu43"
+      slu = Formula["superlu43"]
+      args << "--with-superlu-include=#{slu.include}/superlu"
+      args << "--with-superlu-lib=-L#{slu.lib} -lsuperlu"
     end
 
     args << "--with-fftw-dir=#{oprefix("fftw")}" if build.with? "fftw"
@@ -103,7 +107,11 @@ class Petsc < Formula
     # real-valued case:
     ENV["PETSC_ARCH"] = arch_real
     args_real = ["--prefix=#{prefix}/#{arch_real}",
-                 "--with-scalar-type=real"]
+                 "--with-scalar-type=real",
+                ]
+    # TODO: compile separately (https://bitbucket.org/petsc/pkg-ml/commits/tag/v6.2-p3)
+    # --with-ml-include=/path/to/ml/include --with-ml-lib=/path/to/ml/liblibml.a
+    args_real << "--download-ml=1" if build.with? "ml"
     args_real << "--with-hypre-dir=#{oprefix("hypre")}" if build.with? "hypre"
     args_real << "--with-sundials-dir=#{oprefix("sundials")}" if build.with? "sundials"
     args_real << "--with-hwloc-dir=#{oprefix("hwloc")}" if build.with? "hwloc"
@@ -120,7 +128,8 @@ class Petsc < Formula
     # complex-valued case:
     ENV["PETSC_ARCH"] = arch_complex
     args_cmplx = ["--prefix=#{prefix}/#{arch_complex}",
-                  "--with-scalar-type=complex"]
+                  "--with-scalar-type=complex",
+                 ]
     system "./configure", *(args + args_cmplx)
     system "make", "all"
     if build.with? "check"
@@ -141,6 +150,9 @@ class Petsc < Formula
     # symlink only files (don't symlink pkgconfig as it won't symlink to opt/lib)
     lib.install_symlink Dir["#{prefix}/#{petsc_arch}/lib/*.*"]
     pkgshare.install_symlink Dir["#{prefix}/#{petsc_arch}/share/*"]
+
+    # change install name to ABI in opt
+    system "install_name_tool", "-id", "#{opt_prefix}/lib/libpetsc.3.6.dylib", "#{prefix}/#{petsc_arch}/lib/libpetsc.3.6.3.dylib" if OS.mac?
   end
 
   def caveats; <<-EOS
@@ -148,5 +160,86 @@ class Petsc < Formula
     Fortran module files are in
       #{prefix}/real/include and #{prefix}/complex/include
     EOS
+  end
+
+  test do
+    (testpath/"test.c").write <<-EOS
+    static char help[] = "Solve a tridiagonal linear system with KSP.\\n";
+    #include <petscksp.h>
+    #undef __FUNCT__
+    #define __FUNCT__ "main"
+    int main(int argc,char **args) {
+      Vec            x, b, u;
+      Mat            A;
+      KSP            ksp;
+      PC             pc;
+      PetscReal      norm, tol=1.e-14;
+      PetscErrorCode ierr;
+      PetscInt i, n=10, col[3], its;
+      PetscMPIInt size;
+      PetscScalar neg_one=-1.0, one=1.0, value[3];
+      PetscInitialize(&argc, &args, (char*)0, help);
+      ierr = MPI_Comm_size(PETSC_COMM_WORLD, &size); CHKERRQ(ierr);
+      if (size != 1) SETERRQ(PETSC_COMM_WORLD, 1, "This is a uniprocessor example only!\\n");
+
+      /* Create vectors */
+      ierr = VecCreate(PETSC_COMM_WORLD, &x); CHKERRQ(ierr);
+      ierr = PetscObjectSetName((PetscObject) x, "Solution"); CHKERRQ(ierr);
+      ierr = VecSetSizes(x, PETSC_DECIDE, n); CHKERRQ(ierr);
+      ierr = VecSetFromOptions(x); CHKERRQ(ierr);
+      ierr = VecDuplicate(x, &b); CHKERRQ(ierr);
+      ierr = VecDuplicate(x, &u); CHKERRQ(ierr);
+
+      /* Create matrix */
+      ierr = MatCreate(PETSC_COMM_WORLD, &A); CHKERRQ(ierr);
+      ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, n, n); CHKERRQ(ierr);
+      ierr = MatSetFromOptions(A); CHKERRQ(ierr);
+      ierr = MatSetUp(A); CHKERRQ(ierr);
+
+      /* Setup linear system */
+      value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
+      for (i = 1; i < n-1; i++) {
+        col[0] = i-1; col[1] = i; col[2] = i+1;
+        ierr = MatSetValues(A, 1, &i, 3, col, value, INSERT_VALUES); CHKERRQ(ierr);
+      }
+      i = n-1; col[0] = n-2; col[1] = n-1;
+      ierr = MatSetValues(A, 1, &i, 2, col, value, INSERT_VALUES); CHKERRQ(ierr);
+      i = 0; col[0] = 0; col[1] = 1; value[0] = 2.0; value[1] = -1.0;
+      ierr = MatSetValues(A, 1, &i, 2, col, value, INSERT_VALUES); CHKERRQ(ierr);
+      ierr = MatAssemblyBegin(A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
+      ierr = MatAssemblyEnd(A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
+
+      ierr = VecSet(u, one); CHKERRQ(ierr);
+      ierr = MatMult(A, u, b); CHKERRQ(ierr);
+
+      /* Create linear solver */
+      ierr = KSPCreate(PETSC_COMM_WORLD, &ksp); CHKERRQ(ierr);
+      ierr = KSPSetOperators(ksp, A, A); CHKERRQ(ierr);
+      ierr = KSPGetPC(ksp, &pc); CHKERRQ(ierr);
+      ierr = PCSetType(pc, PCJACOBI); CHKERRQ(ierr);
+      ierr = KSPSetTolerances(ksp, 1.e-8, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);CHKERRQ(ierr);
+
+      /* Solve */
+      ierr = KSPSolve(ksp, b, x); CHKERRQ(ierr);
+      ierr = KSPView(ksp, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
+
+      /* Check solution */
+      ierr = VecAXPY(x, neg_one, u); CHKERRQ(ierr);
+      ierr = VecNorm(x, NORM_2, &norm); CHKERRQ(ierr);
+      ierr = KSPGetIterationNumber(ksp, &its); CHKERRQ(ierr);
+      ierr = PetscPrintf(PETSC_COMM_WORLD, "Norm of error %g\\nIterations %D\\n",
+                         (double)norm, its); CHKERRQ(ierr);
+
+      /* Free work space */
+      ierr = VecDestroy(&x); CHKERRQ(ierr); ierr = VecDestroy(&u); CHKERRQ(ierr);
+      ierr = VecDestroy(&b); CHKERRQ(ierr); ierr = MatDestroy(&A); CHKERRQ(ierr);
+      ierr = KSPDestroy(&ksp); CHKERRQ(ierr);
+
+      ierr = PetscFinalize();
+      return 0;
+    }
+    EOS
+    system "mpicc", "test.c", "-I#{include}", "-L#{lib}", "-lpetsc", "-o", "test"
+    assert (`./test | grep 'Norm of error' | awk '{print $NF}'`.to_f < 1.0e-8)
   end
 end

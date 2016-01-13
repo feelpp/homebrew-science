@@ -3,12 +3,13 @@ class SuiteSparse < Formula
   homepage "http://faculty.cse.tamu.edu/davis/suitesparse.html"
   url "http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-4.4.4.tar.gz"
   sha256 "f2ae47e96f3f37b313c3dfafca59f13e6dbc1e9e54b35af591551919810fb6fd"
+  revision 2
 
   bottle do
-    cellar :any
-    sha256 "dd83e718e3e9ff1e9d1b6c106a0ec1739de91007c242cf98cca999e161372e8d" => :yosemite
-    sha256 "66ca698e1198daec5ab591c646030b49ff6a90714f70b86799c909cb7b4f5c9d" => :mavericks
-    sha256 "523047f522181f05158db6e764afffe4bb6069d113bd914db0fafb327e0eee90" => :mountain_lion
+    cellar :any_skip_relocation
+    sha256 "2ab3b2ecad9e5c871a0b3e0e70f3bab4e7ee3aab06eb9ace8de2be155dfb11e8" => :el_capitan
+    sha256 "ac375ecab7b93e9da612b14dcdd4fa920248dce10794f9131d8d2774967fefdd" => :yosemite
+    sha256 "828dbaf089f5e98c31a9434748ab3d913aa018d473797b2b3e2d3c90ea52b0fb" => :mavericks
   end
 
   option "with-matlab", "Install Matlab interfaces and tools"
@@ -30,7 +31,9 @@ class SuiteSparse < Formula
     mv "SuiteSparse_config/SuiteSparse_config_Mac.mk",
        "SuiteSparse_config/SuiteSparse_config.mk"
 
-    cflags = (ENV.compiler == :clang) ? "" : "-fopenmp"
+    cflags = "#{ENV.cflags}"
+    cflags += (ENV.compiler == :clang) ? "" : " -fopenmp"
+    cflags += " -I#{Formula["tbb"].opt_include}" if build.with? "tbb"
 
     make_args = ["CFLAGS=#{cflags}",
                  "INSTALL_LIB=#{lib}",
@@ -48,21 +51,28 @@ class SuiteSparse < Formula
     make_args << "LAPACK=$(BLAS)"
     make_args += ["SPQR_CONFIG=-DHAVE_TBB",
                   "TBB=-L#{Formula["tbb"].opt_lib} -ltbb"] if build.with? "tbb"
-    make_args += ["METIS_PATH=",
+
+    # SuiteSparse wants the user to download the source of METIS so it can
+    # compile it. Its way of deciding that METIS has indeed been downloaded is
+    # by checking that METIS_PATH is a valid path. So we specify some valid
+    # path.
+    make_args += ["METIS_PATH=#{Formula["metis4"].opt_prefix}",
                   "METIS=-L#{Formula["metis4"].opt_lib} -lmetis"] if build.with? "metis4"
+    make_args << "CHOLMOD_CONFIG=-DNPARTITION" if build.without? "metis4"
 
     # Add some flags for linux
     # -DNTIMER is needed to avoid undefined reference to SuiteSparse_time
     make_args << "CF=-fPIC -O3 -fno-common -fexceptions -DNTIMER $(CFLAGS)" unless OS.mac?
 
-    system "make", "default", *make_args  # Also build demos.
+    # make library doesn't build the demos because the latter expect the source
+    # of METIS to have been downloaded and will attempt to build it.
+    system "make", "library", *make_args
     lib.mkpath
     include.mkpath
     system "make", "install", *make_args
     ["AMD", "CAMD", "CHOLMOD", "KLU", "LDL", "SPQR", "UMFPACK"].each do |pkg|
       (doc/pkg).install Dir["#{pkg}/Doc/*"]
     end
-
 
     if build.with? "matlab"
       matlab = ARGV.value("with-matlab-path") || "matlab"

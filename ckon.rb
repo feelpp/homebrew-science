@@ -1,14 +1,14 @@
 class Ckon < Formula
-  homepage "http://tschaume.github.io/ckon/"
+  homepage "https://tschaume.github.io/ckon/"
   url "https://github.com/tschaume/ckon/archive/v0.7.1.tar.gz"
-  sha1 "15481a0232e7fe6584f91cd530d324e8d275f1c0"
+  sha256 "4cc8bde10430e21520aed4b7ac5f6d96a80b8a91014760997f9a7039103a7e0d"
   head "https://github.com/tschaume/ckon.git"
 
   bottle do
     cellar :any
-    sha1 "5e314bc8906e51866e3c210561987983a51ae14d" => :yosemite
-    sha1 "d73d9cafbe6d405cbd295171ff45676db3ccb394" => :mavericks
-    sha1 "d49c913baa3a43485724ba87dae663a9d229840c" => :mountain_lion
+    sha256 "323e789437728c8c463f8d2ffa18cdf8577c104c372e1cee1e26b98b62727336" => :yosemite
+    sha256 "b5fcb57a446c1af14eabea2abda7dfd6dcfc64c6c82c41f83bcc79334c4d4515" => :mavericks
+    sha256 "dc18479f693509bd64bf31ab8f5f162d52d4ecf69e70bb82fd7fe9e4d7ca42dc" => :mountain_lion
   end
 
   depends_on "boost"

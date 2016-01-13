@@ -1,20 +1,21 @@
 class Armadillo < Formula
+  desc "C++ linear algebra library"
   homepage "http://arma.sourceforge.net/"
-  url "https://downloads.sourceforge.net/project/arma/armadillo-5.400.2.tar.gz"
-  sha256 "d155f50bcdd716e52c5c59ccba88adbedfa406f92b76b9edb7a84bd737dbff84"
+  url "https://downloads.sourceforge.net/project/arma/armadillo-6.400.3.tar.gz"
+  sha256 "019ce442a1bcad4c5da0bc01ee35333c9a0783ec6a58237ae1e774da68cd4f2f"
 
   bottle do
     cellar :any
-    sha256 "bba2c474a9982df8d905ccdd2920536a240ba7bd0dd146a37fa73a6c705cba9b" => :yosemite
-    sha256 "ee88a8fcc4eb442bfa8aa2b8efac55f3e6e526f8b1b408e9aebd1ab83705c5d4" => :mavericks
-    sha256 "f59558abbc48a4ceba38fb9a00afe3f002bf4b0e52af6d86cbb5180f8a3af7d2" => :mountain_lion
+    sha256 "b08cc3071968cdbdf28ce536ca8677ae87fab04cfb004e1f37b391d0cfae3350" => :el_capitan
+    sha256 "21c9d1eb7402e1e78abcc7aa1acd3fd25016b4153c6e075cf3fa0a83e106b740" => :yosemite
+    sha256 "f34bedf32b079ec2dc6a4ec66d27033f4b356db7b043e6a05d8b79c949bb0bd8" => :mavericks
   end
 
   option "with-hdf5", "Enable the ability to save and load matrices stored in the HDF5 format"
 
   depends_on "cmake" => :build
   depends_on "arpack"
-  depends_on "superlu"
+  depends_on "superlu43"
   depends_on "hdf5" => :optional
   depends_on "openblas" if OS.linux?
 

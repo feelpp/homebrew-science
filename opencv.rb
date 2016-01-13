@@ -4,11 +4,12 @@ class Opencv < Formula
   url "https://github.com/Itseez/opencv/archive/2.4.12.tar.gz"
   sha256 "8989f946a66fa3fc2764d637b1c866caf28d074ece187f86baba66544054eefc"
   head "https://github.com/Itseez/opencv.git", :branch => "2.4"
+  revision 2
 
   bottle do
-    sha256 "c61e0ff1a122459eea44bea04df13592ebbbd67bb3097e07d45217aae85e1947" => :yosemite
-    sha256 "bab6a64b65a2800f0bceefb1d32729b618ddde8dfc1f82ec0e066c1ff68aed54" => :mavericks
-    sha256 "38d298cf40f733c6d6e1b647442a1c355cc478ced24105325b879ab70b3324d0" => :mountain_lion
+    sha256 "3e584f97f377b8ac0f7e55efa494bdb0fb108930212f5fb8a03cecc18f9b1d43" => :el_capitan
+    sha256 "c60dc79ecf71499e91945726f4e0fd3f7abaf2dac92e4a8d081c4be48d39dcac" => :yosemite
+    sha256 "f4e3fdf22515e9847f70fcd71ef96eef06e68077f054e0178417fe073594fd83" => :mavericks
   end
 
   option "32-bit"
@@ -27,6 +28,7 @@ class Opencv < Formula
   deprecated_option "without-brewed-numpy" => "without-numpy"
 
   option :cxx11
+  option :universal
 
   depends_on :ant if build.with? "java"
   depends_on "cmake"      => :build
@@ -44,6 +46,7 @@ class Opencv < Formula
   depends_on "pkg-config" => :build
   depends_on "qt"         => :optional
   depends_on "tbb"        => :optional
+  depends_on "vtk"        => :optional
 
   depends_on :python => :recommended unless OS.mac? && MacOS.version > :snow_leopard
   depends_on "homebrew/python/numpy" => :recommended if build.with? "python"
@@ -87,6 +90,7 @@ class Opencv < Formula
     args << "-DWITH_QT="        + arg_switch("qt")
     args << "-DWITH_GSTREAMER=" + arg_switch("gstreamer")
     args << "-DWITH_XIMEA="     + arg_switch("ximea")
+    args << "-DWITH_VTK="       + arg_switch("vtk")
 
     if build.with? "python"
       py_prefix = `python-config --prefix`.chomp
@@ -99,9 +103,9 @@ class Opencv < Formula
     end
 
     if build.with? "cuda"
-      ENV["CUDA_NVCC_FLAGS"] = "-Xcompiler -stdlib=libstdc++; -Xlinker -stdlib=libstdc++"
+      ENV["CUDA_NVCC_FLAGS"] = "-Xcompiler -stdlib=libc++; -Xlinker -stdlib=libc++"
       args << "-DWITH_CUDA=ON"
-      args << "-DCMAKE_CXX_FLAGS=-stdlib=libstdc++"
+      args << "-DCMAKE_CXX_FLAGS=-stdlib=libc++"
       args << "-DCUDA_GENERATION=Kepler"
     else
       args << "-DWITH_CUDA=OFF"
@@ -123,6 +127,11 @@ class Opencv < Formula
       args << "-DCMAKE_OSX_ARCHITECTURES=i386"
       args << "-DOPENCV_EXTRA_C_FLAGS='-arch i386 -m32'"
       args << "-DOPENCV_EXTRA_CXX_FLAGS='-arch i386 -m32'"
+    end
+
+    if build.universal?
+      ENV.universal_binary
+      args << "-DCMAKE_OSX_ARCHITECTURES=#{Hardware::CPU.universal_archs.as_cmake_arch_flags}"
     end
 
     if ENV.compiler == :clang && !build.bottle?
@@ -151,5 +160,7 @@ class Opencv < Formula
     EOS
     system ENV.cxx, "test.cpp", "-I#{include}", "-L#{lib}", "-o", "test"
     assert_equal `./test`.strip, version.to_s
+
+    assert_match version.to_s, shell_output("python -c 'import cv2; print(cv2.__version__)'")
   end
 end

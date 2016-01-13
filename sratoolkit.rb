@@ -4,25 +4,25 @@ class Sratoolkit < Formula
   # doi "10.1093/nar/gkq1019"
   # tag "bioinformatics"
 
-  url "https://github.com/ncbi/sra-tools/archive/2.5.2.tar.gz"
-  sha256 "d128c14e13ac2e8affd3497dc59490d4932551e9524d5db697eef0951ea786f1"
+  url "https://github.com/ncbi/sra-tools/archive/2.5.4.tar.gz"
+  sha256 "452093e2fb1336cad3f8ea4c22d8a2558dd485f61a49a11493e03c321462bde7"
   head "https://github.com/ncbi/sra-tools.git"
 
   bottle do
     cellar :any
-    sha256 "29ad5dd3cb04e9a1ba3b465d8412f3dd6043ec1f13b3046b7e747febb6f935b5" => :yosemite
-    sha256 "0573f01ba736dff7d6d57309969e33c2783123764df7372dd24eed3c27e37d7a" => :mavericks
-    sha256 "b3be2903f9d6258152c662addb0ec9df8cb628cd82dc0fe07157454abff64840" => :mountain_lion
+    sha256 "49fbb91d1bce33ef4a42bf006218760d33cd65b26aefefc7dcc67fee74c9804d" => :el_capitan
+    sha256 "8bfa04632f1c2a019da2103e023fd98d8f6353c89c7cab479c9b0be6865297df" => :yosemite
+    sha256 "145df2974d65f27f2d7b6c8b7cc1ad91c971cced0bf1c581530fba265a375d12" => :mavericks
   end
 
   resource "ngs-sdk" do
-    url "https://github.com/ncbi/ngs/archive/1.1.3.tar.gz"
-    sha256 "269c0286ed42fe00aec70d918298a0a5ca740c74189ef08fb97ee199611f13e1"
+    url "https://github.com/ncbi/ngs/archive/1.2.2.tar.gz"
+    sha256 "b2b87ae114c463a1b3d9bbd19c54d1270341734f6b0c653e93090aee7e307867"
   end
 
   resource "ncbi-vdb" do
-    url "https://github.com/ncbi/ncbi-vdb/archive/2.5.2.tar.gz"
-    sha256 "f10f478338f9418beab0f1e16254a3f728d7b9c6f1e2c02c2ef9512c648c0903"
+    url "https://github.com/ncbi/ncbi-vdb/archive/2.5.4.tar.gz"
+    sha256 "f23900884b8eea3bf1f05a7426576740fbab56c64083283897ccb5d909f396e5"
   end
 
   depends_on "autoconf" => :build
@@ -76,6 +76,6 @@ class Sratoolkit < Formula
 
   test do
     system bin/"fastq-dump", "SRR000001"
-    assert File.read("SRR000001.fastq").include?("@SRR000001.1 EM7LVYS02FOYNU length=284")
+    assert_match "@SRR000001.1 EM7LVYS02FOYNU length=284", File.read("SRR000001.fastq")
   end
 end

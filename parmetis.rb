@@ -1,15 +1,16 @@
 class Parmetis < Formula
-  homepage "http://glaros.dtc.umn.edu/gkhome/metis/parmetis/overview"
   desc "MPI-based library for graph/mesh partitioning and computing fill-reducing orderings"
+  homepage "http://glaros.dtc.umn.edu/gkhome/metis/parmetis/overview"
   url "http://glaros.dtc.umn.edu/gkhome/fetch/sw/parmetis/parmetis-4.0.3.tar.gz"
   sha256 "f2d9a231b7cf97f1fee6e8c9663113ebf6c240d407d3c118c55b3633d6be6e5f"
-  revision 1
+  revision 3
 
   bottle do
     cellar :any
-    sha256 "57d608739de2d85773d45f6e42d21870e5e39c8273081e7034d4f1673f468a5c" => :yosemite
-    sha256 "09558ea47243c650dccf40af54aadd2b917d4b0a26857f32138fafd57e3310cd" => :mavericks
-    sha256 "6695af3c03ceb2633a26e43c7b8aeb1fbd2fa2613a15b910ca71f6fe99d16153" => :mountain_lion
+    revision 1
+    sha256 "66e3210a6eb2732f918f9e4b174e4c52d553b954d01cdee5ffde271a2712a9d7" => :el_capitan
+    sha256 "f3d9c17661f349c210776d2cfe356f0f44f33030a15069ce3768fb0d33fa96aa" => :yosemite
+    sha256 "51f43d7091a5381df7d0012e2e72958fc61f914ace90fdde0229a9d29a2fda40" => :mavericks
   end
 
   # METIS 5.* is required. It comes bundled with ParMETIS.
@@ -21,6 +22,17 @@ class Parmetis < Formula
 
   # Do not build the METIS 5.* that ships with ParMETIS.
   patch :DATA
+
+  # bug fixes from PETSc developers
+  patch do
+    url "https://bitbucket.org/petsc/pkg-parmetis/commits/82409d68aa1d6cbc70740d0f35024aae17f7d5cb/raw/"
+    sha256 "704b84f7c7444d4372cb59cca6e1209df4ef3b033bc4ee3cf50f369bce972a9d"
+  end
+
+  patch do
+    url "https://bitbucket.org/petsc/pkg-parmetis/commits/1c1a9fd0f408dc4d42c57f5c3ee6ace411eb222b/raw/"
+    sha256 "4f892531eb0a807eb1b82e683a416d3e35154a455274cf9b162fb02054d11a5b"
+  end
 
   def install
     ENV["LDFLAGS"] = "-L#{Formula["metis"].lib} -lmetis -lm"
@@ -50,3 +62,17 @@ index ca945dd..1bf94e9 100644
  add_subdirectory(include)
  add_subdirectory(libparmetis)
  add_subdirectory(programs)
+
+diff --git a/libparmetis/CMakeLists.txt b/libparmetis/CMakeLists.txt
+index 9cfc8a7..dfc0125 100644
+--- a/libparmetis/CMakeLists.txt
++++ b/libparmetis/CMakeLists.txt
+@@ -5,7 +5,7 @@ file(GLOB parmetis_sources *.c)
+ # Create libparmetis
+ add_library(parmetis ${ParMETIS_LIBRARY_TYPE} ${parmetis_sources})
+ # Link with metis and MPI libraries.
+-target_link_libraries(parmetis metis ${MPI_LIBRARIES})
++target_link_libraries(parmetis metis ${MPI_LIBRARIES} "-lm")
+ set_target_properties(parmetis PROPERTIES LINK_FLAGS "${MPI_LINK_FLAGS}")
+
+ install(TARGETS parmetis

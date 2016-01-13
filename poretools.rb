@@ -4,13 +4,13 @@ class Poretools < Formula
   url "https://github.com/arq5x/poretools/archive/v0.5.1.tar.gz"
   sha256 "7cd55a8f30290992dcf8d7792401e7f21efadfde02b3f4604d6680d2f8300479"
   head "https://github.com/arq5x/poretools.git"
+  revision 2
 
   bottle do
     cellar :any
-    revision 1
-    sha256 "5b92031f4c12adc7bbf7626c920d3c2843bfba027bfc3803a7b7f38d601380ec" => :yosemite
-    sha256 "e1d821357396329833b2c5ffa93fae5b2a1bfc57396e82dcecc1af94e58c5436" => :mavericks
-    sha256 "f8fc2480505cbb07ccb32cb9d686f6e4f5485523df4c30958392dad19221ba74" => :mountain_lion
+    sha256 "b3bd0f93eb0a4e8cb97307626d58a8ac3412f2f9edf12ac8874bff48907c5158" => :el_capitan
+    sha256 "abb9a0be597ae17424c58e08fe01d37f706d164b182c9c9548d3764c3686509b" => :yosemite
+    sha256 "c56405fb12c2004387f364235d3b1dcbb3b429a9387990fafedbbbd8d4600c48" => :mavericks
   end
 
   depends_on "hdf5"

@@ -1,14 +1,15 @@
 class Opencv3 < Formula
   desc "Open source computer vision library, version 3"
   homepage "http://opencv.org/"
+  revision 1
 
   stable do
-    url "https://github.com/Itseez/opencv/archive/3.0.0.tar.gz"
-    sha256 "da51a4e459b0bcbe14fb847c4f168415f421765fb91996f42b9e1ce0575f05d5"
+    url "https://github.com/Itseez/opencv/archive/3.1.0.tar.gz"
+    sha256 "f00b3c4f42acda07d89031a2ebb5ebe390764a133502c03a511f67b78bbd4fbf"
 
     resource "contrib" do
-      url "https://github.com/Itseez/opencv_contrib/archive/3.0.0.tar.gz"
-      sha256 "8fa18564447a821318e890c7814a262506dd72aaf7721c5afcf733e413d2e12b"
+      url "https://github.com/Itseez/opencv_contrib/archive/3.1.0.tar.gz"
+      sha256 "ef2084bcd4c3812eb53c21fa81477d800e8ce8075b68d9dedec90fef395156e5"
     end
   end
 
@@ -21,10 +22,9 @@ class Opencv3 < Formula
   end
 
   bottle do
-    revision 1
-    sha256 "e152b2de3676f031ca5bb2e51174280cb0610d93aeef7b44be3ce0d45b05e70b" => :yosemite
-    sha256 "c9b2d992266754ac4e15a5c974e42524f9b6daa11c8cfec25dcd446a989a653e" => :mavericks
-    sha256 "f4d8d0ce0ce159563649e148b5e7ddbc31bd892bb7e4c438c698bb5953709196" => :mountain_lion
+    sha256 "0ef190f2c0656e24b5071d1589e70a6ee31a89d7c7db9edddd244e7ca38939f3" => :el_capitan
+    sha256 "6e6eed77960ca2c2727e80222bcdb0e69f8510777bdf9f97d875ae35b72630e2" => :yosemite
+    sha256 "9e32e65742b692967ef8547a69454e98d1ce84fb078be308f6ba16ed31709eae" => :mavericks
   end
 
   keg_only "opencv3 and opencv install many of the same files."
@@ -68,6 +68,7 @@ class Opencv3 < Formula
   depends_on "qt" => :optional
   depends_on "qt5" => :optional
   depends_on "tbb" => :optional
+  depends_on "vtk" => :optional
 
   with_python = build.with?("python") || build.with?("python3")
   pythons = build.with?("python3") ? ["with-python3"] : []
@@ -122,6 +123,7 @@ class Opencv3 < Formula
     args << "-DWITH_QUICKTIME=" + arg_switch("quicktime")
     args << "-DWITH_QT=" + (with_qt ? "ON" : "OFF")
     args << "-DWITH_TBB=" + arg_switch("tbb")
+    args << "-DWITH_VTK=" + arg_switch("vtk")
 
     if build.include? "32-bit"
       args << "-DCMAKE_OSX_ARCHITECTURES=i386"
@@ -207,5 +209,8 @@ class Opencv3 < Formula
     EOS
     system ENV.cxx, "test.cpp", "-I#{include}", "-L#{lib}", "-o", "test"
     assert_equal `./test`.strip, version.to_s
+
+    ENV["PYTHONPATH"] = lib/"python2.7/site-packages"
+    assert_match version.to_s, shell_output("python -c 'import cv2; print(cv2.__version__)'")
   end
 end

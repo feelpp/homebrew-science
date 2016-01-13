@@ -1,19 +1,21 @@
 class Trilinos < Formula
   desc "Algorithms for the solution of large-scale, complex multi-physics engineering and scientific problems"
   homepage "http://trilinos.sandia.gov"
-  url "https://trilinos.org/oldsite/download/files/trilinos-12.0.1-Source.tar.bz2"
-  sha256 "cab674e88c8ca2d2c54176af60030ed28203c0793f3c64c240363dbe7fa46b99"
+  url "https://trilinos.org/oldsite/download/files/trilinos-12.4.2-Source.tar.bz2"
+  sha256 "78225d650ddcfc453b40cddb99b2fbb79998ff6359f9090154727b916812a58e"
   head "https://software.sandia.gov/trilinos/repositories/publicTrilinos", :using => :git
 
-  option "with-teko",  "Enable the Teko secondary-stable package"
-  option "with-shylu", "Enable the ShyLU experimental package"
+  bottle do
+    sha256 "cb3ca115bdb54c7f760ea0569aae7172db10ef8a4f5b7648b1c98c92a887055f" => :el_capitan
+    sha256 "cdb15c6509cbe130642ea4a0cbaa5946cd8ce9ee574fad066e270e04de162552" => :yosemite
+    sha256 "ac9649f7cdae07d93f83a12a0e8dc0de788b62b01291fe372dfc1a1692304413" => :mavericks
+  end
+
   option "with-check", "Perform build time checks (time consuming and contains failures)"
-  option :cxx11
 
   # options and dependencies not supported in the current version
   # are commented out with #- and failure reasons are documented.
 
-  option "with-cholmod", "Build with Cholmod (Experimental TPL) from suite-sparse"
   #-option "with-csparse", "Build with CSparse (Experimental TPL) from suite-sparse" # Undefined symbols for architecture x86_64: "Amesos_CSparse::Amesos_CSparse(Epetra_LinearProblem const&)"
 
   depends_on :mpi           => [:cc, :cxx, :recommended]
@@ -29,6 +31,9 @@ class Trilinos < Formula
 
   depends_on "openblas" => :optional
 
+  openblasdep = (build.with? "openblas") ? ["with-openblas"] : []
+  mpidep      = (build.with? "mpi")      ? ["with-mpi"]      : []
+
   depends_on "adol-c"       => :recommended
   depends_on "boost"        => :recommended
   depends_on "cppunit"      => :recommended
@@ -36,14 +41,14 @@ class Trilinos < Formula
   depends_on "hwloc"        => :recommended
   depends_on "libmatio"     => [:recommended] + ((build.with? "hdf5") ? ["with-hdf5"] : [])
   depends_on "metis"        => :recommended
-  depends_on "mumps"        => :recommended
+  depends_on "mumps"        => [:recommended] + openblasdep
   depends_on "netcdf"       => ["with-fortran", :recommended]
   depends_on "parmetis"     => :recommended if build.with? "mpi"
-  depends_on "scalapack"    => :recommended
+  depends_on "scalapack"    => [:recommended] + openblasdep
   depends_on "scotch"       => :recommended
-  depends_on "suite-sparse" => :recommended
-  depends_on "superlu"      => :recommended
-  depends_on "superlu_dist" => :recommended if build.with? "parmetis"
+  depends_on "suite-sparse" => [:recommended] + openblasdep
+  #-depends_on "superlu"      => [:recommended] + openblasdep // Amesos2_Superlu_FunctionMap.hpp:83:14: error: no type named 'superlu_options_t' in namespace 'SLU'
+  depends_on "superlu_dist" => [:recommended] + openblasdep if build.with? "parmetis"
 
   #-depends_on "petsc"        => :optional # ML packages currently do not compile with PETSc >= 3.3
   #-depends_on "qd"           => :optional # Fails due to global namespace issues (std::pow vs qd::pow)
@@ -51,9 +56,9 @@ class Trilinos < Formula
 
   # Experimental TPLs:
   depends_on "eigen"        => :recommended
-  depends_on "hypre"        => [:recommended] + ((build.with? "mpi") ? ["with-mpi"] : []) # EpetraExt tests fail to compile
+  depends_on "hypre"        => [:recommended] + ((build.with? "mpi") ? [] : ["without-mpi"]) + openblasdep # EpetraExt tests fail to compile
   depends_on "glpk"         => :recommended
-  depends_on "hdf5"         => [:recommended] + ((build.with? "mpi") ? ["with-mpi"] : [])
+  depends_on "hdf5"         => [:recommended] + mpidep
   depends_on "tbb"          => :recommended
   depends_on "glm"          => :recommended
   depends_on "yaml-cpp"     => :recommended
@@ -73,10 +78,14 @@ class Trilinos < Formula
   end
 
   # Patch FindTPLUMFPACK to work with UMFPACK>=5.6.0
-  # Amesos to work with Superlu_dist 3.3
+  # Teuchos_Details_Allocator to have max_size()
+  # and other minor compiler errors
   patch :DATA
 
+  # Kokkos, Tpetra and Sacado will be OFF without cxx11
+  needs :cxx11
   def install
+    ENV.cxx11
     # Trilinos supports only Debug or Release CMAKE_BUILD_TYPE!
     args  = %W[-DCMAKE_INSTALL_PREFIX=#{prefix} -DCMAKE_BUILD_TYPE=Release]
     args += %w[-DBUILD_SHARED_LIBS=ON
@@ -85,11 +94,20 @@ class Trilinos < Formula
                -DTPL_ENABLE_Zlib:BOOL=ON
                -DTrilinos_ENABLE_ALL_PACKAGES=ON
                -DTrilinos_ENABLE_ALL_OPTIONAL_PACKAGES=ON
-               -DTrilinos_ENABLE_TESTS:BOOL=ON
                -DTrilinos_ENABLE_EXAMPLES:BOOL=ON
                -DTrilinos_VERBOSE_CONFIGURE:BOOL=OFF
-               -DTrilinos_WARNINGS_AS_ERRORS_FLAGS=""
-               -DTrilinos_ENABLE_OpenMP:BOOL=OFF]
+               -DTrilinos_WARNINGS_AS_ERRORS_FLAGS=""]
+
+    # Explicit instantiation will build object files for the Trilinos templated classes with the most common types.
+    # That should speed up compilation time for librareis/driver programs which use Trilinos.
+    # see https://trilinos.org/pipermail/trilinos-users/2015-September/005146.html
+    args << "-DTrilinos_ENABLE_EXPLICIT_INSTANTIATION:BOOL=ON"
+
+    # enable tests only when we inted to run checks.
+    # that reduced the build time from 130 min to 51 min.
+    args << onoff("-DTrilinos_ENABLE_TESTS:BOOL=", (build.with? "check"))
+    # some tests are needed to have binaries in the "test do" block:
+    args << "-DEpetra_ENABLE_TESTS=ON"
 
     # constrain Cmake to look for libraries in homebrew's prefix
     args << "-DCMAKE_PREFIX_PATH=#{HOMEBREW_PREFIX}"
@@ -109,22 +127,44 @@ class Trilinos < Formula
 
     args << "-DTrilinos_ASSERT_MISSING_PACKAGES=OFF" if build.head?
 
-    args << onoff("-DTPL_ENABLE_MPI:BOOL=",         (build.with? "mpi"))
-    args << onoff("-DTrilinos_ENABLE_OpenMP:BOOL=", (ENV.compiler != :clang))
-    args << onoff("-DTrilinos_ENABLE_CXX11:BOOL=",  (build.cxx11?))
+    args << onoff("-DTPL_ENABLE_MPI:BOOL=", (build.with? "mpi"))
+    # TODO:
+    # OpenMP leads deal.II to fail with compiler errors in trilinos headers even though trilinos compiles fine
+    # It could be that there is a missing #include somewhere in Trilinos which becames visible when we
+    # try to use it.
+    # For now disable OpenMP:
+    # args << onoff("-DTrilinos_ENABLE_OpenMP:BOOL=", (ENV.compiler != :clang))
+    args << "-DTrilinos_ENABLE_OpenMP:BOOL=OFF"
+    args << "-DTrilinos_ENABLE_CXX11:BOOL=ON"
 
     # Extra non-default packages
-    args << onoff("-DTrilinos_ENABLE_ShyLU:BOOL=",  (build.with? "shylu"))
-    args << onoff("-DTrilinos_ENABLE_Teko:BOOL=",   (build.with? "teko"))
+    args << "-DTrilinos_ENABLE_ShyLU:BOOL=ON"
+    args << "-DTrilinos_ENABLE_Teko:BOOL=ON"
 
     # Temporary disable due to compiler errors:
-    args << "-DTrilinos_ENABLE_STK=OFF"
+    # packages:
+    args << "-DTrilinos_ENABLE_FEI=OFF"
+    args << "-DTrilinos_ENABLE_Pike=OFF" # 12.4.2
+    args << "-DTrilinos_ENABLE_Piro=OFF"
     args << "-DTrilinos_ENABLE_SEACAS=OFF"
+    args << "-DTrilinos_ENABLE_STK=OFF"
+    args << "-DTrilinos_ENABLE_Stokhos=OFF"
+    args << "-DTrilinos_ENABLE_Sundance=OFF" if !OS.mac? || MacOS.version < :mavericks
+    args << "-DTrilinos_ENABLE_Zoltan2=OFF" # 12.4.2
+    args << "-DTrilinos_ENABLE_Amesos2=OFF" # compiler error with explicit instantiation
+    # Amesos, conflicting types of double and complex SLU_D
+    # see https://trilinos.org/pipermail/trilinos-users/2015-March/004731.html
+    # and https://trilinos.org/pipermail/trilinos-users/2015-March/004802.html
+    if build.with? "superlu_dist"
+      args << "-DTeuchos_ENABLE_COMPLEX:BOOL=OFF"
+      args << "-DKokkosTSQR_ENABLE_Complex:BOOL=OFF"
+    end
+    # tests:
     args << "-DIntrepid_ENABLE_TESTS=OFF"
     args << "-DSacado_ENABLE_TESTS=OFF"
     args << "-DEpetraExt_ENABLE_TESTS=OFF" if build.with? "hypre"
-    args << "-DTrilinos_ENABLE_FEI=OFF" if not OS.mac?
-    args << "-DTrilinos_ENABLE_Sundance=OFF" if not OS.mac?
+    args << "-DMesquite_ENABLE_TESTS=OFF"
+    args << "-DIfpack2_ENABLE_TESTS=OFF"
 
     # Third-party libraries
     args << onoff("-DTPL_ENABLE_Boost:BOOL=",       (build.with? "boost"))
@@ -135,21 +175,21 @@ class Trilinos < Formula
     args << onoff("-DTPL_ENABLE_Matio:BOOL=",       (build.with? "libmatio"))
     args << onoff("-DTPL_ENABLE_yaml-cpp:BOOL=",    (build.with? "yaml-cpp"))
 
-    if (build.with? "suite-sparse") && (build.with? "csparse")
-      args << "-DTPL_ENABLE_CSparse:BOOL=ON"
-      args << "-DCSparse_LIBRARY_NAMES=cxsparse;amd;colamd;suitesparseconfig"
-    else
-      args << "-DTPL_ENABLE_CSparse:BOOL=OFF"
-    end
-    args << onoff("-DTPL_ENABLE_Cholmod:BOOL=",     ((build.with? "suite-sparse") && (build.with? "cholmod")))
+    # if (build.with? "suite-sparse") && (build.with? "csparse")
+    #   args << "-DTPL_ENABLE_CSparse:BOOL=ON"
+    #   args << "-DCSparse_LIBRARY_NAMES=cxsparse;amd;colamd;suitesparseconfig"
+    # else
+    args << "-DTPL_ENABLE_CSparse:BOOL=OFF"
+    # end
+    args << onoff("-DTPL_ENABLE_Cholmod:BOOL=",     (build.with? "suite-sparse"))
 
     args << onoff("-DTPL_ENABLE_UMFPACK:BOOL=",     (build.with? "suite-sparse"))
     args << "-DUMFPACK_LIBRARY_NAMES=umfpack;amd;colamd;cholmod;suitesparseconfig" if build.with? "suite-sparse"
 
-    args << onoff("-DTPL_ENABLE_CppUnit:BOOL=",     (build.with? "cppunit"))
+    args << onoff("-DTPL_ENABLE_CppUnit:BOOL=", (build.with? "cppunit"))
     args << "-DCppUnit_LIBRARY_DIRS=#{Formula["cppunit"].opt_lib}" if build.with? "cppunit"
 
-    args << onoff("-DTPL_ENABLE_Eigen:BOOL=",       (build.with? "eigen"))
+    args << onoff("-DTPL_ENABLE_Eigen:BOOL=", (build.with? "eigen"))
     args << "-DEigen_INCLUDE_DIRS=#{Formula["eigen"].opt_include}/eigen3" if build.with? "eigen"
 
     args << onoff("-DTPL_ENABLE_GLPK:BOOL=",        (build.with? "glpk"))
@@ -159,10 +199,10 @@ class Trilinos < Formula
     # Even though METIS seems to conflicts with ParMETIS in Trilinos config (see TPLsList.cmake in the source folder),
     # we still need to provide METIS_INCLUDE_DIRS so that metis.h is picked up on Linuxbrew.
     if build.with? "metis"
-      ext = OS.mac? ? "dylib" : "so"
       args << "-DTPL_ENABLE_METIS:BOOL=ON"
-      args << "-DTPL_METIS_LIBRARIES=#{Formula["metis"].opt_lib}/libmetis.#{ext}"
-      args << "-DMETIS_INCLUDE_DIRS=#{Formula["metis"].opt_include}"
+      args << "-DMETIS_LIBRARY_DIRS=#{Formula["metis"].opt_lib}"
+      args << "-DMETIS_LIBRARY_NAMES=metis"
+      args << "-DTPL_METIS_INCLUDE_DIRS=#{Formula["metis"].opt_include}"
     else
       args << "-DTPL_ENABLE_METIS:BOOL=OFF"
     end
@@ -171,39 +211,38 @@ class Trilinos < Formula
     # TODO: use extra LIBRARY_NAMES with 5.0 only?
     if build.with? "mumps"
       args << "-DTPL_ENABLE_MUMPS:BOOL=ON"
-      args << "-DMUMPS_LIBRARY_DIRS=#{Formula["mumps"].opt_prefix}"
-      args << "-DMUMPS_LIBRARY_NAMES=dmumps;pord;mumps_common"
+      args << "-DMUMPS_LIBRARY_DIRS=#{Formula["mumps"].opt_lib}"
+      args << "-DMUMPS_LIBRARY_NAMES=dmumps;mumps_common;pord"
     end
 
-    args << onoff("-DTPL_ENABLE_PETSC:BOOL=",       (build.with? "petsc"))
-    args << onoff("-DTPL_ENABLE_HDF5:BOOL=",        (build.with? "hdf5"))
+    args << onoff("-DTPL_ENABLE_PETSC:BOOL=", false) #       (build.with? "petsc"))
+    args << onoff("-DTPL_ENABLE_HDF5:BOOL=", (build.with? "hdf5"))
 
     if build.with? "parmetis"
       # Ensure CMake picks up METIS 5 and not METIS 4.
-      ext = OS.mac? ? "dylib" : "so"
-      ext_parmetis = OS.mac? ? "a" : "so"
       args << "-DTPL_ENABLE_ParMETIS:BOOL=ON"
-      args << "-DTPL_ParMETIS_LIBRARIES=#{Formula["parmetis"].opt_lib}/libparmetis.#{ext_parmetis};#{Formula["metis"].opt_lib}/libmetis.#{ext}"
-      args << "-DParMETIS_INCLUDE_DIRS=#{Formula["parmetis"].opt_include}"
+      args << "-DParMETIS_LIBRARY_DIRS=#{Formula["parmetis"].opt_lib};#{Formula["metis"].opt_lib}"
+      args << "-DParMETIS_LIBRARY_NAMES=parmetis;metis"
+      args << "-DTPL_ParMETIS_INCLUDE_DIRS=#{Formula["parmetis"].opt_include}"
     else
       args << "-DTPL_ENABLE_ParMETIS:BOOL=OFF"
     end
 
-    args << onoff("-DTPL_ENABLE_SCALAPACK:BOOL=",   (build.with? "scalapack"))
+    args << onoff("-DTPL_ENABLE_SCALAPACK:BOOL=", (build.with? "scalapack"))
 
-    args << onoff("-DTPL_ENABLE_SuperLU:BOOL=",     (build.with? "superlu"))
-    args << "-DSuperLU_INCLUDE_DIRS=#{Formula["superlu"].opt_include}/superlu" if build.with? "superlu"
+    args << onoff("-DTPL_ENABLE_SuperLU:BOOL=", false) #   (build.with? "superlu"))
+    # args << "-DSuperLU_INCLUDE_DIRS=#{Formula["superlu"].opt_include}/superlu" if build.with? "superlu"
 
     # fix for 4.0:
     args << "-DHAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON" if build.with? "superlu_dist"
     args << onoff("-DTPL_ENABLE_SuperLUDist:BOOL=", (build.with? "superlu_dist"))
     args << "-DSuperLUDist_INCLUDE_DIRS=#{Formula["superlu_dist"].opt_include}/superlu_dist" if build.with? "superlu_dist"
 
-    args << onoff("-DTPL_ENABLE_QD:BOOL=",         (build.with? "qd"))
-    args << onoff("-DTPL_ENABLE_Lemon:BOOL=",      (build.with? "lemon"))
-    args << onoff("-DTPL_ENABLE_GLM:BOOL=",        (build.with? "glm"))
-    args << onoff("-DTPL_ENABLE_CASK:BOOL=",       (build.with? "cask"))
-    args << onoff("-DTPL_ENABLE_BinUtils:BOOL=",   (build.with? "binutils"))
+    args << onoff("-DTPL_ENABLE_QD:BOOL=", false) #        (build.with? "qd"))
+    args << onoff("-DTPL_ENABLE_Lemon:BOOL=", false) #     (build.with? "lemon"))
+    args << onoff("-DTPL_ENABLE_GLM:BOOL=", (build.with? "glm"))
+    args << onoff("-DTPL_ENABLE_CASK:BOOL=", false) #      (build.with? "cask"))
+    args << onoff("-DTPL_ENABLE_BinUtils:BOOL=", false) #  (build.with? "binutils"))
 
     args << onoff("-DTPL_ENABLE_TBB:BOOL=",         (build.with? "tbb"))
     args << onoff("-DTPL_ENABLE_X11:BOOL=",         (build.with? "x11"))
@@ -222,15 +261,30 @@ class Trilinos < Formula
       system "make", "VERBOSE=1"
       system ("ctest -j" + Hardware::CPU.cores) if build.with? "check"
       system "make", "install"
+      # When trilinos is built with Python, libpytrilinos is included through
+      # cmake configure files. Namely, Trilinos_LIBRARIES in TrilinosConfig.cmake
+      # contains pytrilinos. This leads to a run-time error:
+      # Symbol not found: _PyBool_Type
+      # and prevents Trilinos to be used in any C++ code, which links executable
+      # against the libraries listed in Trilinos_LIBRARIES.
+      # See https://github.com/Homebrew/homebrew-science/issues/2148#issuecomment-103614509
+      # A workaround it to remove PyTrilinos from the COMPONENTS_LIST :
+      if build.with? "python"
+        inreplace "#{lib}/cmake/Trilinos/TrilinosConfig.cmake" do |s|
+          s.gsub! "PyTrilinos;", "" if s.include? "COMPONENTS_LIST"
+        end
+      end
     end
   end
 
   def caveats; <<-EOS
+    The following Trilinos packages were disabled due to compile errors:
+      FEI, Pike, Piro, SEACAS, STK, Stokhos, Zoltan2, Amesos2
+
     On Linuxbrew install with:
-      --with-openblas --without-scotch
+      --with-openblas
     EOS
   end
-
 
   test do
     system "#{bin}/Epetra_BasicPerfTest_test.exe", "16", "12", "1", "1", "25", "-v"
@@ -252,89 +306,32 @@ index 963eb71..998cd02 100644
 --- a/cmake/TPLs/FindTPLUMFPACK.cmake
 +++ b/cmake/TPLs/FindTPLUMFPACK.cmake
 @@ -55,6 +55,6 @@
- 
- 
+
+
  TRIBITS_TPL_FIND_INCLUDE_DIRS_AND_LIBRARIES( UMFPACK
 -  REQUIRED_HEADERS umfpack.h amd.h UFconfig.h
 +  REQUIRED_HEADERS umfpack.h amd.h SuiteSparse_config.h
    REQUIRED_LIBS_NAMES umfpack amd
    )
-diff --git a/packages/rol/test/vector/test_03.cpp b/packages/rol/test/vector/test_03.cpp
-index 5722915..fa53818 100644
---- a/packages/rol/test/vector/test_03.cpp
-+++ b/packages/rol/test/vector/test_03.cpp
-@@ -75,8 +75,8 @@ int main(int argc, char *argv[]) {
- 	RCP<Vector<RealT> > y = rcp(new StdVector<RealT>(y_rcp)); 
- 	RCP<Vector<RealT> > z = rcp(new StdVector<RealT>(z_rcp)); 
- 
--	ArrayRCP<RCP<Vector<RealT>>> A_rcp(2);
--	ArrayRCP<RCP<Vector<RealT>>> B_rcp(2);
-+	ArrayRCP<RCP<Vector<RealT> > > A_rcp(2);
-+	ArrayRCP<RCP<Vector<RealT> > > B_rcp(2);
- 
- 	A_rcp[0] = x;     
- 	A_rcp[1] = y;     
-@@ -84,8 +84,8 @@ int main(int argc, char *argv[]) {
- 	B_rcp[0] = w;     
- 	B_rcp[1] = z;     
- 
--	RCP<MultiVector<RealT>> A = rcp(new MultiVectorDefault<RealT>(A_rcp));
--	RCP<MultiVector<RealT>> B = rcp(new MultiVectorDefault<RealT>(B_rcp));
-+	RCP<MultiVector<RealT> > A = rcp(new MultiVectorDefault<RealT>(A_rcp));
-+	RCP<MultiVector<RealT> > B = rcp(new MultiVectorDefault<RealT>(B_rcp));
-        
- 	// Test norm
- 	if(static_cast<int>(norm_sum(*A)) != 6) {
-@@ -93,13 +93,13 @@ int main(int argc, char *argv[]) {
- 	}
- 
- 	// Test clone
--	RCP<MultiVector<RealT>> C = A->clone();    
-+	RCP<MultiVector<RealT> > C = A->clone();    
- 	if(norm_sum(*C) != 0) {
- 	    ++errorFlag;
- 	}
- 
- 	// Test deep copy
--        RCP<MultiVector<RealT>> D = A->deepCopy();
-+        RCP<MultiVector<RealT> > D = A->deepCopy();
- 	if(static_cast<int>(norm_sum(*D)) != 6) {
- 	    ++errorFlag;
- 	}
-@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
- 	std::vector<int> index(1);
- 	index[0] = 0;
- 
--        RCP<MultiVector<RealT>> S = A->shallowCopy(index);
-+        RCP<MultiVector<RealT> > S = A->shallowCopy(index);
- 	if(static_cast<int>(norm_sum(*S)) != 1) {
- 	    ++errorFlag;
- 	}
-diff --git a/packages/didasko/examples/hypre/hypre_Helpers.hpp b/packages/didasko/examples/hypre/hypre_Helpers.hpp
-index 930719e..70ac59f 100644
---- a/packages/didasko/examples/hypre/hypre_Helpers.hpp
-+++ b/packages/didasko/examples/hypre/hypre_Helpers.hpp
-@@ -51,11 +51,11 @@
- 
- #include <string>
- 
--EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix* newHypreMatrix(int N);
-+EpetraExt_HypreIJMatrix* newHypreMatrix(int N);
- 
--Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N);
-+Epetra_CrsMatrix* newCrsMatrix(int N);
- 
--Epetra_CrsMatrix::Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix &Matrix);
-+Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix &Matrix);
- 
- bool EquivalentVectors(Epetra_MultiVector &X, Epetra_MultiVector &Y, double tol);
+diff --git a/packages/mesquite/CMakeLists.txt b/packages/mesquite/CMakeLists.txt
+index 7cbf084..3865e24 100644
+--- a/packages/mesquite/CMakeLists.txt
++++ b/packages/mesquite/CMakeLists.txt
+@@ -25,7 +25,7 @@ ELSE()
+   #
+
+   TRIBITS_PACKAGE(Mesquite DISABLE_STRONG_WARNINGS)
+-  SET( ${PACKAGE_NAME}_ENABLE_TESTS ${Trilinos_ENABLE_TESTS} )
++  # SET( ${PACKAGE_NAME}_ENABLE_TESTS ${Trilinos_ENABLE_TESTS} )
+
+ ENDIF()
 
 diff --git a/packages/didasko/examples/hypre/hypre_Helpers.cpp b/packages/didasko/examples/hypre/hypre_Helpers.cpp
 index 1bf1b2c..793e218 100644
 --- a/packages/didasko/examples/hypre/hypre_Helpers.cpp
 +++ b/packages/didasko/examples/hypre/hypre_Helpers.cpp
 @@ -60,7 +60,7 @@
- 
+
  using Teuchos::RCP;
  using Teuchos::rcp;
 -EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix* newHypreMatrix(const int N)
@@ -345,18 +342,36 @@ index 1bf1b2c..793e218 100644
 @@ -117,7 +117,7 @@ EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix* newHypreMatrix(const int N)
    return RetMat;
  }
- 
+
 -Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N){
 +Epetra_CrsMatrix* newCrsMatrix(int N){
- 
+
    Epetra_MpiComm Comm(MPI_COMM_WORLD);
- 
+
 @@ -138,7 +138,7 @@ Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N){
    return Matrix;
  }
- 
+
 -Epetra_CrsMatrix::Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix *Matrix)
 +Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix *Matrix)
  {
    int N = Matrix->NumGlobalRows();
    Epetra_CrsMatrix* TestMat = new Epetra_CrsMatrix(Copy, Matrix->RowMatrixRowMap(), Matrix->RowMatrixColMap(), N, false);
+diff --git a/packages/didasko/examples/hypre/hypre_Helpers.hpp b/packages/didasko/examples/hypre/hypre_Helpers.hpp
+index 930719e..70ac59f 100644
+--- a/packages/didasko/examples/hypre/hypre_Helpers.hpp
++++ b/packages/didasko/examples/hypre/hypre_Helpers.hpp
+@@ -51,11 +51,11 @@
+
+ #include <string>
+
+-EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix* newHypreMatrix(int N);
++EpetraExt_HypreIJMatrix* newHypreMatrix(int N);
+
+-Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N);
++Epetra_CrsMatrix* newCrsMatrix(int N);
+
+-Epetra_CrsMatrix::Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix &Matrix);
++Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix &Matrix);
+
+ bool EquivalentVectors(Epetra_MultiVector &X, Epetra_MultiVector &Y, double tol);

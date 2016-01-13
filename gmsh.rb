@@ -5,28 +5,37 @@ class GmshSvnStrategy < SubversionDownloadStrategy
 end
 
 class Gmsh < Formula
-  desc "Gmsh is a 3D grid generator with a build-in CAD engine."
+  desc "3D finite element grid generator with a build-in CAD engine and post-processor"
   homepage "http://geuz.org/gmsh"
-  url "http://geuz.org/gmsh/src/gmsh-2.10.0-source.tgz"
-  sha256 "10db05a73bf7f05f6663ddb3b76045ce9decb28b36ad2e54547861254829a860"
+  url "http://geuz.org/gmsh/src/gmsh-2.11.0-source.tgz"
+  sha256 "2b6d810cc3817ac2c7f5fdd09b9f4b1ed7b93365f6e6574052c73db957a497c6"
 
   head "https://geuz.org/svn/gmsh/trunk", :using => GmshSvnStrategy
 
   bottle do
     cellar :any
-    sha256 "25927e31f905c130b86c5946aa1b114807847ffe816eb2673966ae926129113d" => :yosemite
-    sha256 "26ee586aa04648b8b2cb593f3b5cd1a437b962154723366d47d5851c4ca10cdf" => :mavericks
-    sha256 "8092c762e97de606106a636dd78f6946fb0beb73cf8cae8db0c082d3be75a3e0" => :mountain_lion
+    sha256 "0d1b49dc46a325fa08f682b3be95a241627c991d6faaffa75ff432c1ca8eb9d4" => :el_capitan
+    sha256 "08b7f89820901b981447cb044a9e260a0b9f366d3de6d5b0d45cdb185856c99a" => :yosemite
+    sha256 "59c30602dd36244d9ad5c71f90289f2eeb6b7e3ed37bafee28d03a244e5b35ac" => :mavericks
   end
+
+  option "with-oce",               "Build with oce support (conflicts with opencascade)"
+  option "without-opencascade",    "Build without opencascade support"
 
   depends_on :fortran
   depends_on :mpi => [:cc, :cxx, :f90, :recommended]
   depends_on "cmake" => :build
   depends_on "petsc" => :optional
   depends_on "slepc" => :optional
-  depends_on "opencascade" => :recommended
   depends_on "fltk" => :optional
   depends_on "cairo" if build.with? "fltk"
+
+  if build.with?("opencascade") && build.with?("oce")
+    odie "gmsh: --without-opencascade must be specified when using --with-oce"
+  else
+    depends_on "opencascade"      if build.with? "opencascade"
+    depends_on "oce"              if build.with? "oce"
+  end
 
   def install
     # In OS X, gmsh sets default directory locations as if building a
@@ -38,7 +47,10 @@ class Gmsh < Formula
                              "-DGMSH_DOC=#{share}/gmsh",
                              "-DGMSH_MAN=#{man}"]
 
-    if build.with? "opencascade"
+    if build.with? "oce"
+      ENV["CASROOT"] = Formula["oce"].opt_prefix
+      args << "-DENABLE_OCC=ON"
+    elsif build.with? "opencascade"
       ENV["CASROOT"] = Formula["opencascade"].opt_prefix
       args << "-DENABLE_OCC=ON"
     else

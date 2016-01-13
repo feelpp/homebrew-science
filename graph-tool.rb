@@ -1,19 +1,19 @@
 class GraphTool < Formula
   homepage "http://graph-tool.skewed.de/"
-  url "http://downloads.skewed.de/graph-tool/graph-tool-2.2.44.tar.bz2"
-  sha256 "42b97c24c155ddd95c79a16b4e3cb034cb3139e912c37aed66e6493e4ff20566"
-
-  bottle do
-    sha256 "8d9ec4a8eff050f3eb65c66318e1a74d9ba2e68185f393f59a5577bb6e2325b0" => :yosemite
-    sha256 "9e9b87d27858a52dce599d2f6956072a4c68d8853b182ecb1b4fe143c718311e" => :mavericks
-    sha256 "713daa0e2ec965e6cde55bc4086d94c3bd1a051ba800cb3eee0588c6310af167" => :mountain_lion
-  end
+  url "http://downloads.skewed.de/graph-tool/graph-tool-2.12.tar.bz2"
+  sha256 "ac5fdd65cdedb568302d302b453fe142b875f23e3500fe814a73c88db49993a9"
 
   head do
-    url "https://github.com/count0/graph-tool.git"
+    url "https://git.skewed.de/count0/graph-tool.git"
     depends_on "autoconf" => :build
     depends_on "automake" => :build
     depends_on "libtool" => :build
+  end
+
+  bottle do
+    sha256 "60380b7e9b1bfbdaca7b3abbc57216beb4854a3aa785014c4632987ed0d84e73" => :el_capitan
+    sha256 "5a02d9b4d7cbc42729656ef5e3da92320fa46638adf4673942846484c9ab1ac9" => :yosemite
+    sha256 "1e5b4629b1ddd9d2ea2265ab2fd60eb09051da717be86d44061926b9289db12e" => :mavericks
   end
 
   option "without-cairo", "Build without cairo support for plotting"
@@ -29,7 +29,7 @@ class GraphTool < Formula
   depends_on "pkg-config" => :build
   depends_on "boost" => cxx11
   depends_on "boost-python" => cxx11 + with_pythons
-  depends_on "cairomm" => cxx11 if build.with? "cairo"
+  depends_on "cairomm" if build.with? "cairo"
   depends_on "cgal" => cxx11
   depends_on "google-sparsehash" => cxx11 + [:recommended]
   depends_on "gtk+3" => :recommended
@@ -50,6 +50,19 @@ class GraphTool < Formula
     depends_on "pygobject3" => with_pythons
   end
 
+  # We need a compiler with C++14 support.
+  fails_with :llvm
+
+  fails_with :clang do
+    build 601  # the highest build version for which compilation will fail
+    cause "graph-tool must be compiled in c++14 mode"
+  end
+
+  fails_with :gcc
+  fails_with :gcc => "4.8" do
+    cause "graph-tool must be compiled in c++14 mode"
+  end
+
   def install
     ENV.cxx11
 
@@ -58,10 +71,11 @@ class GraphTool < Formula
     config_args = %W[
       --disable-debug
       --disable-dependency-tracking
-      --disable-optimization
       --prefix=#{prefix}
     ]
 
+    # fix issue with boost + gcc with C++11/C++14
+    ENV.append "CXXFLAGS", "-fext-numeric-literals" unless ENV.compiler == :clang
     config_args << "--disable-cairo" if build.without? "cairo"
     config_args << "--disable-sparsehash" if build.without? "google-sparsehash"
 

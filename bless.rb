@@ -5,11 +5,11 @@ class Bless < Formula
 
   url "https://downloads.sourceforge.net/project/bless-ec/bless.v0p24.tgz"
   version "0.24"
-  sha1 "95082ceda46ea01ee6b8caa10718de00901a04de"
+  sha256 "4214a7f9277e92c02acc132f0f8ba88e7d05a7fd3135a59fc1c6e52ca37d181a"
 
   bottle do
     cellar :any
-    sha1 "e5a148a6174d4958e212155c94d7333f08ee997f" => :mountain_lion
+    sha256 "84dae4d11d11a7ba746f753ef457a7b65f3ab189b478bed246281af9828403ff" => :mountain_lion
   end
 
   needs :openmp

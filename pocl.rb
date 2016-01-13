@@ -1,11 +1,11 @@
 class Pocl < Formula
   homepage "http://pocl.sourceforge.net"
   url "https://downloads.sourceforge.net/project/pocl/pocl-0.10.tar.gz"
-  sha1 "d1fb03637059b5098d61c4772a1dd7cc104a9276"
+  sha256 "e9c38f774a77e61f66d850b705a5ba42d49356c40e75733db4c4811e091e5088"
 
   bottle do
-    sha1 "c7191b243ea86068bfc5f63452bcbc00e090126a" => :yosemite
-    sha1 "62a3bd6f6db0d6ab6b70d2f238c071f596a427a0" => :mavericks
+    sha256 "b79e64fe8bfeb42cc7a931fb67f6f02976f6d30798f4af928a32ee35eaa527d2" => :yosemite
+    sha256 "121b57ea1adeedc3c4523750ed9def5be63a54d147b8d30c85d612e2213224c3" => :mavericks
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
@@ -26,7 +26,7 @@ class Pocl < Formula
   # https://github.com/pocl/pocl/pull/65
   patch do
     url "https://github.com/pocl/pocl/commit/fa86bf.diff"
-    sha1 "10f3a3cebce0003cab921c0a201b5e521882c2bc"
+    sha256 "243f07ebe1200cf0b2cc99c0519572be5bdb8f7104e657fbecf3433e0ac3150a"
   end
 
   def install
